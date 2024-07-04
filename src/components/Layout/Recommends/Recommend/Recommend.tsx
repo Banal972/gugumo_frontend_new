@@ -7,11 +7,11 @@ import moment from "moment";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
-import { Autoplay } from "swiper/modules";
+import { useEffect, useRef } from "react";
+import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 
-const BUTTONSTYLE = "w-8 h-8 xl:w-10 xl:h-10 rounded-full flex-none border border-primary cursor-pointer text-primary relative hidden md:block";
+const BUTTONSTYLE = "w-8 h-8 xl:w-10 xl:h-10 rounded-full flex-none border border-primary cursor-pointer text-primary relative hidden md:block disabled:hidden";
 
 export default function Recommend() {
 
@@ -28,17 +28,22 @@ export default function Recommend() {
         router.push(`/detail/${postId}`);
     }
 
-    const {recommends,isLoading} = useRecommend(session);
+    const {recommends,isLoading,isError} = useRecommend(session);
 
   return (
 
     <>
-        <button className={`${BUTTONSTYLE}`} onClick={prevHandler}>
+        <button className={`${BUTTONSTYLE} slide-prev`}>
             <Image className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] md:w-auto" src={"/asset/image/icon/slide-arrow.png"} width={22} height={20} alt="왼쪽 버튼"/>
         </button>
         <Swiper
+            className="flex-1"
             ref={swiperRef}
-            modules={[Autoplay]}
+            modules={[Autoplay,Navigation]}
+            navigation={{
+                prevEl: ".slide-prev",
+                nextEl: ".slide-next",
+            }}
             slidesPerView={1.2}
             breakpoints={{
                 "481" : {
@@ -53,15 +58,14 @@ export default function Recommend() {
             }}
             centeredSlides={false}
             spaceBetween={26}
-            loop={true}
+            loop={recommends?.data.length > 3 ? true : false}
             speed={600}
-            slidesPerGroup={1}
             autoplay={{
                 delay : 6000
             }}
         >
             {
-                isLoading ?
+                isLoading || isError ?
                     new Array(8).fill(0).map((_,index)=>(
                         <SwiperSlide key={index} className="border rounded">
                             <SkeletonCard/>
@@ -110,8 +114,8 @@ export default function Recommend() {
                 ))
             }
         </Swiper>
-        <button className={`${BUTTONSTYLE}`} onClick={nextHandler}>
-            <Image className="absolute -scale-x-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] md:w-auto" src={"/asset/image/icon/slide-arrow.png"} width={22} height={20} alt="왼쪽 버튼"/>
+        <button className={`${BUTTONSTYLE} slide-next`}>
+            <Image className="absolute -scale-x-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] md:w-auto" src={"/asset/image/icon/slide-arrow.png"} width={22} height={20} alt="오른쪽 버튼"/>
         </button>
     </>
   )

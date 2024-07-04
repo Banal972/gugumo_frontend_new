@@ -4,7 +4,7 @@ export default function Location({location,setLocation} : {location : string,set
   return (
     <>
       <p className="text-base md:text-lg font-semibold text-OnSurface">지역</p>
-      <div className="flex md:flex-wrap overflow-x-auto gap-[4px] md:gap-[14px] mt-[11px]">
+      <div className="flex md:flex-wrap overflow-x-auto gap-[4px] md:gap-[14px] mt-[11px] pb-1">
         <button 
           onClick={()=>setLocation("")} 
           className={`cursor-pointer text-sm md:text-base leading-none md:leading-none font-medium py-2 px-5 md:px-7 rounded-full border border-primary whitespace-nowrap box-border ${location === "" ? "bg-primary text-white" : "text-primary"}`}

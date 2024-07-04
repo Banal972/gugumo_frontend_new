@@ -6,7 +6,7 @@ export default function Gametype({gametype,setGametype} : {gametype:string,setGa
   return (
     <>
         <p className="text-base md:text-lg font-semibold text-OnSurface">종목</p>
-        <div className="flex md:flex-wrap overflow-x-auto gap-[4px] md:gap-[14px] mt-[11px]">
+        <div className="flex md:flex-wrap overflow-x-auto gap-[4px] md:gap-[14px] mt-[11px] pb-1">
             <button 
                 onClick={()=>setGametype("")} 
                 className={`size-[77px] flex-none border border-primary box-border rounded-full relative cursor-pointer overflow-hidden ${gametype === "" ? "bg-primary text-white" : "bg-background text-primary"}`}

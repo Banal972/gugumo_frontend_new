@@ -207,7 +207,11 @@ export default function Form({session,edit} : {session : any,edit? : any}) {
                 <div className="min-w-0 flex flex-col gap-[10px]">
                     <label htmlFor="meetingStatus" className="text-sm md:text-base font-medium px-2">모집상태</label>
                     <div className="relative">
-                        <select id="meetingStatus" className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none" {...register('meetingStatus')} >
+                        <select 
+                            id="meetingStatus" 
+                            className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none border border-transparent outline-none focus:border-primary" 
+                            {...register('meetingStatus')}
+                        >
                             <option value="RECRUIT">모집중</option>
                             <option value="END">모집완료</option>
                         </select>
@@ -219,7 +223,11 @@ export default function Form({session,edit} : {session : any,edit? : any}) {
             <div className="min-w-0 flex flex-col gap-[10px]">
                 <label htmlFor="meetingType" className="text-sm md:text-base font-medium px-2">모집형식</label>
                 <div className="relative">
-                    <select id="meetingType" className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none" {...register('meetingType')} >
+                    <select 
+                        id="meetingType" 
+                        className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none border border-transparent outline-none focus:border-primary" 
+                        {...register('meetingType')} 
+                    >
                         <option value="SHORT">단기모집</option>
                         <option value="LONG">장기모집</option>
                     </select>
@@ -228,52 +236,64 @@ export default function Form({session,edit} : {session : any,edit? : any}) {
             </div>
 
             <div className="min-w-0 flex flex-col gap-[10px]">
-                <label htmlFor="" className="text-sm md:text-base font-medium px-2">지역 선택</label>
+                <label htmlFor="location" className="text-sm md:text-base font-medium px-2">지역 선택</label>
                 <div className="relative">
-                    <select  {...register('location')} className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none">
+                    <select
+                        id="location"
+                        className={`w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none border border-transparent outline-none focus:border-primary ${!watch('location') ? "text-gray-400" : ""}`}
+                        {...register('location')}
+                    >
                         <option value="">지역 선택을 선택해주세요.</option>
-                        <option value="SEOUL">서울</option>
-                        <option value="INCHEON">인천</option>
-                        <option value="GYEONGGI">경기</option>
-                        <option value="DAEGU">대구</option>
-                        <option value="BUSAN">부산</option>
-                        <option value="GYEONGNAM">경남</option>
-                        <option value="GYEONGBUK">경북</option>
-                        <option value="GANGWON">경원</option>
-                        <option value="JEONNAM">전남</option>
-                        <option value="JEONBUK">전북</option>
-                        <option value="OTHER">그외</option>
+                        <option value="SEOUL" className="text-black">서울</option>
+                        <option value="INCHEON" className="text-black">인천</option>
+                        <option value="GYEONGGI" className="text-black">경기</option>
+                        <option value="DAEGU" className="text-black">대구</option>
+                        <option value="BUSAN" className="text-black">부산</option>
+                        <option value="GYEONGNAM" className="text-black">경남</option>
+                        <option value="GYEONGBUK" className="text-black">경북</option>
+                        <option value="GANGWON" className="text-black">경원</option>
+                        <option value="JEONNAM" className="text-black">전남</option>
+                        <option value="JEONBUK" className="text-black">전북</option>
+                        <option value="OTHER" className="text-black">그외</option>
                     </select>
                     <DownIcon className={"absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"} stroke={'#878787'}/>
                 </div>
             </div>
 
             <div className="min-w-0 flex flex-col gap-[10px]">
-                <label htmlFor="" className="text-sm md:text-base font-medium px-2">구기종목</label>
+                <label htmlFor="gameType" className="text-sm md:text-base font-medium px-2">구기종목</label>
                 <div className="relative">
-                    <select {...register('gameType')} className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none">
+                    <select
+                        id="gameType"
+                        className={`w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none border border-transparent outline-none focus:border-primary ${!watch('gameType') ? "text-gray-400" : ""}`}
+                        {...register('gameType')}
+                    >
                         <option value="">구기종목을 선택해주세요.</option>
-                        <option value="BADMINTON">배드민턴</option>
-                        <option value="BASKETBALL">농구</option>
-                        <option value="FUTSAL">풋살</option>
-                        <option value="TENNIS">테니스</option>
-                        <option value="TABLETENNIS">탁구</option>
-                        <option value="BASEBALL">야구</option>
+                        <option value="BADMINTON" className="text-black">배드민턴</option>
+                        <option value="BASKETBALL" className="text-black">농구</option>
+                        <option value="FUTSAL" className="text-black">풋살</option>
+                        <option value="TENNIS" className="text-black">테니스</option>
+                        <option value="TABLETENNIS" className="text-black">탁구</option>
+                        <option value="BASEBALL" className="text-black">야구</option>
                     </select>
                     <DownIcon className={"absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"} stroke={'#878787'}/>
                 </div>
             </div>
 
             <div className="min-w-0 flex flex-col gap-[10px]">
-                <label htmlFor="" className="text-sm md:text-base font-medium px-2">모집 인원</label>
+                <label htmlFor="meetingMemberNum" className="text-sm md:text-base font-medium px-2">모집 인원</label>
                 <div className="relative">
-                    <select {...register('meetingMemberNum')} className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none">
+                    <select 
+                        id="meetingMemberNum"
+                        className={`w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none border border-transparent outline-none focus:border-primary ${!watch('meetingMemberNum') ? "text-gray-400" : ""}`}
+                        {...register('meetingMemberNum')}
+                    >
                         <option value="">모집인원을 선택해주세요.</option>
-                        <option value="1">1명</option>
-                        <option value="2">2명</option>
-                        <option value="3">3명</option>
-                        <option value="4">4명</option>
-                        <option value="5">5명 이상</option>
+                        <option value="1" className="text-black">1명</option>
+                        <option value="2" className="text-black">2명</option>
+                        <option value="3" className="text-black">3명</option>
+                        <option value="4" className="text-black">4명</option>
+                        <option value="5" className="text-black">5명 이상</option>
                     </select>
                     <DownIcon className={"absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"} stroke={'#878787'}/>
                 </div>
@@ -301,13 +321,13 @@ export default function Form({session,edit} : {session : any,edit? : any}) {
                     <label htmlFor="meetingTime" className="text-sm md:text-base font-medium px-2">시간대</label>
                     <div className="relative">
                         <select 
-                            className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none" 
-                            id="meetingTime" 
+                            id="meetingTime"
+                            className={`w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none border border-transparent outline-none focus:border-primary ${!watch('meetingTime') ? "text-gray-400" : ""}`}
                             {...register('meetingTime')}
                         >
                             <option value="">시간대을 선택해주세요.</option>
                             {
-                                Array.from({length : 23},(_,i)=>< option key={i} value={i+1}>{i+1}시</option>)
+                                Array.from({length : 23},(_,i)=><option key={i} value={i+1}  className="text-black">{i+1}시</option>)
                             }
                         </select>
                         <DownIcon className={"absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"} stroke={'#878787'}/>
@@ -349,7 +369,12 @@ export default function Form({session,edit} : {session : any,edit? : any}) {
             <div className="min-w-0 flex flex-col gap-[10px]">
                 <label htmlFor="" className="text-sm md:text-base font-medium px-2">오픈카톡 주소</label>
                 <div className="relative">
-                    <input {...register('openKakao')} className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border" type="text" placeholder="오픈카톡 주소를 입력해주세요." />
+                    <input 
+                        type="text" 
+                        placeholder="오픈카톡 주소를 입력해주세요."
+                        className="w-full h-11 md:h-16 rounded-lg bg-Surface text-sm md:text-base font-medium px-4 box-border appearance-none border border-transparent outline-none focus:border-primary"
+                        {...register('openKakao')} 
+                    />
                 </div>
             </div>
 
@@ -364,7 +389,12 @@ export default function Form({session,edit} : {session : any,edit? : any}) {
 
             <div className="mt-8">
                 <label className="text-sm md:text-lg font-medium px-[6px]" htmlFor="title">제목</label>
-                <input className="bg-Surface rounded-lg w-full h-11 md:h-14 text-sm md:text-base font-medium px-4 mt-3" type="text" placeholder="제목을 입력해주세요" {...register('title')}/>
+                <input 
+                    type="text" 
+                    placeholder="제목을 입력해주세요" 
+                    className="bg-Surface rounded-lg w-full h-11 md:h-14 text-sm md:text-base font-medium px-4 mt-3 outline-none border border-transparent focus:border-primary"
+                    {...register('title')}
+                />
             </div>
 
             <div className="mt-7">

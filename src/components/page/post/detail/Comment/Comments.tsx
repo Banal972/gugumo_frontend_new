@@ -10,7 +10,7 @@ import 'moment/locale/ko';
 
 export default function Comments({session,postid} : {session : any,postid : string}) {
     
-    const {data : comment} = useCommnets(session,postid);
+    const {comment} = useCommnets(session,postid);
     const {mutate : deleteComment} = useDeleteComment();
     const [commnetShow,setCommnetShow] = useState({
         commentId : 0,
@@ -18,6 +18,8 @@ export default function Comments({session,postid} : {session : any,postid : stri
     });
 
     const onReplyShowHandler = (commentId : number)=>{
+
+        if(!session || !session.accessToken){ return alert('로그인을 해야합니다.')};
 
         if(commnetShow.commentId === commentId && commnetShow.type === "reply"){
             return setCommnetShow({

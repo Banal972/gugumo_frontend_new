@@ -108,7 +108,7 @@ export default function Nickname({setNickname} : {setNickname : any}) {
                         id="nickname" 
                         type="text" 
                         placeholder="닉네임을 입력하세요."
-                        className="h-12 md:h-14 text-sm md:text-base rounded-lg w-full px-4 placeholder:text-OnSurface bg-Surface md:bg-background"
+                        className="h-12 md:h-14 text-sm md:text-base rounded-lg w-full px-4 placeholder:text-OnSurface bg-Surface md:bg-background border border-transparent outline-none focus:border-primary"
                         {...register("nickname")}
                     />
                     <button 

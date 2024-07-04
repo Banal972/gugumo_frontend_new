@@ -20,13 +20,16 @@ interface commentT {
     message?: any;
 }
 
-const fetchCommnets = async (session : any,postid : string)=>{
+const fetchCommnets = async ({queryKey} : {queryKey : [string,any,string]})=>{
+    const [,session,postid] = queryKey;
     const response = await fetch(`/back/api/v1/comment/${postid}`,{
         headers : {
-            "Authorization" : session.accessToken
+            "Authorization" : session?.accessToken
         }
     });
-
+    if(!response.ok){
+        throw new Error('등록에 실패 하였습니다.');
+    }
     const data = await response.json();
     const comments : commentDataT[] = data.data.filter((el : commentDataT)=>!el.parentCommentId);
     const replys : commentDataT[] = data.data.filter((el : commentDataT)=>el.parentCommentId);
@@ -81,7 +84,12 @@ const deleteComment = async (data : any)=>{
 }
 
 export const useCommnets = (session : any,postid : string)=>{
-    return useQuery<commentT>({queryKey : ["commnet"],queryFn : ()=>fetchCommnets(session,postid)})
+    const {data : comment,isLoading,isError} = useQuery({queryKey : ["commnet",session,postid],queryFn : fetchCommnets})
+    return {
+        comment,
+        isLoading,
+        isError
+    }
 }
 
 export const usePostCommnet = ()=>{

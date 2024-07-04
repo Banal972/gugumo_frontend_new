@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-const fetchBookmarks = async ({queryKey} : {queryKey : [string,any,string]})=>{
-    const [,session,q] = queryKey;
-    const response = await fetch(`/back/api/v1/bookmark?q=${q}`,{
+const fetchBookmarks = async ({queryKey} : {queryKey : [string,any,string,number]})=>{
+    const [,session,q,page] = queryKey;
+    const response = await fetch(`/back/api/v1/bookmark?q=${q}&page=${page}`,{
         headers : {
             "Authorization" : session.accessToken
         }
@@ -44,10 +44,10 @@ const deleteBookmark = async (data : any) =>{
     }
 }
 
-export const useBookmark = (session : any)=>{
+export const useBookmark = (session : any,page : number)=>{
     const [q, setQ] = useState('');
     const queryClient = useQueryClient();
-    const {data : bookmarks, isLoading} = useQuery({queryKey : ["bookmarks",session,q],queryFn : fetchBookmarks,retry : false});
+    const {data, isLoading, isError} = useQuery({queryKey : ["bookmarks",session,q,page],queryFn : fetchBookmarks});
 
     const addBookmarkMutation = useMutation({
         mutationFn : addBookmark,
@@ -74,8 +74,10 @@ export const useBookmark = (session : any)=>{
     });
 
     return {
-        bookmarks,
+        bookmarks : data?.data.content,
+        pageable : data?.data.pageable,
         isLoading,
+        isError,
         setQ,
         addBookmark : addBookmarkMutation,
         deleteBookmark : deleteBookmarkMutation

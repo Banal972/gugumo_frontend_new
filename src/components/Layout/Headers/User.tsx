@@ -10,7 +10,15 @@ export default function User() {
 
   return (
     <div className="relative">
-        <Image onClick={()=>setIsUser(!isUser)} className="cursor-pointer" src="/asset/image/icon/user.svg" alt="유저 아이콘" width={36} height={36}/>
+        <div className="cursor-pointer w-6 md:w-auto" >
+            <Image 
+                onClick={()=>setIsUser(!isUser)} 
+                src="/asset/image/icon/user.svg" 
+                alt="유저 아이콘" 
+                width={36} 
+                height={36}
+            />
+        </div>
         {
             isUser &&
             <ul className="absolute right-0 top-full py-5 px-[30px] border border-primary text-[13px] font-medium rounded whitespace-nowrap text-center bg-background mt-[10px]">

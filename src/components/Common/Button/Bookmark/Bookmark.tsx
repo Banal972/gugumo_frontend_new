@@ -4,7 +4,7 @@ import { useBookmark } from "@/hooks/useBookmark";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-export default function Bookmark({postId,bookmarked} : {postId : number,bookmarked : boolean}) {
+export default function Bookmark({postId,bookmarked,setBookCount} : {postId : number,bookmarked : boolean,setBookCount? : any}) {
   const {data:session} = useSession() as any;
   const {addBookmark,deleteBookmark} = useBookmark(session);
   const [isBookmarked,setIsBookmarked] = useState(bookmarked);
@@ -19,10 +19,18 @@ export default function Bookmark({postId,bookmarked} : {postId : number,bookmark
     if(!isBookmarked){
       addBookmark.mutate({session,postId});
       setIsBookmarked(true);
+
+      if(setBookCount){
+        setBookCount((prev : any)=>prev + 1);
+      }
+
     }else{
       if(confirm('정말 삭제 하시겠습니까?')){
         deleteBookmark.mutate({session,postId});
         setIsBookmarked(false);
+        if(setBookCount){
+          setBookCount((prev : any)=>prev - 1);
+        }
       }
     }
 

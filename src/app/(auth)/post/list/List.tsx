@@ -1,12 +1,15 @@
 "use client"
 import Card from "@/components/Common/Card/Card";
 import SkeletonCard from "@/components/Common/Card/SkeletonCard";
+import Paging from "@/components/Layout/Paging/Paging";
 import Search from "@/components/page/auth/Search";
 import { usePost } from "@/hooks/usePost";
+import { useState } from "react";
 
 export default function List({session} : {session : any}) {
   
-  const {posts,isLoading,setQ} = usePost(session);
+  const [page,setPage] = useState(1);
+  const {posts,pageable,isLoading,isError,setQ} = usePost(session,page);
 
   return (
     <>
@@ -18,17 +21,23 @@ export default function List({session} : {session : any}) {
       <div className="mt-5 md:mt-[46px] md:bg-Surface rounded-xl md:px-[5%] md:p-[70px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-[30px] mt-[10px] md:mt-7">
           {
-            isLoading 
+            isLoading || isError 
             ?
               new Array(12).fill(0).map((_,index)=><SkeletonCard key={index}/>)
             :
-              posts.data.content.map((el : any)=><Card key={el.postId} el={el}/>)
+              posts?.map((el : any)=><Card key={el.postId} el={el}/>)
           }
         </div>
         {
-          !isLoading && posts.data.content.length <= 0 &&
+          !isLoading && posts?.length <= 0 &&
             <p className="text-center">게시글이 존재 하지 않습니다.</p>
         }
+
+        {
+          pageable &&
+          <Paging pageable={pageable} setPage={setPage}/>
+        }
+
       </div>
     </>
   )

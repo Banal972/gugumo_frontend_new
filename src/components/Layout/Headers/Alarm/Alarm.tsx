@@ -8,7 +8,15 @@ export default function Alarm() {
 
   return (
     <div className="relative">
-        <Image onClick={()=>setIsAlarm(!isAlarm)} className="cursor-pointer" src="/asset/image/icon/bell.svg" alt="알림창" width={36} height={36}/>
+        <div className="cursor-pointer w-6 md:w-auto">
+            <Image 
+                onClick={()=>setIsAlarm(!isAlarm)} 
+                src="/asset/image/icon/bell.svg" 
+                alt="알림창" 
+                width={36}
+                height={36}
+            />
+        </div>
         {
             isAlarm &&
                 <div className="absolute top-full right-0 md:w-[342px] w-[272px] rounded-lg bg-white py-[22px] px-[30px] box-border md:max-h-[334px] max-h-[264px] translate-x-1/4 md:translate-x-0 overflow-y-hidden">

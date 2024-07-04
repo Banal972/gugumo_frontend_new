@@ -1,6 +1,7 @@
 "use client"
 import Card from "@/components/Common/Card/Card";
 import SkeletonCard from "@/components/Common/Card/SkeletonCard";
+import Paging from "@/components/Layout/Paging/Paging";
 import Gametype from "@/components/page/main/Gametype";
 import Location from "@/components/page/main/Location";
 import Search from "@/components/page/main/Search";
@@ -21,8 +22,9 @@ export default function List() {
     const [location,setLocation] = useState('');
     const [gametype,setGametype] = useState('');
     const [sort,setSort] = useState('NEW');
+    const [page,setPage] = useState(1);
 
-    const {meeting,isLoading} = useMeeting(session,q,meetingstatus,location,gametype,sort);
+    const {meeting,pageable,isLoading,isError} = useMeeting(session,q,meetingstatus,location,gametype,sort,page);
 
     const writeHandler = ()=>{
         if(!session) return alert('로그인을 해야합니다.');
@@ -49,17 +51,17 @@ export default function List() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[13px] md:gap-[30px] mt-[10px] md:mt-7">
                 {
-                    isLoading 
+                    isLoading || isError
                     ?
-                        new Array(12).fill(0).map((_,index)=><SkeletonCard key={index}/>)
+                        new Array(12).fill(0).map((_,index)=><SkeletonCard key={index}/>) 
                     :
-                        meeting.data.content.map((el : any)=><Card key={el.postId} el={el}/>)
+                        meeting?.map((el : any)=><Card key={el.postId} el={el}/>)
                 }
             </div>
 
             {
-                !isLoading &&
-                    meeting.data.content.length <= 0 && <p className="text-center">게시물이 존재하지 않습니다.</p>
+                !isLoading && 
+                    meeting.length <= 0 && <p className="text-center">게시물이 존재하지 않습니다.</p>
             }
 
             <div className="mt-[13px] md:mt-7 text-right">
@@ -71,6 +73,11 @@ export default function List() {
                     새글 작성
                 </button>
             </div>
+
+            {
+                pageable &&
+                <Paging pageable={pageable} setPage={setPage}/>
+            }
 
         </div>
     </>

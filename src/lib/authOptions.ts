@@ -1,6 +1,4 @@
-import {Account, NextAuthOptions, Session} from "next-auth"
-import { AdapterUser } from "next-auth/adapters";
-import { JWT } from "next-auth/jwt";
+import {NextAuthOptions} from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 import KakaoProvider from "next-auth/providers/kakao";
 
@@ -53,16 +51,65 @@ export const authOptions : NextAuthOptions = {
             clientSecret : process.env.KAKAO_CLIENT || ""
         })
     ],
+    jwt : {
+        maxAge : 60 * 60
+    },
     callbacks : {
-        async session({session,token,user} : {session: any,token: JWT,user: AdapterUser}){
-            session.accessToken = token.accessToken;
-            return session;
-        },
-        async jwt({user,token,account} : {user : any,token : JWT,account : Account | null}){
-            if(user){
+        async jwt({user,token,account} : any) : Promise<any>{
+
+            if(account?.type !== "credentials" && user){
+
+                const response = await fetch(`${process.env.API_URL}/kakao/login`,{
+                    method : "POST",
+                    headers : {
+                        "content-type" : "application/json"
+                    },
+                    body : JSON.stringify({
+                        username : user.email,
+                        nickname : user.name,
+                        kakaoId : user.id,
+                        profilePath : user.image
+                    })
+                });
+
+                const data = await response.json();
+
+                if(data.status !== "fail"){
+                    token.accessToken = data.data;
+                }else{
+                    token.username = user.email;
+                    token.nickname = user.name;
+                    token.kakaoId = user.id;
+                }
+
+            }
+
+            if(account?.type === "credentials" && user){
                 token.accessToken = user.token;
             }
+
+            if(account){
+                token.type = account.type;
+            }
+
             return token;
+
+        },
+        async session({token} : any) : Promise<any>{
+
+            const session = {} as any;
+
+            if(token.accessToken){
+                session.accessToken = token.accessToken;
+            }else{
+                session.username = token.username;
+                session.nickname = token.nickname;
+                session.kakaoId = token.kakaoId;
+            }
+
+            session.type = token.type;
+
+            return session;
         }
     },
     secret : process.env.NEXTAUTH_SECRET,

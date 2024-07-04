@@ -19,23 +19,27 @@ export const app = initializeApp(firebaseConfig);
 
 export const setTokenHanlder = async ()=>{
 
-  const permission = await Notification.requestPermission();
-  if(permission !== "granted") return;
+  Notification.requestPermission()
+    .then(async (permission)=>{
 
-  const messaging = getMessaging(app);
+      if(permission !== "granted") return;
 
-  await getToken(messaging,{
-    vapidKey : process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY
-  })
-  .then(currentToken=>{
-    if(currentToken){
-      console.log(currentToken);
-    }else{
-      console.log('오류');
-    }
-  })
-  .catch(err=>{
-    console.log(err);
-  });
+      const messaging = getMessaging(app);
+
+      await getToken(messaging,{
+        vapidKey : process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY
+      })
+        .then(currentToken=>{
+          if(currentToken){
+            // console.log(currentToken);
+          }else{
+            console.log('오류');
+          }
+        })
+        .catch(err=>{
+          console.log(err);
+        })
+
+    })
 
 }

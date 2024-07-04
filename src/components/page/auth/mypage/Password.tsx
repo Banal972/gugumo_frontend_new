@@ -67,7 +67,7 @@ export default function Password() {
                         <input 
                             type="password" 
                             placeholder="비밀번호를 입력해주세요."
-                            className="h-12 md:h-14 text-sm md:text-base rounded-lg w-full px-4 placeholder:text-OnSurface bg-Surface md:bg-background"
+                            className="h-12 md:h-14 text-sm md:text-base rounded-lg w-full px-4 placeholder:text-OnSurface bg-Surface md:bg-background border border-transparent outline-none focus:border-primary"
                             {...register("password")}
                         />
                     </div>
@@ -78,7 +78,7 @@ export default function Password() {
                         <input 
                             type="password" 
                             placeholder="입력한 비밀번호를 입력해주세요."
-                            className="h-12 md:h-14 text-sm md:text-base rounded-lg w-full px-4 placeholder:text-OnSurface bg-Surface md:bg-background"
+                            className="h-12 md:h-14 text-sm md:text-base rounded-lg w-full px-4 placeholder:text-OnSurface bg-Surface md:bg-background border border-transparent outline-none focus:border-primary"
                             {...register('pwConfirm')}
                         />
                     </div>

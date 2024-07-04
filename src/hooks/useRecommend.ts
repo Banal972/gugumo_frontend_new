@@ -18,11 +18,12 @@ const fetchRecommend = async ({queryKey} : {queryKey : [string,any]})=>{
 }
 
 export const useRecommend = (session : any) => {
-    const {data : recommends, isLoading } = useQuery({queryKey : ['recommend',session],queryFn : fetchRecommend,retry :false});
-
+    const {data : recommends, isLoading, isError} = useQuery({queryKey : ['recommend',session],queryFn : fetchRecommend});
+    
     return {
         recommends,
-        isLoading
+        isLoading,
+        isError
     }
 
 }

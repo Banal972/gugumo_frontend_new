@@ -17,7 +17,7 @@ export default function Sort({sort,setSort} : {sort : string,setSort : any}) {
   }
 
   return (
-    <div className="flex justify-end relative text-[13px]">
+    <div className="flex justify-end relative text-[13px] z-10">
         <div className="inline-block relative">
             <p onClick={()=>setIsSort(!isSort)} className="flex items-center gap-[5.5px] cursor-pointer">{SORT[sort]} <IoChevronDown/></p>
             {

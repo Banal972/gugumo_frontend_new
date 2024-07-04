@@ -1,4 +1,5 @@
 "use client"
+import Kakao from "@/components/Modal/Login/oAuth/Kakao";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -56,23 +57,37 @@ export default function Login({isOpen,onClose} : {isOpen : boolean,onClose : any
           <button type="button" className="absolute right-4 top-5 cursor-pointer" onClick={onClose}>
               <Image src="/asset/image/icon/close.svg" alt="취소버튼" width={24} height={24} />
           </button>
-          <div className="w-[61px] mx-auto">
-              <Image src="/asset/image/icon.png" alt="로고 아이콘" width={64} height={63}/>
+          <div className="w-[115.66px] mx-auto">
+              <Image src="/asset/image/modal/login-simbol.png" alt="로고 아이콘" width={523} height={458}/>
           </div>
           <h5 className="font-semibold text-lg text-center text-primary mt-10">로그인</h5>
           <form className="mt-5" onSubmit={handleSubmit(onSubmit)}>
-              <input type="text" placeholder='이메일을 입력해주세요.' className="h-9 md:h-11 rounded-lg border border-Outline font-medium text-sm md:text-base w-full px-3" {...register('username')} />
-              <input type="password" placeholder='비밀번호를 입력하세요.'  className="h-9 md:h-11 rounded-lg border border-Outline font-medium text-sm md:text-base w-full px-3 mt-2" {...register('password')} />
+              <input 
+                type="text" 
+                placeholder='이메일을 입력해주세요.' 
+                className="h-9 md:h-11 rounded-lg border border-Outline font-medium text-sm md:text-base w-full px-3 outline-none focus:border-primary" 
+                {...register('username')} 
+              />
+              <input 
+                type="password" 
+                placeholder='비밀번호를 입력하세요.'  
+                className="h-9 md:h-11 rounded-lg border border-Outline font-medium text-sm md:text-base w-full px-3 mt-2 outline-none focus:border-primary" 
+                {...register('password')} 
+              />
               <div className="text-center mt-5">
                   <button className="font-semibold text-sm md:text-base text-OnPrimary bg-primary h-9 px-4 rounded leading-none">로그인 하기</button>
               </div>
           </form>
-          {/* <div className="flex justify-center mt-5">
-            <div onClick={()=>signIn("kakao")} className="size-6 border rounded-full cursor-pointer">카</div>
-          </div> */}
-          <div className="text-center text-primary font-medium text-[13px] mt-9">
+          
+          <div className="mt-5 text-center">
+            <p className="font-medium text-[13px] text-[#A5A5A5]">간편 회원가입</p>
+            <div className="flex justify-center mt-2">
+              <Kakao/>
+            </div>
+          </div>
+          <div className="text-center text-primary font-medium text-[13px] mt-[34px]">
               <Link href={"/find"}>비밀번호 찾기</Link>
-              <Link href={"/signup"} className="pl-1 ml-1 relative before:block before:w-[1px] before:absolute before:left-0 before:top-0 before:h-full  before:bg-primary">회원가입 하기</Link>
+              <Link href={"/signup"} className="pl-[10px] ml-[10px] relative before:block before:w-[1px] before:absolute before:left-0 before:top-0 before:h-full  before:bg-primary">회원가입 하기</Link>
           </div>
       </div>
     </div>
