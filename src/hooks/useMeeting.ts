@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-const fetchMeeting = async ({queryKey} : {queryKey : [string,any,string,string,string,string,string,number]})=>{
+export const fetchMeeting = async ({queryKey} : {queryKey : [string,any,string,string,string,string,string,number]})=>{
 
   const [,session,q,meetingstatus,location,gametype,sort,page] = queryKey;
 

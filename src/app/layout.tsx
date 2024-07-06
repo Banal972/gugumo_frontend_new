@@ -13,7 +13,7 @@ import FCMProvider from "@/provider/FCMProvider";
 
 export const metadata: Metadata = {
   title: "구구모 - 구기종목 매칭 서비스",
-  description: "동네 구기종목 매치 서비스 구구모 입니다.",
+  description: "동네 구기종목 매칭 서비스 구구모 입니다.",
   manifest : "/manifest.json",
   icons : {
     icon : [
@@ -37,24 +37,24 @@ export const viewport : Viewport = {
 }
 
 export default function RootLayout({
-  children,
+  children 
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body>
-        <AuthProvider>
-          <StoreProvider>
-            <QueryProvider>
-              <FCMProvider>
-                {children}
-              </FCMProvider>
-              <CustomModal/>
-            </QueryProvider>
-          </StoreProvider>
-        </AuthProvider>
-      </body>
-    </html>
+    <QueryProvider>
+      <html lang="ko">
+        <body>
+          <AuthProvider>
+            <StoreProvider>
+                <FCMProvider>
+                  {children}
+                </FCMProvider>
+                <CustomModal/>
+            </StoreProvider>
+          </AuthProvider>
+        </body>
+      </html>
+    </QueryProvider>
   );
 }
