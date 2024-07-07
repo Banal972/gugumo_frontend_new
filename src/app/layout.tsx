@@ -42,9 +42,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <QueryProvider>
-      <html lang="ko">
-        <body>
+    <html lang="ko">
+      <body>
+        <QueryProvider>
           <AuthProvider>
             <StoreProvider>
                 <FCMProvider>
@@ -53,8 +53,8 @@ export default function RootLayout({
                 <CustomModal/>
             </StoreProvider>
           </AuthProvider>
-        </body>
-      </html>
-    </QueryProvider>
+        </QueryProvider>
+      </body>
+    </html>
   );
 }
