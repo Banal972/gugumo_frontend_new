@@ -7,27 +7,18 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 const subscribeFetch = async (session : any,fcmtoken : string)=>{
-
   if(!session && !fcmtoken) return;
-
   const response = await fetch('/back/api/v1/subscribe',{
     method : "POST",
     headers : {
+      "Content-Type": "application/json",
       "Authorization" : session?.accessToken
     },
-    body : JSON.stringify({FCMToken : fcmtoken})
+    body : JSON.stringify({"fcmToken" : fcmtoken})
   });
-
-  console.log(response);
-
   if(!response.ok){
     throw new Error('에러');
   }
-
-  const data = await response.json();
-
-  console.log(data);
-
 }
 
 const onFcm = async (dispatch : any)=>{

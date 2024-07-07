@@ -1,10 +1,29 @@
 "use client"
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const alarmfetchs = async (session : any,setData : any)=>{
+    if(!session) return;
+    const response = await fetch('/back/api/v1/notification',{
+        headers : {
+            "Authorization" : session?.accessToken
+        }
+    });
+    if(!response.ok) return;
+    const data = await response.json();
+    console.log(data);
+    setData(data);
+}
+
 const LIST = "flex whitespace-nowrap gap-2 bg-Surface py-[14px] px-3 rounded items-center cursor-pointer"
-export default function Alarm() {
+export default function Alarm({session} : {session : any}) {
 
     const [isAlarm,setIsAlarm] = useState(false);
+    const [data,setData] = useState([]);
+
+    useEffect(()=>{
+        alarmfetchs(session,setData);
+    },[session]);
 
   return (
     <div className="relative">
