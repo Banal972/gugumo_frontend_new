@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 const subscribeFetch = async (session : any,fcmtoken : string)=>{
-  if(!session && !fcmtoken) return;
+  if(!session || !fcmtoken) return;
   const response = await fetch('/back/api/v1/subscribe',{
     method : "POST",
     headers : {
@@ -57,7 +57,7 @@ export default function FCMProvider({children} : {children : React.ReactNode}) {
 
   useEffect(()=>{
     subscribeFetch(session,fcmtoken);
-  },[session]);
+  },[session,fcmtoken]);
 
   return (
     <>{children}</>
