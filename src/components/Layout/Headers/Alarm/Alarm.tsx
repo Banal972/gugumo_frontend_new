@@ -1,61 +1,33 @@
 "use client";
+import { useAlarm } from "@/hooks/useAlarm";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {
-  Dispatch,
-  MouseEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
-
-export interface AlarmT {
-  id: number;
-  message: string;
-  notificationType: string;
-  createDate: string;
-  postId: number;
-  read: boolean;
-}
-
-const alarmfetchs = async (
-  session: any,
-  setData: Dispatch<SetStateAction<AlarmT[]>>
-) => {
-  if (!session) return;
-  const response = await fetch("/back/api/v1/notification", {
-    headers: {
-      Authorization: session?.accessToken,
-    },
-  });
-  if (!response.ok) return;
-  const { data }: { data: AlarmT[] } = await response.json();
-  setData(data);
-};
+import { MouseEvent, useEffect, useState } from "react";
 
 export default function Alarm({ session }: { session: any }) {
   const router = useRouter();
   const [isAlarm, setIsAlarm] = useState(false);
-  const [data, setData] = useState<AlarmT[]>([]);
+
+  const {
+    alarmData,
+    isLoading,
+    isError,
+    readAlarmMutation,
+    deleteAlarmMutation,
+    allReadMutation,
+  } = useAlarm(session);
 
   useEffect(() => {
-    alarmfetchs(session, setData);
-  }, [session]);
+    console.log(alarmData);
+  }, [alarmData]);
 
   const onReadHandler = async (
     e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,
     notiId: number,
     postId: number
   ) => {
-    const response = await fetch(`/back/api/v1/notification/read/${notiId}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: session?.accessToken,
-      },
-    });
-    if (!response.ok) return;
-    console.log("읽음 완료");
-    router.push(`/detail/${postId}`);
+    e.stopPropagation();
+    readAlarmMutation.mutate({ session, notiId, postId });
   };
 
   const onDeleteHandler = async (
@@ -63,25 +35,11 @@ export default function Alarm({ session }: { session: any }) {
     notiId: number
   ) => {
     e.stopPropagation();
-    const response = await fetch(`/back/api/v1/notification/${notiId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: session?.accessToken,
-      },
-    });
-    if (!response.ok) return;
-    console.log("삭제 완료");
+    deleteAlarmMutation.mutate({ session, notiId });
   };
 
   const onAllReadHandler = async () => {
-    const response = await fetch("/back/api/v1/notification/read", {
-      method: "PATCH",
-      headers: {
-        Authorization: session?.accessToken,
-      },
-    });
-    if (!response.ok) return;
-    console.log("모두 읽음 완료");
+    allReadMutation.mutate({ session });
   };
 
   return (
@@ -110,17 +68,18 @@ export default function Alarm({ session }: { session: any }) {
           <div className="mt-[23px]">
             <p className="ml-[3px] text-[13px] text-OnSurface">6월 3일</p>
             <ul className="mt-2">
-              {data?.map((elm) => (
+              {alarmData?.map((elm) => (
                 <li
-                  className={`flex whitespace-nowrap gap-2 bg-Surface py-[14px] px-3 rounded items-center cursor-pointer justify-between`}
+                  className={`flex whitespace-nowrap gap-2 ${
+                    !elm.read ? "bg-Surface" : "bg-gray-300"
+                  } py-[14px] px-3 rounded items-center cursor-pointer justify-between first:mt-0 mt-2`}
                   key={elm.id}
                   onClick={(e) => onReadHandler(e, elm.id, elm.postId)}
                 >
                   <p className="truncate text-[13px]">
-                    {" "}
-                    <span className="text-primary bg-white text-[13px] py-[3px] px-[8.5px] rounded-full">
+                    <span className="text-primary bg-white text-[13px] py-[3px] px-[8.5px] rounded-full mr-2">
                       댓글
-                    </span>{" "}
+                    </span>
                     {elm.message}
                   </p>
                   <button
