@@ -1,66 +1,68 @@
-"use client"
-import { app } from "@/lib/firebase";
-import { setToken } from "@/lib/store/features/fcmtoken";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hook";
-import { getMessaging, getToken } from "firebase/messaging";
+"use client";
+import { messaging } from "@/lib/firebase";
+import { getToken, onMessage } from "firebase/messaging";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const subscribeFetch = async (session : any,fcmtoken : string)=>{
-  if(!session || !fcmtoken) return;
-  const response = await fetch('/back/api/v1/subscribe',{
-    method : "POST",
-    headers : {
+const subscribeFetch = async (session: any, fcmtoken: string) => {
+  const response = await fetch("/back/api/v1/subscribe", {
+    method: "POST",
+    headers: {
       "Content-Type": "application/json",
-      "Authorization" : session?.accessToken
+      Authorization: session?.accessToken,
     },
-    body : JSON.stringify({"fcmToken" : fcmtoken})
+    body: JSON.stringify({ fcmToken: fcmtoken }),
   });
-  if(!response.ok){
-    throw new Error('에러');
+  if (!response.ok) {
+    throw new Error("에러");
   }
-}
+  console.log("등록완료");
+};
 
-const onFcm = async (dispatch : any)=>{
+export default function FCMProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { data: session } = useSession() as any;
 
-  const permission = await Notification.requestPermission();
-  if(permission !== "granted") return;
+  const [token, setToken] = useState("");
 
-  const messaging = getMessaging(app);
+  const requestPermission = async () => {
+    const permission = await Notification.requestPermission();
 
-  await getToken(messaging,{
-    vapidKey : process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY
-  })
-  .then(currentToken=>{
-    if(currentToken){
-      console.log(currentToken);
-      dispatch(setToken(currentToken));
-    }else{
-      console.log('오류');
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY,
+      });
+      setToken(token);
+    } else {
+      console.log("메세지 알림 거부");
     }
-  })
-  .catch(err=>{
-    console.log(err);
-  });
 
-}
-
-export default function FCMProvider({children} : {children : React.ReactNode}) {
-
-  const {data : session} = useSession() as any;
-  const fcmtoken = useAppSelector((state) => state.fcmtoken);
-  const dispatch = useAppDispatch();
+    // 메세지 수신되면 출력
+    onMessage(messaging, (payload) => {
+      const { notification } = payload;
+      if (notification) {
+        const { title, body } = notification;
+        if (title && body) {
+          new Notification(title, {
+            body,
+            icon: "/icons/android-icon-48x48.png",
+          });
+        }
+      }
+    });
+  };
 
   useEffect(() => {
-    onFcm(dispatch);
-  }, [dispatch]);
+    requestPermission();
+  }, []);
 
-  useEffect(()=>{
-    subscribeFetch(session,fcmtoken);
-  },[session,fcmtoken]);
+  useEffect(() => {
+    if (!session || !session.accessToken || token === "") return;
+    subscribeFetch(session, token);
+  }, [session, token]);
 
-  return (
-    <>{children}</>
-  )
-
+  return <>{children}</>;
 }

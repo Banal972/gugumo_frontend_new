@@ -24,7 +24,7 @@ export default function Alarm({ session }: { session: any }) {
   const onReadHandler = async (
     e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,
     notiId: number,
-    postId: number
+    postId: number,
   ) => {
     e.stopPropagation();
     readAlarmMutation.mutate({ session, notiId, postId });
@@ -32,7 +32,7 @@ export default function Alarm({ session }: { session: any }) {
 
   const onDeleteHandler = async (
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
-    notiId: number
+    notiId: number,
   ) => {
     e.stopPropagation();
     deleteAlarmMutation.mutate({ session, notiId });
@@ -44,7 +44,7 @@ export default function Alarm({ session }: { session: any }) {
 
   return (
     <div className="relative">
-      <div className="cursor-pointer w-6 md:w-auto">
+      <div className="w-6 cursor-pointer md:w-auto">
         <Image
           onClick={() => setIsAlarm(!isAlarm)}
           src="/asset/image/icon/bell.svg"
@@ -54,11 +54,11 @@ export default function Alarm({ session }: { session: any }) {
         />
       </div>
       {isAlarm && (
-        <div className="absolute top-full right-0 md:w-[342px] w-[272px] rounded-lg bg-white py-[22px] px-[30px] box-border md:max-h-[334px] max-h-[264px] translate-x-1/4 md:translate-x-0 overflow-y-hidden">
+        <div className="absolute right-0 top-full box-border max-h-[264px] w-[272px] translate-x-1/4 overflow-y-hidden rounded-lg bg-white px-[30px] py-[22px] md:max-h-[334px] md:w-[342px] md:translate-x-0">
           <div className="flex justify-between">
-            <h4 className="text-primary text-base font-semibold">알림</h4>
+            <h4 className="text-base font-semibold text-primary">알림</h4>
             <button
-              className="text-[13px] text-OnSurface font-semibold"
+              className="text-[13px] font-semibold text-OnSurface"
               type="button"
               onClick={onAllReadHandler}
             >
@@ -70,14 +70,14 @@ export default function Alarm({ session }: { session: any }) {
             <ul className="mt-2">
               {alarmData?.map((elm) => (
                 <li
-                  className={`flex whitespace-nowrap gap-2 ${
+                  className={`flex gap-2 whitespace-nowrap ${
                     !elm.read ? "bg-Surface" : "bg-gray-300"
-                  } py-[14px] px-3 rounded items-center cursor-pointer justify-between first:mt-0 mt-2`}
+                  } mt-2 cursor-pointer items-center justify-between rounded px-3 py-[14px] first:mt-0`}
                   key={elm.id}
                   onClick={(e) => onReadHandler(e, elm.id, elm.postId)}
                 >
                   <p className="truncate text-[13px]">
-                    <span className="text-primary bg-white text-[13px] py-[3px] px-[8.5px] rounded-full mr-2">
+                    <span className="mr-2 rounded-full bg-white px-[8.5px] py-[3px] text-[13px] text-primary">
                       댓글
                     </span>
                     {elm.message}
