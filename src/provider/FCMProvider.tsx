@@ -24,7 +24,7 @@ export default function FCMProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session } = useSession() as any;
+  const { data: session, status } = useSession() as any;
 
   const [token, setToken] = useState("");
 
@@ -60,9 +60,10 @@ export default function FCMProvider({
   }, []);
 
   useEffect(() => {
-    if (!session || !session.accessToken || token === "") return;
-    subscribeFetch(session, token);
-  }, [session, token]);
+    if (status === "authenticated" && token !== "") {
+      subscribeFetch(session, token);
+    }
+  }, [status]);
 
   return <>{children}</>;
 }

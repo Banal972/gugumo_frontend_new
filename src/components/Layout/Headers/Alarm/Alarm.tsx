@@ -1,8 +1,8 @@
 "use client";
-import { useAlarm } from "@/hooks/useAlarm";
 import Image from "next/image";
+import { useAlarm } from "@/hooks/useAlarm";
 import { useRouter } from "next/navigation";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useState } from "react";
 
 export default function Alarm({ session }: { session: any }) {
   const router = useRouter();
@@ -16,10 +16,6 @@ export default function Alarm({ session }: { session: any }) {
     deleteAlarmMutation,
     allReadMutation,
   } = useAlarm(session);
-
-  useEffect(() => {
-    console.log(alarmData);
-  }, [alarmData]);
 
   const onReadHandler = async (
     e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,
@@ -66,36 +62,44 @@ export default function Alarm({ session }: { session: any }) {
             </button>
           </div>
           <div className="mt-[23px]">
-            <p className="ml-[3px] text-[13px] text-OnSurface">6월 3일</p>
-            <ul className="mt-2">
-              {alarmData?.map((elm) => (
-                <li
-                  className={`flex gap-2 whitespace-nowrap ${
-                    !elm.read ? "bg-Surface" : "bg-gray-300"
-                  } mt-2 cursor-pointer items-center justify-between rounded px-3 py-[14px] first:mt-0`}
-                  key={elm.id}
-                  onClick={(e) => onReadHandler(e, elm.id, elm.postId)}
-                >
-                  <p className="truncate text-[13px]">
-                    <span className="mr-2 rounded-full bg-white px-[8.5px] py-[3px] text-[13px] text-primary">
-                      댓글
-                    </span>
-                    {elm.message}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={(e) => onDeleteHandler(e, elm.id)}
-                  >
-                    <Image
-                      src="/asset/image/icon/remove.svg"
-                      alt="삭제 아이콘"
-                      width={13.36}
-                      height={13.36}
-                    />
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {alarmData && alarmData?.length > 0 ? (
+              <>
+                <p className="ml-[3px] text-[13px] text-OnSurface">6월 3일</p>
+                <ul className="mt-2">
+                  {alarmData.map((elm) => (
+                    <li
+                      className={`flex gap-2 whitespace-nowrap ${
+                        !elm.read ? "bg-Surface" : "bg-gray-300"
+                      } mt-2 cursor-pointer items-center justify-between rounded px-3 py-[14px] first:mt-0`}
+                      key={elm.id}
+                      onClick={(e) => onReadHandler(e, elm.id, elm.postId)}
+                    >
+                      <p className="truncate text-[13px]">
+                        <span className="mr-2 rounded-full bg-white px-[8.5px] py-[3px] text-[13px] text-primary">
+                          댓글
+                        </span>
+                        {elm.message}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={(e) => onDeleteHandler(e, elm.id)}
+                      >
+                        <Image
+                          src="/asset/image/icon/remove.svg"
+                          alt="삭제 아이콘"
+                          width={13.36}
+                          height={13.36}
+                        />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p className="text-center text-sm text-OnBackgroundGray">
+                알림이 존재하지 않습니다.
+              </p>
+            )}
           </div>
         </div>
       )}
