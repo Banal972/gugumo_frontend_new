@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 interface commentDataT {
   commentId: number;
@@ -20,6 +25,11 @@ interface commentT {
   message?: any;
 }
 
+interface commentOptionsT {
+  session: any;
+  postid: string;
+}
+
 const fetchCommnets = async ({
   queryKey,
 }: {
@@ -31,6 +41,9 @@ const fetchCommnets = async ({
       Authorization: session?.accessToken,
     },
   });
+
+  console.log("댓글 : ", response);
+
   if (!response.ok) {
     throw new Error("등록에 실패 하였습니다.");
   }
@@ -41,6 +54,8 @@ const fetchCommnets = async ({
   const replys: commentDataT[] = data.data.filter(
     (el: commentDataT) => el.parentCommentId
   );
+
+  console.log(data.data.length);
 
   return {
     status: data.status,
@@ -89,6 +104,13 @@ const deleteComment = async (data: any) => {
   if (!response.ok) {
     throw new Error("삭제에 실패했습니다.");
   }
+};
+
+export const commentOptions = ({ session, postid }: commentOptionsT) => {
+  return queryOptions({
+    queryKey: ["commnet", session, postid],
+    queryFn: fetchCommnets,
+  });
 };
 
 // export const useCommnets = (session : any,postid : string)=>{
