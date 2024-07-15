@@ -9,11 +9,13 @@ import Sort from "@/components/page/main/Sort";
 import Status from "@/components/page/main/Status";
 import { meetingOptions } from "@/hooks/useMeeting";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function List({ session }: { session?: any }) {
+export default function List() {
+  const { data: session } = useSession();
   const router = useRouter();
   const [q, setQ] = useState("");
   const [meetingstatus, setMeetingstatus] = useState("RECRUIT");

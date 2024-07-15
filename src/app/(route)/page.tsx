@@ -46,7 +46,7 @@ export default async function Home() {
         </Wrap>
         <Wrap className="pt-8 mt-8 md:mt-[100px] md:pt-0 border-t-[6px] border-Surface md:border-none">
           <HydrationBoundary state={dehydrate(queryClient)}>
-            <List session={session} />
+            <List />
           </HydrationBoundary>
         </Wrap>
       </main>

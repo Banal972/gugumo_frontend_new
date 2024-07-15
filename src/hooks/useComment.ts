@@ -1,7 +1,6 @@
 import {
   queryOptions,
   useMutation,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 
@@ -54,8 +53,6 @@ const fetchCommnets = async ({
   const replys: commentDataT[] = data.data.filter(
     (el: commentDataT) => el.parentCommentId
   );
-
-  console.log(data.data.length);
 
   return {
     status: data.status,
@@ -112,15 +109,6 @@ export const commentOptions = ({ session, postid }: commentOptionsT) => {
     queryFn: fetchCommnets,
   });
 };
-
-// export const useCommnets = (session : any,postid : string)=>{
-//     const {data : comment,isLoading,isError} = useQuery({queryKey : ["commnet",session,postid],queryFn : fetchCommnets})
-//     return {
-//         comment,
-//         isLoading,
-//         isError
-//     }
-// }
 
 export const usePostCommnet = () => {
   const queryClient = useQueryClient();

@@ -4,7 +4,6 @@ import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
-  useQuery,
 } from "@tanstack/react-query";
 import CommentCompo from "@/components/page/post/detail/Comment/CommentCompo";
 import CommentLength from "@/components/page/post/detail/Comment/CommentLength";
