@@ -2,15 +2,27 @@ import Wrap from "@/components/Common/Wrap";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import List from "@/app/(auth)/bookmark/List";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { fetchBookmarks } from "@/hooks/useBookmark";
 
 export default async function Bookmark() {
 
     const session = await getServerSession(authOptions) as any;
+    const queryClient = new QueryClient();
+    const q = '';
+    const page = 1;
+
+    await queryClient.prefetchQuery({
+        queryKey : ["bookmarks",session,q,page],
+        queryFn : fetchBookmarks
+    });
 
     return (
         <main className="mt-14 pb-[121px] md:pb-[170px]">
             <Wrap>
-                <List session={session}/>
+                <HydrationBoundary state={dehydrate(queryClient)}>
+                    <List session={session}/>
+                </HydrationBoundary>
             </Wrap>
         </main>
     )

@@ -7,15 +7,14 @@ import Location from "@/components/page/main/Location";
 import Search from "@/components/page/main/Search";
 import Sort from "@/components/page/main/Sort";
 import Status from "@/components/page/main/Status";
-import { useMeeting } from "@/hooks/useMeeting";
-import { useSession } from "next-auth/react";
+import { fetchMeeting, useMeeting } from "@/hooks/useMeeting";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function List() {
+export default function List({session} : {session? : any}) {
 
-    const {data : session} = useSession();
     const router = useRouter();
     const [q,setQ] = useState("");
     const [meetingstatus,setMeetingstatus] = useState('RECRUIT');
@@ -24,7 +23,12 @@ export default function List() {
     const [sort,setSort] = useState('NEW');
     const [page,setPage] = useState(1);
 
-    const {meeting,pageable,isLoading,isError} = useMeeting(session,q,meetingstatus,location,gametype,sort,page);
+    // const {meeting,pageable,isLoading,isError} = useMeeting(session,q,meetingstatus,location,gametype,sort,page);
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ['meeting', session, q, meetingstatus, location, gametype, sort, page],
+        queryFn: fetchMeeting,
+    });
 
     const writeHandler = ()=>{
         if(!session) return alert('로그인을 해야합니다.');
@@ -55,13 +59,13 @@ export default function List() {
                     ?
                         new Array(12).fill(0).map((_,index)=><SkeletonCard key={index}/>) 
                     :
-                        meeting?.map((el : any)=><Card key={el.postId} el={el}/>)
+                        data?.data.content?.map((el : any)=><Card key={el.postId} el={el}/>)
                 }
             </div>
 
             {
                 !isLoading && 
-                    meeting.length <= 0 && <p className="text-center">게시물이 존재하지 않습니다.</p>
+                    data?.data.content?.length <= 0 && <p className="text-center">게시물이 존재하지 않습니다.</p>
             }
 
             <div className="mt-[13px] md:mt-7 text-right">
@@ -75,8 +79,8 @@ export default function List() {
             </div>
 
             {
-                pageable &&
-                <Paging pageable={pageable} setPage={setPage}/>
+                data?.data.pageable &&
+                <Paging pageable={data.data.pageable} setPage={setPage}/>
             }
 
         </div>

@@ -2,33 +2,35 @@
 import Bookmark from "@/components/Common/Button/Bookmark/Bookmark";
 import SkeletonCard from "@/components/Common/Card/SkeletonCard";
 import { GAMETYPE, LOCATION, STATUS } from "@/constant/card/constant";
-import { useRecommend } from "@/hooks/useRecommend";
+import { fetchRecommend, useRecommend } from "@/hooks/useRecommend";
+import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 
 const BUTTONSTYLE = "w-8 h-8 xl:w-10 xl:h-10 rounded-full flex-none border border-primary cursor-pointer text-primary relative hidden md:block disabled:hidden";
 
-export default function Recommend() {
+export default function Recommend({session} : {session : any}) {
 
+    const {data : recommends,isLoading,isError} = useQuery({
+        queryKey : ['recommend',session],
+        queryFn : fetchRecommend
+    });
     const router = useRouter();
-    const {data : session} = useSession();
     const swiperRef = useRef<SwiperRef>(null);
-    const prevHandler = ()=>{
-        swiperRef.current?.swiper.slidePrev();
-    }
-    const nextHandler = ()=>{
-        swiperRef.current?.swiper.slideNext();
-    };
+    // const prevHandler = ()=>{
+    //     swiperRef.current?.swiper.slidePrev();
+    // }
+    // const nextHandler = ()=>{
+    //     swiperRef.current?.swiper.slideNext();
+    // };
     const onClickHandler = (postId : number)=>{
         router.push(`/detail/${postId}`);
     }
-
-    const {recommends,isLoading,isError} = useRecommend(session);
+    // const {recommends,isLoading,isError} = useRecommend(session);
 
   return (
 
