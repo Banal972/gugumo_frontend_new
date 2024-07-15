@@ -1,7 +1,8 @@
+"use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-const fetchBookmarks = async ({
+export const fetchBookmarks = async ({
   queryKey,
 }: {
   queryKey: [string, any, string, number];

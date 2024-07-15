@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-const fetchRecommend = async ({queryKey} : {queryKey : [string,any]})=>{
+export const fetchRecommend = async ({queryKey} : {queryKey : [string,any]})=>{
 
     const [,session] = queryKey;
 

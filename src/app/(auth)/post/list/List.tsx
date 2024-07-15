@@ -10,7 +10,7 @@ export default function List({session} : {session : any}) {
   
   const [page,setPage] = useState(1);
   const {posts,pageable,isLoading,isError,setQ} = usePost(session,page);
-
+  
   return (
     <>
       <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center gap-6 md:gap-5 text-lg md:text-2xl font-medium">
