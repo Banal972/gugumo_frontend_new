@@ -1,8 +1,16 @@
-"use client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
-export const fetchBookmarks = async ({
+interface BookMarkT {
+  session: any;
+  q: string;
+  page: number;
+}
+
+const fetchBookmarks = async ({
   queryKey,
 }: {
   queryKey: [string, any, string, number];
@@ -13,10 +21,18 @@ export const fetchBookmarks = async ({
       Authorization: session.accessToken,
     },
   });
+  console.log("북마크 : ", response);
   if (!response.ok) {
     throw new Error("불러오는데 실패 하였습니다.");
   }
   return response.json();
+};
+
+export const bookMarkOptions = ({ session, q, page }: BookMarkT) => {
+  return queryOptions({
+    queryKey: ["bookmarks", session, q, page],
+    queryFn: fetchBookmarks,
+  });
 };
 
 const addBookmark = async (data: any) => {
@@ -29,6 +45,7 @@ const addBookmark = async (data: any) => {
     },
     body: JSON.stringify({ postId: postId }),
   });
+  console.log("북마크 추가 ", response);
   if (!response.ok) {
     throw new Error("등록에 실패 하였습니다.");
   }
@@ -43,19 +60,15 @@ const deleteBookmark = async (data: any) => {
       Authorization: session.accessToken,
     },
   });
+  console.log("북마크 삭제 ", response);
   if (!response.ok) {
     console.log(response);
     throw new Error("삭제에 실패 하였습니다.");
   }
 };
 
-export const useBookmark = (session: any, page: number) => {
-  const [q, setQ] = useState("");
+export const useBookMutation = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["bookmarks", session, q, page],
-    queryFn: fetchBookmarks,
-  });
 
   const addBookmarkMutation = useMutation({
     mutationFn: addBookmark,
@@ -84,12 +97,7 @@ export const useBookmark = (session: any, page: number) => {
   });
 
   return {
-    bookmarks: data?.data.content,
-    pageable: data?.data.pageable,
-    isLoading,
-    isError,
-    setQ,
-    addBookmark: addBookmarkMutation,
-    deleteBookmark: deleteBookmarkMutation,
+    addBookmarkMutation,
+    deleteBookmarkMutation,
   };
 };

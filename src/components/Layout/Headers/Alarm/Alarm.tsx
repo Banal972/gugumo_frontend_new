@@ -74,6 +74,7 @@ export default function Alarm({ session }: { session: any }) {
                     <ul className="mt-2">
                       {alarm.data.map((elm) => (
                         <li
+                          key={elm.id}
                           className={`flex gap-2 whitespace-nowrap ${
                             !elm.read ? "bg-Surface" : "bg-gray-300"
                           } mt-2 cursor-pointer items-center justify-between rounded px-3 py-[14px] first:mt-0`}

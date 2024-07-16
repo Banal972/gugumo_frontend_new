@@ -1,5 +1,6 @@
 "use client";
 import BookmarkSVG from "@/asset/image/bookmark.svg";
+import { useBookMutation } from "@/hooks/useBookmark";
 // import { useBookmark } from "@/hooks/useBookmark";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -13,40 +14,41 @@ export default function Bookmark({
   bookmarked: boolean;
   setBookCount?: any;
 }) {
-  const { data: session } = useSession() as any;
-  // const {addBookmark,deleteBookmark} = useBookmark(session);
+  const { data: session } = useSession();
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
+  const { addBookmarkMutation, deleteBookmarkMutation } = useBookMutation();
 
-  // const bookmarkHandler = async (e : any,postId : number)=>{
-  //   e.stopPropagation();
+  const bookmarkHandler = async (e: any, postId: number) => {
+    e.stopPropagation();
 
-  //   if(!session){
-  //     return alert('로그인을 해야합니다.');
-  //   }
+    if (!session) {
+      return alert("로그인을 해야합니다.");
+    }
 
-  //   if(!isBookmarked){
-  //     addBookmark.mutate({session,postId});
-  //     setIsBookmarked(true);
+    if (!isBookmarked) {
+      addBookmarkMutation.mutate({ session, postId });
+      setIsBookmarked(true);
 
-  //     if(setBookCount){
-  //       setBookCount((prev : any)=>prev + 1);
-  //     }
-
-  //   }else{
-  //     if(confirm('정말 삭제 하시겠습니까?')){
-  //       deleteBookmark.mutate({session,postId});
-  //       setIsBookmarked(false);
-  //       if(setBookCount){
-  //         setBookCount((prev : any)=>prev - 1);
-  //       }
-  //     }
-  //   }
-
-  // }
-  // onClick={(e)=>bookmarkHandler(e,postId)}
+      if (setBookCount) {
+        setBookCount((prev: any) => prev + 1);
+      }
+    } else {
+      if (confirm("정말 삭제 하시겠습니까?")) {
+        deleteBookmarkMutation.mutate({ session, postId });
+        setIsBookmarked(false);
+        if (setBookCount) {
+          setBookCount((prev: any) => prev - 1);
+        }
+      }
+    }
+  };
 
   return (
-    <button type="button" className="cursor-pointer">
+    <button
+      type="button"
+      onClick={(e) => bookmarkHandler(e, postId)}
+      className="cursor-pointer"
+    >
       <BookmarkSVG
         className={`stroke-[#4FAAFF] group-hover:stroke-white ${isBookmarked ? "fill-[#4FAAFF]" : "fill-none"}`}
         width={24}

@@ -10,20 +10,19 @@ import { useState } from "react";
 export default function List({ session }: { session: any }) {
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
-  // const {bookmarks,pageable,isLoading,isError,setQ} = useBookmark(session,page);
   const { data, isLoading, isError } = useQuery(
-    bookMarkOptions({ session, q, page })
+    bookMarkOptions({ session, q, page }),
   );
 
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center gap-6 md:gap-5 text-lg md:text-2xl font-medium">
+      <div className="flex flex-col items-start justify-start gap-6 text-lg font-medium md:flex-row md:items-center md:justify-between md:gap-5 md:text-2xl">
         <h4>북마크</h4>
         <Search setQ={setQ} />
       </div>
 
-      <div className="mt-5 md:mt-[46px] md:bg-Surface rounded-xl md:px-[5%] md:p-[70px]">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-[30px]">
+      <div className="mt-5 rounded-xl md:mt-[46px] md:bg-Surface md:p-[70px] md:px-[5%]">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-[30px] lg:grid-cols-3 xl:grid-cols-4">
           {isLoading || isError
             ? new Array(12)
                 .fill(0)
