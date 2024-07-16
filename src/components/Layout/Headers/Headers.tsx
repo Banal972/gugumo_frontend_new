@@ -20,7 +20,7 @@ export default function Headers() {
           <LoginBtn />
         ) : (
           <div className="flex items-center gap-3 md:gap-[26px]">
-            <Alarm />
+            <Alarm session={session} />
             <Link className="w-4 md:w-auto" href={"/bookmark"}>
               <Image
                 src={"/asset/image/icon/bookmark.png"}

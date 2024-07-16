@@ -14,7 +14,7 @@ const subscribeFetch = async (session: any, fcmtoken: string) => {
     body: JSON.stringify({ fcmToken: fcmtoken }),
   });
   if (!response.ok) {
-    throw new Error("에러");
+    console.log("에러가 발생했습니다.");
   }
   console.log("등록완료");
 };
@@ -35,6 +35,7 @@ export default function FCMProvider({
       const token = await getToken(messaging, {
         vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY,
       });
+      console.log(token);
       setToken(token);
     } else {
       console.log("메세지 알림 거부");

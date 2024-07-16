@@ -1,3 +1,4 @@
+import moment from "moment";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -20,13 +21,34 @@ const alarmfetchs = async ({ queryKey }: { queryKey: [string, any] }) => {
     },
   });
   if (!response.ok) return;
+
   const { data }: { data: AlarmT[] } = await response.json();
-  return data;
+
+  const result = data.reduce<{
+    [key: string]: { createDate: string; data: AlarmT[] };
+  }>((acc, current) => {
+    let date = moment(current.createDate).format("YYYY-MM-DD");
+
+    // 새로운 그룹으로 만들어줌
+    if (!acc[date]) {
+      acc[date] = {
+        createDate: date,
+        data: [],
+      };
+    }
+
+    // 새로운 그룹에 데이터를 넣어줌
+    acc[date].data.push(current);
+
+    return acc;
+  }, {}); // {}는 초기값
+
+  return Object.values(result); // 객체를 배열로 수정
 };
 
+// 읽기
 const readHandler = async (data: any) => {
   const { session, notiId } = data;
-  console.log(session, notiId);
   const response = await fetch(`/back/api/v1/notification/read/${notiId}`, {
     method: "PATCH",
     headers: {
@@ -38,6 +60,7 @@ const readHandler = async (data: any) => {
   }
 };
 
+// 삭제
 const deleteHandler = async (data: any) => {
   const { session, notiId } = data;
   const response = await fetch(`/back/api/v1/notification/${notiId}`, {
@@ -51,6 +74,7 @@ const deleteHandler = async (data: any) => {
   }
 };
 
+// 전체읽기
 const allReadHandler = async (data: any) => {
   const { session } = data;
   const response = await fetch("/back/api/v1/notification/read", {
@@ -64,12 +88,13 @@ const allReadHandler = async (data: any) => {
   }
 };
 
+// customHook
 export const useAlarm = (session: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const {
-    data: alarmData,
+    data: getAlarms,
     isLoading,
     isError,
   } = useQuery({
@@ -106,7 +131,7 @@ export const useAlarm = (session: any) => {
   });
 
   return {
-    alarmData,
+    getAlarms,
     isLoading,
     isError,
     readAlarmMutation,
