@@ -40,9 +40,11 @@ export default function Alarm({ session }: { session: any }) {
 
   return (
     <div className="relative">
-      <div className="w-6 cursor-pointer md:w-auto">
+      <div
+        className="w-6 cursor-pointer md:w-auto"
+        onClick={() => setIsAlarm(!isAlarm)}
+      >
         <Image
-          onClick={() => setIsAlarm(!isAlarm)}
           src="/asset/image/icon/bell.svg"
           alt="알림창"
           width={36}
