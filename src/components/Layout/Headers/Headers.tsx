@@ -11,16 +11,16 @@ export default function Headers() {
   const { data: session } = useSession() as any;
 
   return (
-    <header className="mt-6 md:mt-10 w-full relative z-20">
+    <header className="relative z-20 mt-6 w-full md:mt-10">
       <Wrap className="flex items-center justify-between">
-        <Link href={"/"} className="md:w-[172px] w-[91px]">
+        <Link href={"/"} className="w-[91px] md:w-[172px]">
           <img src="/asset/image/logo.svg" alt="로고" />
         </Link>
         {!session?.accessToken ? (
           <LoginBtn />
         ) : (
           <div className="flex items-center gap-3 md:gap-[26px]">
-            <Alarm />
+            <Alarm session={session} />
             <Link className="w-4 md:w-auto" href={"/bookmark"}>
               <Image
                 src={"/asset/image/icon/bookmark.png"}

@@ -33,7 +33,7 @@ export default function List() {
       gametype,
       sort,
       page,
-    })
+    }),
   );
 
   const writeHandler = () => {
@@ -44,7 +44,7 @@ export default function List() {
   return (
     <>
       {/* 검색 */}
-      <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center gap-6 md:gap-5">
+      <div className="flex flex-col items-start justify-start gap-6 md:flex-row md:items-center md:justify-between md:gap-5">
         <Status
           meetingstatus={meetingstatus}
           setMeetingstatus={setMeetingstatus}
@@ -64,10 +64,10 @@ export default function List() {
         <Gametype gametype={gametype} setGametype={setGametype} />{" "}
       </div>
 
-      <div className="mt-[38px] md:mt-[53px] md:pt-[39px] md:pb-[49px] md:bg-[#F4F5F8] md:px-[5%] lg:px-[70px] md:rounded-xl">
+      <div className="mt-[38px] md:mt-[53px] md:rounded-xl md:bg-[#F4F5F8] md:px-[5%] md:pb-[49px] md:pt-[39px] lg:px-[70px]">
         <Sort sort={sort} setSort={setSort} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[13px] md:gap-[30px] mt-[10px] md:mt-7">
+        <div className="mt-[10px] grid grid-cols-1 gap-[13px] md:mt-7 md:grid-cols-2 md:gap-[30px] lg:grid-cols-3 xl:grid-cols-4">
           {isLoading || isError
             ? new Array(12)
                 .fill(0)
@@ -81,13 +81,13 @@ export default function List() {
           <p className="text-center">게시물이 존재하지 않습니다.</p>
         )}
 
-        <div className="mt-[13px] md:mt-7 text-right">
+        <div className="mt-[13px] text-right md:mt-7">
           <button
             onClick={writeHandler}
-            className={`inline-flex items-center py-[0.4em] text-sm md:text-base px-4 font-semibold border border-primary rounded gap-1 cursor-pointer group transition-all text-primary bg-OnPrimary hover:text-OnPrimary hover:bg-primary`}
+            className={`group inline-flex cursor-pointer items-center gap-1 rounded border border-primary bg-OnPrimary px-4 py-[0.4em] text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base`}
           >
             <Image
-              className="group-hover:invert group-hover:brightness-0"
+              className="group-hover:brightness-0 group-hover:invert"
               src={"/asset/image/icon/write.svg"}
               alt="작성 아이콘"
               width={24}

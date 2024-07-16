@@ -1,14 +1,70 @@
-"use client"
-import { setTokenHanlder } from "@/lib/firebase";
-import { useEffect } from "react";
+"use client";
+import { messaging } from "@/lib/firebase";
+import { getToken, onMessage } from "firebase/messaging";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
-export default function FCMProvider({children} : {children : React.ReactNode}) {
+const subscribeFetch = async (session: any, fcmtoken: string) => {
+  const response = await fetch("/back/api/v1/subscribe", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: session?.accessToken,
+    },
+    body: JSON.stringify({ fcmToken: fcmtoken }),
+  });
+  if (!response.ok) {
+    console.log("에러가 발생했습니다.");
+  }
+  console.log("등록완료");
+};
 
-    useEffect(() => {
-      setTokenHanlder();
-    }, [])
+export default function FCMProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { data: session, status } = useSession() as any;
 
-  return (
-    <>{children}</>
-  )
+  const [token, setToken] = useState("");
+
+  const requestPermission = async () => {
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY,
+      });
+      console.log(token);
+      setToken(token);
+    } else {
+      console.log("메세지 알림 거부");
+    }
+
+    // 메세지 수신되면 출력
+    onMessage(messaging, (payload) => {
+      const { notification } = payload;
+      if (notification) {
+        const { title, body } = notification;
+        if (title && body) {
+          new Notification(title, {
+            body,
+            icon: "/icons/android-icon-48x48.png",
+          });
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
+  useEffect(() => {
+    if (status === "authenticated" && token !== "") {
+      subscribeFetch(session, token);
+    }
+  }, [status]);
+
+  return <>{children}</>;
 }

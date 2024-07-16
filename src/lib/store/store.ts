@@ -1,10 +1,12 @@
 import modal from '@/lib/store/features/modals/modal'
+import fcmtoken from '@/lib/store/features/fcmtoken'
 import { configureStore } from '@reduxjs/toolkit'
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      modal
+      modal,
+      fcmtoken
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
       serializableCheck: false,
