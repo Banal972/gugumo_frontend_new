@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 const subscribeFetch = async (session: any, token: string) => {
   if (!session) return;
-  console.log(session.accessToken);
   const response = await fetch("/back/api/v1/subscribe", {
     method: "POST",
     headers: {
@@ -24,7 +23,7 @@ const subscribeFetch = async (session: any, token: string) => {
     const data = await response.json();
 
     if (data.status === "success") {
-      console.log("등록완료");
+      // console.log("등록완료");
     } else {
       console.log("등록실패");
     }
