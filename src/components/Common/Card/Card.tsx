@@ -30,27 +30,25 @@ export default function Card({ el }: { el: CardT }) {
   return (
     <div
       onClick={() => clickHandler(el.postId)}
-      className="cursor-pointer rounded-lg border bg-Surface px-4 py-5 md:border-none md:bg-white"
+      className="bg-Surface md:bg-white py-5 px-4 rounded-lg cursor-pointer border md:border-none"
     >
       <div className="flex flex-wrap gap-[5px] leading-none">
-        <div
-          className={`${TAGSTYLE} ${el.meetingStatus !== "END" ? "bg-[#BFE0FF] text-[#4378FF]" : "bg-OnSurface text-background"}`}
-        >
+        <div className={`${TAGSTYLE} text-[#4378FF] bg-[#BFE0FF]`}>
           {C.STATUS[el.meetingStatus]}
         </div>
-        <div className={`${TAGSTYLE} bg-[#D2FFAE] text-[#54A900]`}>
+        <div className={`${TAGSTYLE} text-[#54A900] bg-[#D2FFAE]`}>
           {C.GAMETYPE[el.gameType]}
         </div>
-        <div className={`${TAGSTYLE} bg-[#FDC9AF] text-[#FF6414]`}>
+        <div className={`${TAGSTYLE} text-[#FF6414] bg-[#FDC9AF]`}>
           {C.LOCATION[el.location]}
         </div>
       </div>
 
-      <h4 className="mt-[11px] line-clamp-2 h-10 text-ellipsis break-keep text-base font-medium leading-[1.3]">
+      <h4 className="font-medium text-base leading-[1.3] mt-[11px] break-keep text-ellipsis line-clamp-2 h-10">
         {el.title}
       </h4>
 
-      <ul className="mt-12 text-[13px] leading-none md:block">
+      <ul className="md:block mt-12 text-[13px] leading-none">
         {el.meetingDateTime && (
           <li className="flex text-OnBackgroundGray">
             <p className="pr-[9px]">시간</p>
@@ -60,14 +58,14 @@ export default function Card({ el }: { el: CardT }) {
           </li>
         )}
         {el.meetingDays && (
-          <li className="mt-1 flex text-OnBackgroundGray">
+          <li className="flex text-OnBackgroundGray mt-1">
             <p className="pr-[9px]">요일</p>
             <p className="border-l border-OnBackgroundGray pl-[9px]">
               {el.meetingDays.split(";").join(",")}
             </p>
           </li>
         )}
-        <li className="mt-1 flex text-OnBackgroundGray">
+        <li className="flex text-OnBackgroundGray mt-1">
           <p className="pr-[9px]">인원</p>
           <p className="border-l border-OnBackgroundGray pl-[9px]">
             {el.meetingMemberNum}명
@@ -75,7 +73,7 @@ export default function Card({ el }: { el: CardT }) {
         </li>
       </ul>
 
-      <div className="mt-[9.5px] flex flex-wrap items-center justify-between gap-[7px] border-t border-Outline pt-[9.5px]">
+      <div className="flex flex-wrap items-center justify-between pt-[9.5px] mt-[9.5px] border-t border-Outline gap-[7px]">
         <span className="whitespace-nowrap text-[13px] font-medium text-OnBackgroundGray">
           모집 마감일 {moment(el.meetingDeadline).format("YY.MM.DD")}
         </span>
