@@ -1,31 +1,33 @@
-name : Sync fork
-on :
+name: Sync and Deploy
+
+on:
   push:
     branches:
       - main
+
 jobs:
-  sync:
-    name : sync fork repo
-    runs-on : ubuntu-latest
-    
+  sync_and_deploy:
+    runs-on: ubuntu-latest
+
     steps:
-      - name : Checkout main
-        uses : actions/checkout@v4
-        with :
-          token : ${{ secrets.FORKED_REPO_TOKEN }}
-          fetch-depth : 0
-          ref : main
-          
-      - name: Add remote-url
-        run : |
-          git remote add forked-repo https://Banal972:${{ secrets.FORKED_REPO_TOKEN }}@github.com/Banal972/gugumo_frontend_new
-          git config user.name Banal972
-          git config user.email spbabo97@naver.com
-        
-      - name: Push changes to forked-repo 
-        run: |
-          git push -f forked-repo main
-        
-      - name: Clean up
-        run: |
-          git remote remove forked-repo
+    - name: Checkout target repository
+      uses: actions/checkout@v4
+      with:
+        repository: gugumo-service/gugumo_frontend_new # 원본 리포지토리
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: original
+
+    - name: Checkout forked repository
+      uses: actions/checkout@v4
+      with:
+        repository: Banal972/gugumo_frontend_new # 포크된 리포지토리
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: forked
+
+    - name: Sync changes
+      run: |
+        cd forked
+        git config user.name 'Banal972'
+        git config user.email 'spbabo97@naver.com'
+        git pull --rebase origin main
+        git push origin main
