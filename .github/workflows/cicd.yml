@@ -10,24 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout target repository
-      uses: actions/checkout@v4
-      with:
-        repository: gugumo-service/gugumo_frontend_new # 원본 리포지토리
-        token: ${{ secrets.GITHUB_TOKEN }}
-        path: original
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          repository: gugumo-service/gugumo_frontend_new # 원본 리포지토리
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: original
 
-    - name: Checkout forked repository
-      uses: actions/checkout@v4
-      with:
-        repository: Banal972/gugumo_frontend_new # 포크된 리포지토리
-        token: ${{ secrets.GITHUB_TOKEN }}
-        path: forked
+      - name: Checkout forked repository
+        uses: actions/checkout@v4
+        with:
+          repository: Banal972/gugumo_frontend_new # 포크된 리포지토리
+          token: ${{ secrets.PAT }}
+          path: forked
 
-    - name: Sync changes
-      run: |
-        cd forked
-        git config user.name 'Banal972'
-        git config user.email 'spbabo97@naver.com'
-        git pull --rebase origin main
-        git push origin main
+      - name: Sync changes
+        run: |
+          cd forked
+          git config user.name 'Banal972'
+          git config user.email 'spbabo97@naver.com'
+          git pull --rebase origin main
+          git push origin main
