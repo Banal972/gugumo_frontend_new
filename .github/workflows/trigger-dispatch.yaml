@@ -8,9 +8,9 @@ on:
 jobs:
   trigger-fork:
     runs-on: ubuntu-latest
-    if: github.organization == 'gugumo-service'
     steps:
       - name: Trigger repository_dispatch
+        if: github.organization == 'gugumo-service'
         run: |
           curl -X POST \
           -H "Authorization: token ${{ secrets.PAT }}" \
