@@ -26,8 +26,13 @@ jobs:
 
       - name: Sync changes
         run: |
-          cd forked
+          cd original
+          git pull
+          cd ../forked
+          git pull
           git config user.name 'Banal972'
           git config user.email 'spbabo97@naver.com'
-          git pull --rebase origin main
-          git push origin main
+          git remote add upstream ../original
+          git fetch upstream
+          git rebase upstream/main
+          git push origin main --force
