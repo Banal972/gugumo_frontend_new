@@ -1,7 +1,9 @@
 "use client";
 import BookmarkSVG from "@/asset/image/bookmark.svg";
+import Alert from "@/components/Modal/Alert";
 import { useBookMutation } from "@/hooks/useBookmark";
-// import { useBookmark } from "@/hooks/useBookmark";
+import { open } from "@/lib/store/features/modals/modal";
+import { useAppDispatch } from "@/lib/store/hook";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -14,6 +16,7 @@ export default function Bookmark({
   bookmarked: boolean;
   setBookCount?: any;
 }) {
+  const dispatch = useAppDispatch();
   const { data: session } = useSession();
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
   const { addBookmarkMutation, deleteBookmarkMutation } = useBookMutation();
@@ -22,7 +25,12 @@ export default function Bookmark({
     e.stopPropagation();
 
     if (!session) {
-      return alert("로그인을 해야합니다.");
+      return dispatch(
+        open({
+          Component: Alert,
+          props: { message: "로그인을 해야합니다." },
+        }),
+      );
     }
 
     if (!isBookmarked) {
