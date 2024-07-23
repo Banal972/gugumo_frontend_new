@@ -1,50 +1,116 @@
-"use client"
+"use client";
 import Image from "next/image";
-import { useState } from "react";
-const LIST = "flex whitespace-nowrap gap-2 bg-Surface py-[14px] px-3 rounded items-center cursor-pointer"
-export default function Alarm() {
+import { useAlarm } from "@/hooks/useAlarm";
+import { useRouter } from "next/navigation";
+import React, { MouseEvent, useState } from "react";
+import moment from "moment";
 
-    const [isAlarm,setIsAlarm] = useState(false);
+export default function Alarm({ session }: { session: any }) {
+  const [isAlarm, setIsAlarm] = useState(false);
+
+  const {
+    getAlarms,
+    isLoading,
+    isError,
+    readAlarmMutation,
+    deleteAlarmMutation,
+    allReadMutation,
+  } = useAlarm(session);
+
+  const onReadHandler = async (
+    e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,
+    notiId: number,
+    postId: number,
+  ) => {
+    e.stopPropagation();
+    readAlarmMutation.mutate({ session, notiId, postId });
+  };
+
+  const onDeleteHandler = async (
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+    notiId: number,
+  ) => {
+    e.stopPropagation();
+    deleteAlarmMutation.mutate({ session, notiId });
+  };
+
+  const onAllReadHandler = async () => {
+    allReadMutation.mutate({ session });
+  };
 
   return (
     <div className="relative">
-        <div className="cursor-pointer w-6 md:w-auto">
-            <Image 
-                onClick={()=>setIsAlarm(!isAlarm)} 
-                src="/asset/image/icon/bell.svg" 
-                alt="알림창" 
-                width={36}
-                height={36}
-            />
+      <div
+        className="w-6 cursor-pointer md:w-auto"
+        onClick={() => setIsAlarm(!isAlarm)}
+      >
+        <Image
+          src="/asset/image/icon/bell.svg"
+          alt="알림창"
+          width={36}
+          height={36}
+        />
+      </div>
+      {isAlarm && (
+        <div className="absolute right-0 top-full box-border flex max-h-[264px] w-[272px] translate-x-1/4 flex-col overflow-y-hidden rounded-lg bg-white px-[30px] py-[22px] md:max-h-[334px] md:w-[342px] md:translate-x-0">
+          <div className="flex flex-none justify-between">
+            <h4 className="text-base font-semibold text-primary">알림</h4>
+            <button
+              className="text-[13px] font-semibold text-OnSurface"
+              type="button"
+              onClick={onAllReadHandler}
+            >
+              모두읽음
+            </button>
+          </div>
+          <div className="mt-[23px] flex-1 overflow-y-auto">
+            {getAlarms && getAlarms?.length > 0 ? (
+              <>
+                {getAlarms.map((alarm) => (
+                  <div className="mt-4 first:mt-0" key={alarm.createDate}>
+                    <p className="ml-[3px] text-[13px] text-OnSurface">
+                      {moment(alarm.createDate).format("MM월 DD일")}
+                    </p>
+                    <ul className="mt-2">
+                      {alarm.data.map((elm) => (
+                        <li
+                          key={elm.id}
+                          className={`flex gap-2 whitespace-nowrap ${
+                            !elm.read ? "bg-Surface" : "bg-gray-300"
+                          } mt-2 cursor-pointer items-center justify-between rounded px-3 py-[14px] first:mt-0`}
+                          onClick={(e) => onReadHandler(e, elm.id, elm.postId)}
+                        >
+                          <p className="truncate text-[13px]">
+                            <span className="mr-2 rounded-full bg-white px-[8.5px] py-[3px] text-[13px] text-primary">
+                              댓글
+                            </span>
+                            {elm.message}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={(e) => onDeleteHandler(e, elm.id)}
+                          >
+                            <Image
+                              src="/asset/image/icon/remove.svg"
+                              alt="삭제 아이콘"
+                              width={13.36}
+                              height={13.36}
+                            />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <p className="text-center text-sm text-OnBackgroundGray">
+                알림이 존재하지 않습니다.
+              </p>
+            )}
+          </div>
         </div>
-        {
-            isAlarm &&
-                <div className="absolute top-full right-0 md:w-[342px] w-[272px] rounded-lg bg-white py-[22px] px-[30px] box-border md:max-h-[334px] max-h-[264px] translate-x-1/4 md:translate-x-0 overflow-y-hidden">
-                    <div className="flex justify-between">
-                        <h4 className="text-primary text-base font-semibold">알림</h4>
-                        <button className="text-[13px] text-OnSurface font-semibold">모두읽음</button>
-                    </div>
-                    <div className="mt-[23px]">
-                        <p className="ml-[3px] text-[13px] text-OnSurface">6월 3일</p>
-                        <ul className="mt-2">
-                            <li className={`${LIST}`}>
-                                <span className="text-primary bg-white text-[13px] py-[3px] px-[8.5px] rounded-full">댓글</span>
-                                <p className="truncate text-[13px]">내용입니다...내용입니다...내용입니다...</p>
-                                <button type="button">
-                                    <Image src="/asset/image/icon/remove.svg" alt="삭제 아이콘" width={13.36} height={13.36} />
-                                </button>
-                            </li>
-                            <li className={`${LIST} mt-2`}>
-                                <span className="text-primary bg-white text-[13px] py-[3px] px-[8.5px] rounded-full">댓글</span>
-                                <p className="truncate text-[13px]">내용입니다...내용입니다...내용입니다...</p>
-                                <button type="button">
-                                    <Image src="/asset/image/icon/remove.svg" alt="삭제 아이콘" width={13.36} height={13.36} />
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-        }
+      )}
     </div>
-  )
+  );
 }

@@ -1,29 +1,30 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
-const fetchRecommend = async ({queryKey} : {queryKey : [string,any]})=>{
+export const fetchRecommend = async ({
+  queryKey,
+}: {
+  queryKey: [string, any];
+}) => {
+  const [, session] = queryKey;
 
-    const [,session] = queryKey;
+  const response = await fetch(`/back/api/v1/meeting/recommend`, {
+    headers: {
+      Authorization: session?.accessToken,
+    },
+  });
 
-    const response = await fetch(`/back/api/v1/meeting/recommend`,{
-        headers : {
-            "Authorization" : session?.accessToken
-        },
-    });
-    if(!response.ok){
-        throw new Error("불러오는데 실패 하였습니다.");
-    }
+  console.log("추천 : ", response);
 
-    return response.json();
+  if (!response.ok) {
+    throw new Error("불러오는데 실패 하였습니다.");
+  }
 
-}
+  return response.json();
+};
 
-export const useRecommend = (session : any) => {
-    const {data : recommends, isLoading, isError} = useQuery({queryKey : ['recommend',session],queryFn : fetchRecommend});
-    
-    return {
-        recommends,
-        isLoading,
-        isError
-    }
-
-}
+export const recommendOptions = ({ session }: { session: any }) => {
+  return queryOptions({
+    queryKey: ["recommend", session],
+    queryFn: fetchRecommend,
+  });
+};
