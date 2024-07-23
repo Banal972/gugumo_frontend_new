@@ -2,12 +2,15 @@
 import Card from "@/components/Common/Card/Card";
 import SkeletonCard from "@/components/Common/Card/SkeletonCard";
 import Paging from "@/components/Layout/Paging/Paging";
+import Alert from "@/components/Modal/Alert";
 import Gametype from "@/components/page/main/Gametype";
 import Location from "@/components/page/main/Location";
 import Search from "@/components/page/main/Search";
 import Sort from "@/components/page/main/Sort";
 import Status from "@/components/page/main/Status";
 import { meetingOptions } from "@/hooks/useMeeting";
+import { open } from "@/lib/store/features/modals/modal";
+import { useAppDispatch } from "@/lib/store/hook";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -15,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function List() {
+  const dispatch = useAppDispatch();
   const { data: session } = useSession();
   const router = useRouter();
   const [q, setQ] = useState("");
@@ -37,7 +41,13 @@ export default function List() {
   );
 
   const writeHandler = () => {
-    if (!session) return alert("로그인을 해야합니다.");
+    if (!session)
+      return dispatch(
+        open({
+          Component: Alert,
+          props: { message: "로그인을 해야합니다." },
+        }),
+      );
     router.push("/post/write");
   };
 

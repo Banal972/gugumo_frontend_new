@@ -7,7 +7,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { bookMarkOptions, fetchBookmarks } from "@/hooks/useBookmark";
+import { bookMarkOptions } from "@/hooks/useBookmark";
 
 export default async function Bookmark() {
   const session = (await getServerSession(authOptions)) as any;

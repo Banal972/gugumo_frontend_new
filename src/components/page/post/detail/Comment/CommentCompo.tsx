@@ -7,6 +7,11 @@ import ReplyForm from "@/components/page/post/detail/Comment/ReplyForm";
 import User from "@/components/page/post/detail/Comment/User";
 import moment from "moment";
 import "moment/locale/ko";
+import { useAppDispatch } from "@/lib/store/hook";
+import { close, open } from "@/lib/store/features/modals/modal";
+import Alert from "@/components/Modal/Alert";
+import Confirm from "@/components/Modal/Confirm";
+import Success from "@/components/Modal/Success";
 
 const CommentCompo = ({
   session,
@@ -15,11 +20,9 @@ const CommentCompo = ({
   session: any;
   postid: string;
 }) => {
-  const {
-    data: comment,
-    isLoading,
-    isError,
-  } = useQuery(commentOptions({ session, postid }));
+  const dispatch = useAppDispatch();
+
+  const { data: comment } = useQuery(commentOptions({ session, postid }));
 
   const [commnetShow, setCommnetShow] = useState({
     commentId: 0,
@@ -28,7 +31,12 @@ const CommentCompo = ({
 
   const onReplyShowHandler = (commentId: number) => {
     if (!session || !session.accessToken) {
-      return alert("로그인을 해야합니다.");
+      return dispatch(
+        open({
+          Component: Alert,
+          props: { message: "로그인을 해야합니다." },
+        }),
+      );
     }
 
     if (commnetShow.commentId === commentId && commnetShow.type === "reply") {
@@ -45,14 +53,20 @@ const CommentCompo = ({
   };
 
   const deleteHandler = async (commentId: number) => {
-    if (confirm("댓글을 삭제하시겠습니까?")) {
+    const onClick = () => {
       try {
         // deleteComment({ session, comment_id: commentId });
-        alert("삭제가 완료 되었습니다.");
+        dispatch(
+          open({
+            Component: Success,
+            props: { message: "삭제가 완료 되었습니다." },
+          }),
+        );
       } catch (err) {
         console.log(err);
       }
-    }
+    };
+    dispatch(open({ Component: Confirm, props: { onClick: onClick } }));
   };
 
   const onEditShowHandler = (commentId: number) => {
@@ -70,7 +84,7 @@ const CommentCompo = ({
   };
 
   return (
-    <div className="border-t-[6px] border-Surface mt-7 md:mt-12 pt-12 md:pt-14">
+    <div className="mt-7 border-t-[6px] border-Surface pt-12 md:mt-12 md:pt-14">
       {comment?.comments.map((el, index) => (
         <React.Fragment key={el.commentId}>
           <div
@@ -80,18 +94,18 @@ const CommentCompo = ({
             <User />
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <dl className="flex gap-[10px] items-center">
-                  <dt className="text-lg text-primary font-bold">
+                <dl className="flex items-center gap-[10px]">
+                  <dt className="text-lg font-bold text-primary">
                     {el.author}
                   </dt>
-                  <dd className="text-[13px] text-OnBackgroundGray font-normal">
+                  <dd className="text-[13px] font-normal text-OnBackgroundGray">
                     {moment(el.createdDateTime).startOf("second").fromNow()}
                   </dd>
                 </dl>
                 <div className="ml-auto flex gap-[10px] md:gap-5">
                   <button
                     onClick={() => onReplyShowHandler(el.commentId)}
-                    className="text-[13px] text-OnBackgroundGray cursor-pointer"
+                    className="cursor-pointer text-[13px] text-OnBackgroundGray"
                   >
                     답글
                   </button>
@@ -99,13 +113,13 @@ const CommentCompo = ({
                     <>
                       <button
                         onClick={() => onEditShowHandler(el.commentId)}
-                        className="text-[13px] text-OnBackgroundGray cursor-pointer"
+                        className="cursor-pointer text-[13px] text-OnBackgroundGray"
                       >
                         수정
                       </button>
                       <button
                         onClick={() => deleteHandler(el.commentId)}
-                        className="text-[13px] text-OnBackgroundGray cursor-pointer"
+                        className="cursor-pointer text-[13px] text-OnBackgroundGray"
                       >
                         삭제
                       </button>
@@ -122,7 +136,7 @@ const CommentCompo = ({
                     commentId={el.commentId}
                   />
                 ) : (
-                  <p className="text-sm md:text-lg mt-[14px] md:mt-0 md:font-medium min-h-[44px] md:min-h-[66px]">
+                  <p className="mt-[14px] min-h-[44px] text-sm md:mt-0 md:min-h-[66px] md:text-lg md:font-medium">
                     {el.content}
                   </p>
                 )}
@@ -145,16 +159,16 @@ const CommentCompo = ({
               return (
                 <div
                   key={reply.commentId}
-                  className="ml-[15%] md:ml-[120px] mt-5 flex gap-5"
+                  className="ml-[15%] mt-5 flex gap-5 md:ml-[120px]"
                 >
                   <User />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <dl className="flex gap-[10px] items-center">
-                        <dt className="text-lg text-primary font-bold">
+                      <dl className="flex items-center gap-[10px]">
+                        <dt className="text-lg font-bold text-primary">
                           {reply.author}
                         </dt>
-                        <dd className="text-[13px] text-OnBackgroundGray font-normal">
+                        <dd className="text-[13px] font-normal text-OnBackgroundGray">
                           {moment(reply.createdDateTime)
                             .startOf("second")
                             .fromNow()}
@@ -165,13 +179,13 @@ const CommentCompo = ({
                           <>
                             <button
                               onClick={() => onEditShowHandler(reply.commentId)}
-                              className="text-[13px] text-OnBackgroundGray cursor-pointer"
+                              className="cursor-pointer text-[13px] text-OnBackgroundGray"
                             >
                               수정
                             </button>
                             <button
                               onClick={() => deleteHandler(reply.commentId)}
-                              className="text-[13px] text-OnBackgroundGray cursor-pointer"
+                              className="cursor-pointer text-[13px] text-OnBackgroundGray"
                             >
                               삭제
                             </button>
@@ -188,7 +202,7 @@ const CommentCompo = ({
                           commentId={reply.commentId}
                         />
                       ) : (
-                        <p className="text-sm md:text-lg mt-[14px] md:mt-0 md:font-medium min-h-[44px] md:min-h-[66px]">
+                        <p className="mt-[14px] min-h-[44px] text-sm md:mt-0 md:min-h-[66px] md:text-lg md:font-medium">
                           {reply.content}
                         </p>
                       )}
