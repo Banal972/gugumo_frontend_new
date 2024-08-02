@@ -6,10 +6,12 @@ const Confirm = ({
   isOpen,
   onClose,
   onClick,
+  message,
 }: {
   isOpen: boolean;
   onClose: any;
   onClick: any;
+  message?: string;
 }) => {
   useEffect(() => {
     const html = document.querySelector("html");
@@ -31,7 +33,7 @@ const Confirm = ({
         />
 
         <p className="mt-4 whitespace-nowrap text-base font-medium leading-[21px]">
-          댓글을 삭제 하시겠습니까?
+          {message ? message : "댓글을 삭제 하시겠습니까?"}
         </p>
 
         <div className="mt-[29px] flex justify-center gap-[7px]">
