@@ -1,4 +1,4 @@
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
 interface PostT {
   session: any;
@@ -17,8 +17,6 @@ export const fetchPost = async ({
       Authorization: session?.accessToken,
     },
   });
-
-  console.log("포스터 : ", response);
 
   if (!response.ok) {
     throw new Error("불러오는데 실패 하였습니다.");

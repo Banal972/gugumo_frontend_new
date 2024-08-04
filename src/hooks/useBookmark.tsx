@@ -21,7 +21,6 @@ const fetchBookmarks = async ({
       Authorization: session.accessToken,
     },
   });
-  console.log("북마크 : ", response);
   if (!response.ok) {
     throw new Error("불러오는데 실패 하였습니다.");
   }
@@ -45,7 +44,6 @@ const addBookmark = async (data: any) => {
     },
     body: JSON.stringify({ postId: postId }),
   });
-  console.log("북마크 추가 ", response);
   if (!response.ok) {
     throw new Error("등록에 실패 하였습니다.");
   }
@@ -60,9 +58,7 @@ const deleteBookmark = async (data: any) => {
       Authorization: session.accessToken,
     },
   });
-  console.log("북마크 삭제 ", response);
   if (!response.ok) {
-    console.log(response);
     throw new Error("삭제에 실패 하였습니다.");
   }
 };
@@ -80,6 +76,12 @@ export const useBookMutation = () => {
         queryClient.invalidateQueries({
           queryKey: ["recommend"],
         }),
+        queryClient.invalidateQueries({
+          queryKey: ["meeting"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["postlist"],
+        }),
       ]),
   });
 
@@ -92,6 +94,12 @@ export const useBookMutation = () => {
         }),
         queryClient.invalidateQueries({
           queryKey: ["recommend"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["meeting"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["postlist"],
         }),
       ]),
   });

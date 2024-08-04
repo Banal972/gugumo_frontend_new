@@ -46,7 +46,10 @@ const Confirm = ({
           </button>
           <button
             type="button"
-            onClick={onClick}
+            onClick={() => {
+              onClose();
+              return onClick();
+            }}
             className="h-[31px] flex-1 rounded bg-primary text-base font-semibold text-white"
           >
             네, 할래요

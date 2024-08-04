@@ -8,7 +8,7 @@ import { getServerSession } from "next-auth";
 import { recommendOptions } from "@/hooks/useRecommend";
 
 export default async function Recommends() {
-  const session = getServerSession();
+  const session = (await getServerSession()) as any;
   const queryClinet = new QueryClient();
 
   await queryClinet.prefetchQuery(recommendOptions({ session }));
@@ -18,9 +18,9 @@ export default async function Recommends() {
       <h3 className="text-lg font-bold text-primary md:text-2xl">
         추천 게시물 🎯
       </h3>
-      <div className="flex mt-[22px] gap-6 items-center xl:gap-11 md:mt-11">
+      <div className="mt-[22px] flex items-center gap-6 md:mt-11 xl:gap-11">
         <HydrationBoundary state={dehydrate(queryClinet)}>
-          <Recommend session={session} />
+          <Recommend />
         </HydrationBoundary>
       </div>
     </div>
