@@ -41,17 +41,15 @@ const fetchCommnets = async ({
     },
   });
 
-  console.log("댓글 : ", response);
-
   if (!response.ok) {
     throw new Error("등록에 실패 하였습니다.");
   }
   const data = await response.json();
   const comments: commentDataT[] = data.data.filter(
-    (el: commentDataT) => !el.parentCommentId
+    (el: commentDataT) => !el.parentCommentId,
   );
   const replys: commentDataT[] = data.data.filter(
-    (el: commentDataT) => el.parentCommentId
+    (el: commentDataT) => el.parentCommentId,
   );
 
   return {

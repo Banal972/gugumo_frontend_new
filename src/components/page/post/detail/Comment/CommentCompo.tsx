@@ -8,7 +8,7 @@ import User from "@/components/page/post/detail/Comment/User";
 import moment from "moment";
 import "moment/locale/ko";
 import { useAppDispatch } from "@/lib/store/hook";
-import { close, open } from "@/lib/store/features/modals/modal";
+import { open } from "@/lib/store/features/modals/modal";
 import Alert from "@/components/Modal/Alert";
 import Confirm from "@/components/Modal/Confirm";
 import Success from "@/components/Modal/Success";

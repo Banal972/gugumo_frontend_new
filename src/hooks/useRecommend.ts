@@ -13,8 +13,6 @@ export const fetchRecommend = async ({
     },
   });
 
-  console.log("추천 : ", response);
-
   if (!response.ok) {
     throw new Error("불러오는데 실패 하였습니다.");
   }

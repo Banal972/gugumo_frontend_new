@@ -24,10 +24,8 @@ const fetchMeeting = async ({
       headers: {
         Authorization: session?.accessToken,
       },
-    }
+    },
   );
-
-  console.log("미팅 : ", response);
 
   if (!response.ok) {
     throw new Error("불러오는데 실패 하였습니다.");

@@ -1,11 +1,15 @@
 "use client";
 import Wrap from "@/components/Common/Wrap";
+import Confirm from "@/components/Modal/Confirm";
+import Success from "@/components/Modal/Success";
 import Nickname from "@/components/page/auth/mypage/Nickname";
 import Password from "@/components/page/auth/mypage/Password";
 import SkeletonNickname from "@/components/page/auth/mypage/SkeletonUI/SkeletonNickname";
 import SkeletonPassword from "@/components/page/auth/mypage/SkeletonUI/SkeletonPassword";
 import SkeletonUser from "@/components/page/auth/mypage/SkeletonUI/SkeletonUser";
 import { GAMETYPE } from "@/constant/card/constant";
+import { open } from "@/lib/store/features/modals/modal";
+import { useAppDispatch } from "@/lib/store/hook";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -15,6 +19,8 @@ export default function Mypage() {
   const [favoriteSports, setFavoriteSports] = useState([]);
   const { data: session } = useSession() as any;
   const [isLoading, setIsLoading] = useState(true);
+
+  const dispatch = useAppDispatch();
 
   const fetchs = async () => {
     try {
@@ -35,7 +41,7 @@ export default function Mypage() {
   };
 
   const delUserHandler = async () => {
-    if (confirm("회원 탈퇴를 하시겠습니까?")) {
+    const onClick = async () => {
       const response = await fetch("/back/api/v1/member", {
         method: "DELETE",
         headers: {
@@ -44,12 +50,26 @@ export default function Mypage() {
       });
 
       if (response.ok) {
-        alert("회원 탈퇴가 완료 되었습니다.");
-        signOut({
-          callbackUrl: "/",
-        });
+        dispatch(
+          open({
+            Component: Success,
+            props: { message: "회원 탈퇴가 완료 되었습니다." },
+          }),
+        );
+        setTimeout(() => {
+          signOut({
+            callbackUrl: "/",
+          });
+        }, 500);
       }
-    }
+    };
+
+    dispatch(
+      open({
+        Component: Confirm,
+        props: { message: "정말 탈퇴하시겠습니까?", onClick: onClick },
+      }),
+    );
   };
 
   useEffect(() => {

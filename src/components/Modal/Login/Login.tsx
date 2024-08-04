@@ -1,5 +1,8 @@
 "use client";
+import Alert from "@/components/Modal/Alert";
 import Kakao from "@/components/Modal/Login/oAuth/Kakao";
+import { open } from "@/lib/store/features/modals/modal";
+import { useAppDispatch } from "@/lib/store/hook";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,16 +20,27 @@ export default function Login({
   const { register, handleSubmit } = useForm();
   const router = useRouter();
   const [active, setActive] = useState(false);
+  const dispatch = useAppDispatch();
 
   const onSubmit = async (event: any) => {
     const { username, password } = event;
 
     if (username === "") {
-      return alert("이메일을 입력해주세요.");
+      return dispatch(
+        open({
+          Component: Alert,
+          props: { message: "이메일을 입력해주세요." },
+        }),
+      );
     }
 
     if (password === "") {
-      return alert("비밀번호을 입력해주세요.");
+      return dispatch(
+        open({
+          Component: Alert,
+          props: { message: "비밀번호을 입력해주세요." },
+        }),
+      );
     }
 
     const res = await signIn("credentials", {
@@ -39,7 +53,12 @@ export default function Login({
       router.push("/");
       return onClose();
     } else {
-      alert("로그인에 실패 하였습니다.");
+      dispatch(
+        open({
+          Component: Alert,
+          props: { message: "로그인에 실패 하였습니다." },
+        }),
+      );
     }
   };
 
