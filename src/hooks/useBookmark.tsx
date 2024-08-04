@@ -82,6 +82,9 @@ export const useBookMutation = () => {
         queryClient.invalidateQueries({
           queryKey: ["postlist"],
         }),
+        queryClient.invalidateQueries({
+          queryKey: ["detail"],
+        }),
       ]),
   });
 
@@ -100,6 +103,9 @@ export const useBookMutation = () => {
         }),
         queryClient.invalidateQueries({
           queryKey: ["postlist"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["detail"],
         }),
       ]),
   });
