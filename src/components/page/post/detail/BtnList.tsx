@@ -56,9 +56,6 @@ export default function BtnList({
                 Component: Alert,
                 props: {
                   message: "삭제하는데 실패 하였습니다.",
-                  onClick: () => {
-                    router.push("/");
-                  },
                 },
               }),
             );
@@ -69,9 +66,6 @@ export default function BtnList({
               Component: Alert,
               props: {
                 message: "삭제하는데 실패 하였습니다.",
-                onClick: () => {
-                  router.push("/");
-                },
               },
             }),
           );
@@ -82,9 +76,6 @@ export default function BtnList({
             Component: Alert,
             props: {
               message: "오류가 발생 했습니다.",
-              onClick: () => {
-                router.push("/");
-              },
             },
           }),
         );

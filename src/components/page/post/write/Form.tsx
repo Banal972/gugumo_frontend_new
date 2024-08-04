@@ -85,10 +85,14 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             dispatch(
               open({
                 Component: Success,
-                props: { message: "등록이 완료 되었습니다." },
+                props: {
+                  message: "등록이 완료 되었습니다.",
+                  onClick: () => {
+                    router.push("/");
+                  },
+                },
               }),
             );
-            return router.push("/");
           } else {
             return dispatch(
               open({
