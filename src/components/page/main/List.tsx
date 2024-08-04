@@ -64,14 +64,12 @@ export default function List() {
 
       {/* 지역 */}
       <div className="mt-[25px] md:mt-9">
-        {" "}
-        <Location location={location} setLocation={setLocation} />{" "}
+        <Location location={location} setLocation={setLocation} />
       </div>
 
       {/* 종목 */}
       <div className="mt-[18px] md:mt-[15px]">
-        {" "}
-        <Gametype gametype={gametype} setGametype={setGametype} />{" "}
+        <Gametype gametype={gametype} setGametype={setGametype} />
       </div>
 
       <div className="mt-[38px] md:mt-[53px] md:rounded-xl md:bg-[#F4F5F8] md:px-[5%] md:pb-[49px] md:pt-[39px] lg:px-[70px]">

@@ -1,21 +1,14 @@
 "use client";
 import Image from "next/image";
 import { useAlarm } from "@/hooks/useAlarm";
-import { useRouter } from "next/navigation";
 import React, { MouseEvent, useState } from "react";
 import moment from "moment";
 
 export default function Alarm({ session }: { session: any }) {
   const [isAlarm, setIsAlarm] = useState(false);
 
-  const {
-    getAlarms,
-    isLoading,
-    isError,
-    readAlarmMutation,
-    deleteAlarmMutation,
-    allReadMutation,
-  } = useAlarm(session);
+  const { getAlarms, readAlarmMutation, deleteAlarmMutation, allReadMutation } =
+    useAlarm(session);
 
   const onReadHandler = async (
     e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,

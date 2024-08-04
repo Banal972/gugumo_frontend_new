@@ -1,11 +1,11 @@
 "use client";
 import BookmarkSVG from "@/asset/image/bookmark.svg";
 import Alert from "@/components/Modal/Alert";
+import Confirm from "@/components/Modal/Confirm";
 import { useBookMutation } from "@/hooks/useBookmark";
 import { open } from "@/lib/store/features/modals/modal";
 import { useAppDispatch } from "@/lib/store/hook";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 
 export default function Bookmark({
   postId,
@@ -18,7 +18,6 @@ export default function Bookmark({
 }) {
   const dispatch = useAppDispatch();
   const { data: session } = useSession();
-  const [isBookmarked, setIsBookmarked] = useState(bookmarked);
   const { addBookmarkMutation, deleteBookmarkMutation } = useBookMutation();
 
   const bookmarkHandler = async (e: any, postId: number) => {
@@ -33,21 +32,27 @@ export default function Bookmark({
       );
     }
 
-    if (!isBookmarked) {
+    if (!bookmarked) {
       addBookmarkMutation.mutate({ session, postId });
-      setIsBookmarked(true);
 
       if (setBookCount) {
         setBookCount((prev: any) => prev + 1);
       }
     } else {
-      if (confirm("정말 삭제 하시겠습니까?")) {
-        deleteBookmarkMutation.mutate({ session, postId });
-        setIsBookmarked(false);
-        if (setBookCount) {
-          setBookCount((prev: any) => prev - 1);
-        }
-      }
+      dispatch(
+        open({
+          Component: Confirm,
+          props: {
+            message: "정말 삭제 하시겠습니까?",
+            onClick: () => {
+              deleteBookmarkMutation.mutate({ session, postId });
+              if (setBookCount) {
+                setBookCount((prev: any) => prev - 1);
+              }
+            },
+          },
+        }),
+      );
     }
   };
 
@@ -58,7 +63,7 @@ export default function Bookmark({
       className="cursor-pointer"
     >
       <BookmarkSVG
-        className={`stroke-[#4FAAFF] group-hover:stroke-white ${isBookmarked ? "fill-[#4FAAFF]" : "fill-none"}`}
+        className={`stroke-[#4FAAFF] group-hover:stroke-white ${bookmarked ? "fill-[#4FAAFF]" : "fill-none"}`}
         width={24}
         height={24}
         alt="북마크 아이콘"

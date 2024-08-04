@@ -18,8 +18,6 @@ export const fetchPost = async ({
     },
   });
 
-  console.log("포스터 : ", response);
-
   if (!response.ok) {
     throw new Error("불러오는데 실패 하였습니다.");
   }
