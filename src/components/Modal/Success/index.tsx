@@ -6,10 +6,12 @@ const Success = ({
   isOpen,
   onClose,
   message,
+  onClick,
 }: {
   isOpen: boolean;
   onClose: any;
   message: string;
+  onClick?: () => void;
 }) => {
   useEffect(() => {
     const html = document.querySelector("html");
@@ -36,7 +38,13 @@ const Success = ({
 
         <button
           type="button"
-          onClick={onClose}
+          onClick={() => {
+            if (onClick) {
+              onClose();
+              return onClick();
+            }
+            onClose();
+          }}
           className="mt-[29px] h-[31px] w-[60px] flex-1 rounded bg-primary text-base font-semibold text-white"
         >
           확인

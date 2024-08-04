@@ -13,7 +13,7 @@ function makeQueryClient() {
       queries: {
         staleTime: 60 * 1000, // SSR을 사용하기 위해 staleTime을 지정해주고 즉시 다시 가져오는것을 방지
         refetchOnWindowFocus: false, // 윈도우가 다시 포커스 될때 refetch
-        refetchOnMount: false, // 데이터가 stale 상태이면 컴포넌트가 마운트 될때 refetch
+        // refetchOnMount: false, // 데이터가 stale 상태이면 컴포넌트가 마운트 될때 refetch
         retry: 1, // 재시도 1번만
       },
       dehydrate: {

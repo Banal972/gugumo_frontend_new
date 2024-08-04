@@ -10,6 +10,7 @@ import { useAppDispatch } from "@/lib/store/hook";
 import { open } from "@/lib/store/features/modals/modal";
 import Alert from "@/components/Modal/Alert";
 import Success from "@/components/Modal/Success";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -27,6 +28,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
   );
   const [selectDays, setSelectDays] = useState<string[]>([]);
   const meetingTypeWatch = watch("meetingType", "SHORT");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (edit) {
@@ -64,6 +66,110 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       setSelectDays((prev) => [...prev, day]);
     }
   };
+
+  const createMutation = useMutation({
+    mutationFn: async (body: any) => {
+      try {
+        const response = await fetch("/back/api/v1/meeting/new", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.accessToken,
+          },
+          body: JSON.stringify(body),
+        });
+        if (response.ok) {
+          const data = await response.json();
+
+          if (data.status === "success") {
+            dispatch(
+              open({
+                Component: Success,
+                props: { message: "등록이 완료 되었습니다." },
+              }),
+            );
+            return router.push("/");
+          } else {
+            return dispatch(
+              open({
+                Component: Alert,
+                props: { message: "등록에 실패 했습니다." },
+              }),
+            );
+          }
+        }
+      } catch (err) {
+        console.log(err);
+        dispatch(
+          open({
+            Component: Alert,
+            props: { message: "오류가 발생 했습니다." },
+          }),
+        );
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["meeting"],
+      });
+    },
+  });
+
+  const editMutataion = useMutation({
+    mutationFn: async (body: any) => {
+      try {
+        const response = await fetch(`/back/api/v1/meeting/${edit.postId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: session.accessToken,
+          },
+          body: JSON.stringify(body),
+        });
+        if (response.ok) {
+          const data = await response.json();
+
+          if (data.status === "success") {
+            dispatch(
+              open({
+                Component: Success,
+                props: { message: "수정이 완료 되었습니다." },
+              }),
+            );
+          } else {
+            return dispatch(
+              open({
+                Component: Alert,
+                props: { message: "수정에 실패 했습니다." },
+              }),
+            );
+          }
+        } else {
+          console.log(response);
+          return dispatch(
+            open({
+              Component: Alert,
+              props: { message: "수정에 실패 했습니다." },
+            }),
+          );
+        }
+      } catch (err) {
+        console.log(err);
+        dispatch(
+          open({
+            Component: Alert,
+            props: { message: "오류가 발생 했습니다." },
+          }),
+        );
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["meeting"],
+      });
+      router.push("/");
+    },
+  });
 
   const onSubmitHandler = async (event: any) => {
     const {
@@ -165,45 +271,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         content,
         location,
       };
-
-      try {
-        const response = await fetch("/back/api/v1/meeting/new", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.accessToken,
-          },
-          body: JSON.stringify(body),
-        });
-        if (response.ok) {
-          const data = await response.json();
-
-          if (data.status === "success") {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: "등록이 완료 되었습니다." },
-              }),
-            );
-            return router.push("/");
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: "등록에 실패 했습니다." },
-              }),
-            );
-          }
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생 했습니다." },
-          }),
-        );
-      }
+      createMutation.mutate(body);
     } else {
       const body = {
         meetingType,
@@ -220,52 +288,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         meetingStatus,
       };
 
-      try {
-        const response = await fetch(`/back/api/v1/meeting/${edit.postId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.accessToken,
-          },
-          body: JSON.stringify(body),
-        });
-        if (response.ok) {
-          const data = await response.json();
-
-          if (data.status === "success") {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: "수정이 완료 되었습니다." },
-              }),
-            );
-            return router.push("/");
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: "수정에 실패 했습니다." },
-              }),
-            );
-          }
-        } else {
-          console.log(response);
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "수정에 실패 했습니다." },
-            }),
-          );
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생 했습니다." },
-          }),
-        );
-      }
+      editMutataion.mutate(body);
     }
   };
 
