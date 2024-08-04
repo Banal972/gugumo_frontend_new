@@ -50,7 +50,7 @@ const gridTitle =
 
 export default function DetailUI({ postid }: { postid: string }) {
   const { data: detail } = useSuspenseQuery({
-    queryKey: ["detail"],
+    queryKey: ["detail", postid],
     queryFn: () => {
       return getDetail(postid);
     },

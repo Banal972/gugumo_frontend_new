@@ -7,7 +7,7 @@ import Comments from "@/components/page/post/detail/Comment/Comments";
 import { Suspense } from "react";
 import Skeleton from "@/components/page/post/detail/SkeletonUI/Skeleton";
 import getDetail from "@/actions/getDetail";
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getServerSession } from "next-auth";
 import getQueryClient from "@/lib/getQueryClient";
 
@@ -21,7 +21,7 @@ export default async function Detail({
   const queryClient = getQueryClient();
 
   queryClient.prefetchQuery({
-    queryKey: ["detail"],
+    queryKey: ["detail", params.postid],
     queryFn: () => {
       return getDetail(params.postid);
     },
