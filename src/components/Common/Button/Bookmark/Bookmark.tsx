@@ -6,7 +6,6 @@ import { useBookMutation } from "@/hooks/useBookmark";
 import { open } from "@/lib/store/features/modals/modal";
 import { useAppDispatch } from "@/lib/store/hook";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 
 export default function Bookmark({
   postId,

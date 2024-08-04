@@ -8,7 +8,7 @@ import moment from "moment";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import getDetail from "@/actions/getDetail";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const ViewerComponent = dynamic(
   () => import("@/components/page/post/detail/ViewerComponent"),
