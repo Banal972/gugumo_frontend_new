@@ -16,9 +16,8 @@ export default function Headers() {
         <Link href={"/"} className="w-[91px] md:w-[172px]">
           <img src="/asset/image/logo.svg" alt="로고" />
         </Link>
-        {!session?.accessToken ? (
-          <LoginBtn />
-        ) : (
+        {!session?.accessToken && <LoginBtn />}
+        {session?.accessToken && (
           <div className="flex items-center gap-3 md:gap-[26px]">
             <Alarm session={session} />
             <Link className="w-4 md:w-auto" href={"/bookmark"}>
