@@ -1,27 +1,13 @@
 "use client";
 import Image from "next/image";
 
-const GAMETYPE = [
-  { get: "BADMINTON", name: "배드민턴" },
-  { get: "FUTSAL", name: "풋살" },
-  { get: "BASKETBALL", name: "농구" },
-  { get: "TENNIS", name: "테니스" },
-  { get: "TABLETENNIS", name: "탁구" },
-  { get: "BASEBALL", name: "야구" },
-];
-export default function Gametype({
-  gametype,
-  setGametype,
-}: {
-  gametype: string;
-  setGametype: any;
-}) {
+const Gametype = ({ gametype }: Gametype) => {
   return (
     <>
       <p className="text-base font-semibold text-OnSurface md:text-lg">종목</p>
       <div className="mt-[11px] flex gap-[4px] overflow-x-auto pb-1 md:flex-wrap md:gap-[14px]">
         <button
-          onClick={() => setGametype("")}
+          // onClick={() => setGametype("")}
           className={`relative box-border size-[77px] flex-none cursor-pointer overflow-hidden rounded-full border border-primary ${gametype === "" ? "bg-primary text-white" : "bg-background text-primary"}`}
         >
           <div
@@ -83,7 +69,7 @@ export default function Gametype({
 
           return (
             <button
-              onClick={() => setGametype(el.get)}
+              // onClick={() => setGametype(el.get)}
               key={index}
               className={`relative box-border size-[77px] flex-none cursor-pointer overflow-hidden rounded-full border border-primary ${gametype === el.get ? "bg-primary text-white" : "bg-background text-primary"}`}
             >
@@ -108,4 +94,19 @@ export default function Gametype({
       </div>
     </>
   );
+};
+
+export default Gametype;
+
+interface Gametype {
+  gametype: string;
 }
+
+const GAMETYPE = [
+  { get: "BADMINTON", name: "배드민턴" },
+  { get: "FUTSAL", name: "풋살" },
+  { get: "BASKETBALL", name: "농구" },
+  { get: "TENNIS", name: "테니스" },
+  { get: "TABLETENNIS", name: "탁구" },
+  { get: "BASEBALL", name: "야구" },
+];

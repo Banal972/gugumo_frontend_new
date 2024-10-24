@@ -3,24 +3,12 @@ import * as C from "@/constant/card/constant";
 import moment from "moment";
 import Bookmark from "@/components/Common/Button/Bookmark/Bookmark";
 import { useRouter } from "next/navigation";
-
-interface CardT {
-  postId: number;
-  meetingStatus: string;
-  gameType: string;
-  location: string;
-  title: string;
-  meetingMemberNum: number;
-  meetingDeadline: string;
-  meetingDateTime: string;
-  meetingDays: string;
-  bookmarked: boolean;
-}
+import { Content } from "@/actions/listAction";
 
 const TAGSTYLE =
   "py-1 px-[6px] whitespace-nowrap rounded text-[13px] leading-none";
 
-export default function Card({ el }: { el: CardT }) {
+export default function Card({ el }: { el: Content }) {
   const router = useRouter();
 
   const clickHandler = (postid: number) => {
