@@ -31,20 +31,21 @@ export default async function Home() {
       gametype,
       sort,
       page,
-    })
+    }),
   );
 
   return (
     <>
       <Headers />
-      <main className="md:pt-[50px] md:pb-[170px] pt-6 pb-[121px]">
+      <main className="pb-[121px] pt-6 md:pb-[170px] md:pt-[50px]">
         <Banner />
         <Wrap>
-          <HydrationBoundary state={dehydrate(queryClient)}>
+          <Recommends />
+          {/* <HydrationBoundary state={dehydrate(queryClient)}>
             <Recommends />
-          </HydrationBoundary>
+          </HydrationBoundary> */}
         </Wrap>
-        <Wrap className="pt-8 mt-8 md:mt-[100px] md:pt-0 border-t-[6px] border-Surface md:border-none">
+        <Wrap className="mt-8 border-t-[6px] border-Surface pt-8 md:mt-[100px] md:border-none md:pt-0">
           <HydrationBoundary state={dehydrate(queryClient)}>
             <List />
           </HydrationBoundary>

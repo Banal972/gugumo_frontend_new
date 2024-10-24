@@ -1,7 +1,7 @@
 import Wrap from "@/components/Common/Wrap";
 import Image from "next/image";
 
-export default function Footers() {
+const Footers = () => {
   return (
     <footer className="h-auto bg-Surface px-[5%] py-7 md:h-[180px] md:p-0 md:px-[43px]">
       <Wrap className="block md:flex md:h-full md:flex-col md:justify-center">
@@ -26,13 +26,19 @@ export default function Footers() {
             </div>
           </div>
 
-          {/* <div className="-order-1 md:order-1 gap-1 justify-between w-full md:w-auto text-[12px] flex md:gap-[72px] font-medium text-OnSurface md:text-[13px]">
-                    <button type="button">이용약관</button>
-                    <button type="button">개인정보처리방침</button>
-                    <button type="button">서비스 소개</button>
-                </div> */}
+          <div className="-order-1 flex w-full justify-between gap-1 text-[12px] font-medium text-OnSurface md:order-1 md:w-auto md:gap-[72px] md:text-[13px]">
+            {/* 
+                @ Todo
+                @ 추후에 이용약관 개인정보처리방침 이 필요할것 같음
+                <button type="button">이용약관</button>
+                <button type="button">개인정보처리방침</button> 
+              */}
+            <button type="button">서비스 소개</button>
+          </div>
         </div>
       </Wrap>
     </footer>
   );
-}
+};
+
+export default Footers;
