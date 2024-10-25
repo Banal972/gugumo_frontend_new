@@ -1,35 +1,12 @@
 "use client";
 import Image from "next/image";
+import { Dispatch, SetStateAction } from "react";
 
-const GAMETYPE = [
-  { get: "BADMINTON", name: "배드민턴" },
-  { get: "FUTSAL", name: "풋살" },
-  { get: "BASKETBALL", name: "농구" },
-  { get: "TENNIS", name: "테니스" },
-  { get: "TABLETENNIS", name: "탁구" },
-  { get: "BASEBALL", name: "야구" },
-];
-export default function Gametype({
-  gametype,
-  setGametype,
-}: {
-  gametype: string;
-  setGametype: any;
-}) {
+const Gametype = ({ gametype, setQuery }: Gametype) => {
   return (
     <>
       <p className="text-base font-semibold text-OnSurface md:text-lg">종목</p>
       <div className="mt-[11px] flex gap-[4px] overflow-x-auto pb-1 md:flex-wrap md:gap-[14px]">
-        <button
-          onClick={() => setGametype("")}
-          className={`relative box-border size-[77px] flex-none cursor-pointer overflow-hidden rounded-full border border-primary ${gametype === "" ? "bg-primary text-white" : "bg-background text-primary"}`}
-        >
-          <div
-            className={`absolute bottom-0 left-0 right-0 top-0 flex flex-col items-center justify-center gap-[2px] text-sm font-medium`}
-          >
-            전체
-          </div>
-        </button>
         {GAMETYPE.map((el, index) => {
           let option = {
             src: "",
@@ -80,26 +57,29 @@ export default function Gametype({
               };
               break;
           }
-
           return (
             <button
-              onClick={() => setGametype(el.get)}
+              onClick={() =>
+                setQuery((prev) => ({ ...prev, gametype: el.get }))
+              }
               key={index}
-              className={`relative box-border size-[77px] flex-none cursor-pointer overflow-hidden rounded-full border border-primary ${gametype === el.get ? "bg-primary text-white" : "bg-background text-primary"}`}
+              className={`relative box-border size-[77px] flex-none cursor-pointer overflow-hidden rounded-full border border-primary transition-colors hover:bg-primary hover:text-white ${gametype === el.get ? "bg-primary text-white" : "bg-background text-primary"}`}
             >
               <div
-                className={`absolute bottom-0 left-0 right-0 top-0 flex flex-col items-center justify-center gap-[2px] text-sm font-medium`}
+                className={`absolute bottom-0 left-0 right-0 top-0 flex ${el.get === "" ? "" : "flex-col gap-[2px]"} items-center justify-center text-sm font-medium`}
               >
-                <Image
-                  src={
-                    gametype === el.get && gametype === "BADMINTON"
-                      ? "/asset/image/balltype/ball01_active.png"
-                      : option.src
-                  }
-                  width={option.width}
-                  height={option.height}
-                  alt={el.name}
-                />
+                {el.get !== "" && (
+                  <Image
+                    src={
+                      gametype === el.get && gametype === "BADMINTON"
+                        ? "/asset/image/balltype/ball01_active.png"
+                        : option.src
+                    }
+                    width={option.width}
+                    height={option.height}
+                    alt={el.name}
+                  />
+                )}
                 {el.name}
               </div>
             </button>
@@ -108,4 +88,30 @@ export default function Gametype({
       </div>
     </>
   );
+};
+
+export default Gametype;
+
+interface Gametype {
+  gametype: string;
+  setQuery: Dispatch<
+    SetStateAction<{
+      q: string;
+      meetingstatus: string;
+      location: string;
+      gametype: string;
+      sort: string;
+      page: number;
+    }>
+  >;
 }
+
+const GAMETYPE = [
+  { get: "", name: "전체" },
+  { get: "BADMINTON", name: "배드민턴" },
+  { get: "FUTSAL", name: "풋살" },
+  { get: "BASKETBALL", name: "농구" },
+  { get: "TENNIS", name: "테니스" },
+  { get: "TABLETENNIS", name: "탁구" },
+  { get: "BASEBALL", name: "야구" },
+];

@@ -11,14 +11,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
-interface isServiceT {
-  [key: string]: boolean;
-  isAgreeTermsUse: boolean;
-  isAgreeCollectingUsingPersonalInformation: boolean;
-  isAgreeMarketing: boolean;
-}
-
-export default function Signup() {
+const Signup = () => {
   const { data: session } = useSession() as any;
 
   const router = useRouter();
@@ -529,4 +522,13 @@ export default function Signup() {
       </div>
     </Wrap>
   );
+};
+
+export default Signup;
+
+interface isServiceT {
+  [key: string]: boolean;
+  isAgreeTermsUse: boolean;
+  isAgreeCollectingUsingPersonalInformation: boolean;
+  isAgreeMarketing: boolean;
 }

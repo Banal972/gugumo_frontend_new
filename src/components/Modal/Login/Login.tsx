@@ -9,14 +9,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
 
-export default function Login({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: any;
-}) {
+const Login = ({ isOpen, onClose }: LoginProps) => {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
   const [active, setActive] = useState(false);
@@ -74,8 +69,22 @@ export default function Login({
   }, [isOpen]);
 
   return (
-    <div className="fixed left-0 top-0 z-50 h-full w-full bg-[rgba(000,000,000,0.6)]">
-      <div className="fixed left-1/2 top-1/2 z-50 box-border w-[90%] max-w-[422px] -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-xl bg-white px-8 py-9 md:px-16">
+    <motion.div className="fixed left-0 top-0 z-50 h-full w-full">
+      <motion.div
+        className="absolute left-0 top-0 h-full w-full cursor-pointer"
+        onClick={onClose}
+        animate={{
+          backgroundColor: ["rgba(000,000,000,0)", "rgba(000,000,000,0.6)"],
+        }}
+      />
+      <motion.div
+        className="fixed left-1/2 top-1/2 z-50 box-border w-[90%] max-w-[422px] overflow-visible rounded-xl bg-white px-8 py-9 md:px-16"
+        animate={{
+          y: ["-35%", "-50%"],
+          x: ["-50%", "-50%"],
+          opacity: [0, 1],
+        }}
+      >
         <button
           type="button"
           className="absolute right-4 top-5 cursor-pointer"
@@ -113,7 +122,7 @@ export default function Login({
             {...register("password")}
           />
           <div className="mt-5 text-center">
-            <button className="h-9 rounded bg-primary px-4 text-sm font-semibold leading-none text-OnPrimary md:text-base">
+            <button className="h-9 rounded bg-primary px-4 text-sm font-semibold leading-none text-OnPrimary transition-colors hover:bg-[#3f92e0] md:text-base">
               로그인 하기
             </button>
           </div>
@@ -136,7 +145,14 @@ export default function Login({
             회원가입 하기
           </Link>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
+};
+
+export default Login;
+
+interface LoginProps {
+  isOpen: boolean;
+  onClose: any;
 }

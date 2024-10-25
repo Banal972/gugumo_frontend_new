@@ -7,14 +7,12 @@ import {
 } from "@tanstack/react-query";
 import CommentCompo from "@/components/page/post/detail/Comment/CommentCompo";
 import CommentLength from "@/components/page/post/detail/Comment/CommentLength";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
-export default async function Comments({
-  session,
-  postid,
-}: {
-  session: any;
-  postid: string;
-}) {
+const Comments = async ({ postid }: CommentsProps) => {
+  const session = (await getServerSession(authOptions)) as any;
+
   const queryClient = new QueryClient();
 
   const commentsQuery = commentOptions({
@@ -38,4 +36,10 @@ export default async function Comments({
       </HydrationBoundary>
     </div>
   );
+};
+
+export default Comments;
+
+interface CommentsProps {
+  postid: string;
 }
