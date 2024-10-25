@@ -3,7 +3,7 @@
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
-const get = async ({ query }: Get): Promise<GetReturn> => {
+const get = async ({ query }: Get): Promise<Return<Content>> => {
   const session = (await getServerSession(authOptions)) as any;
 
   const { q, meetingstatus, location, gametype, sort, page } = query;

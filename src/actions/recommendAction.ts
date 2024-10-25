@@ -3,7 +3,7 @@
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
-const getRecommend = async () => {
+const getRecommend = async (): Promise<Return<Content>> => {
   const session = (await getServerSession(authOptions)) as any;
 
   try {

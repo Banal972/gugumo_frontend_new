@@ -3,7 +3,7 @@
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
-const get = async (postid: string): Promise<GetReturn> => {
+const get = async (postid: string): Promise<Return<DetailData>> => {
   const session = (await getServerSession(authOptions)) as any;
   try {
     const res = await fetch(`${process.env.API_URL}/api/v1/meeting/${postid}`, {
@@ -22,12 +22,6 @@ const get = async (postid: string): Promise<GetReturn> => {
 };
 
 export default get;
-
-interface GetReturn {
-  status: string;
-  data: DetailData;
-  message: any;
-}
 
 export interface DetailData {
   postId: number;

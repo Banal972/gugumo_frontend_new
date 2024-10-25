@@ -1,17 +1,20 @@
 "use client";
+import joinAction from "@/actions/public/signup/joinAction";
+import kakaoAction from "@/actions/public/signup/kakaoAction";
+import mailCheckAction from "@/actions/public/signup/mailCheckAction";
+import mailSendAction from "@/actions/public/signup/mailSendAction";
 import Wrap from "@/components/Common/Wrap";
 import Alert from "@/components/Modal/Alert";
-import Success from "@/components/Modal/Success";
 import Gametype from "@/components/page/auth/signup/Gametype";
 import { open } from "@/lib/store/features/modals/modal";
 import { useAppDispatch } from "@/lib/store/hook";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
-const Signup = () => {
+const SignupPage = () => {
   const { data: session } = useSession() as any;
 
   const router = useRouter();
@@ -29,97 +32,28 @@ const Signup = () => {
 
   const mailSendHandler = async () => {
     if (isSend) return;
-
     const { username } = getValues();
-
-    try {
-      const res = await fetch("/back/api/v1/mailSend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-        },
-        body: JSON.stringify({ email: username }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-
-        if (data.status === "success") {
-          setIsSend(true);
-          return dispatch(
-            open({
-              Component: Success,
-              props: { message: data.data },
-            }),
-          );
-        } else {
-          setIsSend(false);
-        }
-      } else {
-        setIsSend(false);
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "인증요청에 에러가 발생했습니다." },
-          }),
-        );
-      }
-    } catch (err) {
-      console.log(err);
-      setIsSend(false);
+    if (!username) return window.alert("메일을 입력해주세요.");
+    const res = await mailSendAction(username);
+    const { status } = res;
+    if (status === "success") {
+      window.alert("인증번호 메일을 보냈습니다.");
+      setIsSend(true);
     }
   };
 
   const mailAuthCheckHanlder = async () => {
-    if (isCheck) return;
-
+    if (isCheck) return window.alert("이미 인증처리가 완료 되어있습니다.");
     const { username, emailAuthNum } = getValues();
+    if (!emailAuthNum) return window.alert("인증번호를 입력해주세요.");
 
-    try {
-      const res = await fetch("/back/api/v1/mailAuthCheck", {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-        },
-        body: JSON.stringify({ email: username, emailAuthNum }),
-      });
+    const res = await mailCheckAction({ username, emailAuthNum });
 
-      if (res.ok) {
-        const data = await res.json();
+    const { status } = res;
 
-        if (data.status === "success") {
-          setIsCheck(true);
-          return dispatch(
-            open({
-              Component: Success,
-              props: { message: "인증이 완료 되었습니다." },
-            }),
-          );
-        } else {
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "인증에 실패 하였습니다." },
-            }),
-          );
-        }
-      } else {
-        setIsCheck(false);
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "인증에 실패 하였습니다." },
-          }),
-        );
-      }
-    } catch (err) {
-      setIsCheck(false);
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "오류가 발생했습니다." },
-        }),
-      );
+    if (status === "success") {
+      setIsCheck(true);
+      return window.alert("인증이 완료 되었습니다.");
     }
   };
 
@@ -226,131 +160,49 @@ const Signup = () => {
         );
       }
 
-      try {
-        const res = await fetch("/back/api/v2/member", {
-          method: "POST",
-          headers: {
-            "Content-Type": "Application/json",
-          },
-          body: JSON.stringify({
-            username,
-            nickname,
-            password,
-            favoriteSports: likeGame.join(","),
-            isAgreeTermsUse: isService.isAgreeTermsUse,
-            isAgreeCollectingUsingPersonalInformation:
-              isService.isAgreeCollectingUsingPersonalInformation,
-            isAgreeMarketing: isService.isAgreeMarketing,
-            emailAuthNum,
-          }),
-        });
+      const res = await joinAction({
+        username,
+        nickname,
+        password,
+        favoriteSports: likeGame.join(","),
+        isAgreeTermsUse: isService.isAgreeTermsUse,
+        isAgreeCollectingUsingPersonalInformation:
+          isService.isAgreeCollectingUsingPersonalInformation,
+        isAgreeMarketing: isService.isAgreeMarketing,
+        emailAuthNum,
+      });
 
-        if (res.ok) {
-          const data = await res.json();
+      const { data, message } = res;
 
-          if (data.status === "success") {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: "회원가입이 완료 되었습니다." },
-              }),
-            );
-            return router.push("/");
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: data.message },
-              }),
-            );
-          }
-        } else {
-          if (res.status === 409) {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: "이미 존재하는 회원입니다." },
-              }),
-            );
-          }
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "서버와 통신이 원할하지 않습니다." },
-            }),
-          );
-        }
-      } catch (err) {
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생했습니다." },
-          }),
-        );
+      if (data) {
+        window.alert("회원가입에 성공하였습니다.");
+        return router.push("/");
       }
-    } else {
-      try {
-        const res = await fetch("/back/api/v1/kakao/member", {
-          method: "POST",
-          headers: {
-            "Content-Type": "Application/json",
-          },
-          body: JSON.stringify({
-            username: session?.username,
-            nickname,
-            favoriteSports: likeGame.join(","),
-            kakaoId: session?.id,
-            isAgreeTermsUse: isService.isAgreeTermsUse,
-            isAgreeCollectingUsingPersonalInformation:
-              isService.isAgreeCollectingUsingPersonalInformation,
-            isAgreeMarketing: isService.isAgreeMarketing,
-          }),
-        });
 
-        if (res.ok) {
-          const data = await res.json();
+      if (!data) {
+        window.alert(message);
+      }
+    }
 
-          if (data.status === "success") {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: "회원가입이 완료 되었습니다." },
-              }),
-            );
-            signIn("kakao", {
-              callbackUrl: "/",
-            });
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: data.message },
-              }),
-            );
-          }
-        } else {
-          if (res.status === 409) {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: "이미 존재하는 회원입니다." },
-              }),
-            );
-          }
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "서버와 통신이 원할하지 않습니다." },
-            }),
-          );
-        }
-      } catch (err) {
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생했습니다." },
-          }),
-        );
+    if (session) {
+      const res = await kakaoAction({
+        nickname,
+        favoriteSports: likeGame.join(","),
+        isAgreeTermsUse: isService.isAgreeTermsUse,
+        isAgreeCollectingUsingPersonalInformation:
+          isService.isAgreeCollectingUsingPersonalInformation,
+        isAgreeMarketing: isService.isAgreeMarketing,
+      });
+
+      const { data, message } = res;
+
+      if (data) {
+        window.alert("회원가입에 성공하였습니다.");
+        return router.push("/");
+      }
+
+      if (!data) {
+        window.alert(message);
       }
     }
   };
@@ -524,7 +376,7 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignupPage;
 
 interface isServiceT {
   [key: string]: boolean;
