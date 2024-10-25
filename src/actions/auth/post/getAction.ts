@@ -3,22 +3,23 @@
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
-const deleteAction = async (postId: number) => {
+const getActions = async ({ query }: getProps) => {
   const session = (await getServerSession(authOptions)) as any;
+
+  const { q, page } = query;
 
   try {
     const res = await fetch(
-      `${process.env.API_URL}/api/v1/bookmark/${postId}`,
+      `${process.env.API_URL}/api/v1/meeting/my?q=${q}&page=${page}`,
       {
-        method: "DELETE",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: session.accessToken,
+          Authorization: session?.accessToken,
         },
       },
     );
+
     if (!res.ok) {
-      throw new Error("삭제에 실패 하였습니다.");
+      throw new Error("불러오는데 실패 하였습니다.");
     }
     return res.json();
   } catch (err) {
@@ -26,4 +27,11 @@ const deleteAction = async (postId: number) => {
   }
 };
 
-export default deleteAction;
+export default getActions;
+
+interface getProps {
+  query: {
+    q: string;
+    page: number;
+  };
+}

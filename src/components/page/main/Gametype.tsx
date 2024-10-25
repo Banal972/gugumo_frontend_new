@@ -68,16 +68,18 @@ const Gametype = ({ gametype, setQuery }: Gametype) => {
               <div
                 className={`absolute bottom-0 left-0 right-0 top-0 flex ${el.get === "" ? "" : "flex-col gap-[2px]"} items-center justify-center text-sm font-medium`}
               >
-                <Image
-                  src={
-                    gametype === el.get && gametype === "BADMINTON"
-                      ? "/asset/image/balltype/ball01_active.png"
-                      : option.src
-                  }
-                  width={option.width}
-                  height={option.height}
-                  alt={el.name}
-                />
+                {el.get !== "" && (
+                  <Image
+                    src={
+                      gametype === el.get && gametype === "BADMINTON"
+                        ? "/asset/image/balltype/ball01_active.png"
+                        : option.src
+                    }
+                    width={option.width}
+                    height={option.height}
+                    alt={el.name}
+                  />
+                )}
                 {el.name}
               </div>
             </button>

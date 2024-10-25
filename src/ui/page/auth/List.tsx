@@ -1,36 +1,15 @@
-"use client";
-
-import getAction from "@/actions/auth/bookmark/getAction";
 import Card from "@/components/Common/Card/Card";
 import SkeletonCard from "@/components/Common/Card/SkeletonCard";
 import Paging from "@/components/Layout/Paging/Paging";
 import Search from "@/components/page/auth/Search";
-import { Suspense, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, Suspense } from "react";
 
-const List = () => {
-  const [query, setQuery] = useState<{ q: string; page: number }>({
-    q: "",
-    page: 1,
-  });
-
-  const [contents, setContent] = useState<Content[]>([]);
-  const [pageable, setPageable] = useState<Pageable>();
-
-  useEffect(() => {
-    const fetchBookamrk = async () => {
-      const res = await getAction({ query });
-      const { content, pageable } = res.data;
-      setPageable(pageable);
-      setContent(content);
-    };
-    fetchBookamrk();
-  }, [query]);
-
+const List = ({ label, setQuery, contents, pageable }: ListProps) => {
   return (
     <>
       <div className="flex flex-col items-start justify-start gap-6 text-lg font-medium md:flex-row md:items-center md:justify-between md:gap-5 md:text-2xl">
-        <h4>북마크</h4>
-        <Search setQ={setQuery} />
+        <h4>{label}</h4>
+        <Search setQuery={setQuery} />
       </div>
 
       <div className="mt-5 rounded-xl md:mt-[46px] md:bg-Surface md:p-[70px] md:px-[5%]">
@@ -46,7 +25,9 @@ const List = () => {
           </Suspense>
         </div>
         {contents.length <= 0 && (
-          <p className="text-center">게시글이 존재 하지 않습니다.</p>
+          <p className="text-center text-sm text-gray-500">
+            게시글이 존재 하지 않습니다.
+          </p>
         )}
 
         {pageable && <Paging pageable={pageable} />}
@@ -56,3 +37,10 @@ const List = () => {
 };
 
 export default List;
+
+interface ListProps {
+  label: string;
+  setQuery: Dispatch<SetStateAction<{ q: string; page: number }>>;
+  contents: Content[];
+  pageable?: Pageable;
+}

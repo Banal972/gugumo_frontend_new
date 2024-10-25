@@ -4,12 +4,12 @@ import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 
-export default function Search({ setQ }: SearchProps) {
+export default function Search({ setQuery }: SearchProps) {
   const { register, handleSubmit } = useForm();
 
   const onSubmitHandler = (event: any) => {
     const { search } = event;
-    setQ((prev) => ({ ...prev, q: search }));
+    setQuery((prev) => ({ ...prev, q: search }));
   };
 
   return (
@@ -39,7 +39,7 @@ export default function Search({ setQ }: SearchProps) {
 }
 
 interface SearchProps {
-  setQ: Dispatch<
+  setQuery: Dispatch<
     SetStateAction<{
       q: string;
       page: number;
