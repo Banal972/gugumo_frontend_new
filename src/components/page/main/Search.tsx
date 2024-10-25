@@ -1,15 +1,14 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 
-const ListSearch = () => {
-  const [q, setQ] = useState("");
+const ListSearch = ({ setQuery }: ListSearchProps) => {
   const { register, handleSubmit } = useForm();
 
   const onSubmitHandler = (event: any) => {
     const { search } = event;
-    setQ(search);
+    setQuery((prev) => ({ ...prev, q: search }));
   };
 
   return (
@@ -39,3 +38,16 @@ const ListSearch = () => {
 };
 
 export default ListSearch;
+
+interface ListSearchProps {
+  setQuery: Dispatch<
+    SetStateAction<{
+      q: string;
+      meetingstatus: string;
+      location: string;
+      gametype: string;
+      sort: string;
+      page: number;
+    }>
+  >;
+}

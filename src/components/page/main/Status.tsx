@@ -1,17 +1,17 @@
 "use client";
 
-import { MouseEventHandler, ReactNode, useState } from "react";
+import { Dispatch, MouseEventHandler, ReactNode, SetStateAction } from "react";
 
-const Status = ({ status }: Status) => {
-  const [meetingstatus, setMeetingstatus] = useState(status);
-
+const Status = ({ status, setQuery }: Status) => {
   return (
     <div className="flex gap-5 md:gap-6">
       {STATUS.map((staus) => (
         <Button
           key={staus.type}
-          active={meetingstatus === staus.type}
-          onClick={() => setMeetingstatus(staus.type)}
+          active={status === staus.type}
+          onClick={() =>
+            setQuery((prev) => ({ ...prev, meetingstatus: staus.type }))
+          }
         >
           {staus.label}
         </Button>
@@ -26,7 +26,7 @@ const Button = ({ active, onClick, children }: Button) => {
   return (
     <button
       onClick={onClick}
-      className={`cursor-pointer text-nowrap text-lg font-medium text-OnSurface md:text-2xl ${active && "font-semibold text-primary"}`}
+      className={`cursor-pointer text-nowrap text-lg font-medium text-OnSurface transition-colors hover:text-primary md:text-2xl ${active && "font-semibold text-primary"}`}
     >
       {children}
     </button>
@@ -36,7 +36,7 @@ const Button = ({ active, onClick, children }: Button) => {
 const STATUS = [
   { type: "RECRUIT", label: "모집중" },
   { type: "END", label: "모집완료" },
-  { type: "ALL", label: "모집중" },
+  { type: "ALL", label: "전체" },
 ];
 
 interface Button {
@@ -47,4 +47,14 @@ interface Button {
 
 interface Status {
   status: string;
+  setQuery: Dispatch<
+    SetStateAction<{
+      q: string;
+      meetingstatus: string;
+      location: string;
+      gametype: string;
+      sort: string;
+      page: number;
+    }>
+  >;
 }

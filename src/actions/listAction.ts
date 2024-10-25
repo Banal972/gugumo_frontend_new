@@ -3,15 +3,10 @@
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
-const get = async ({
-  q,
-  meetingstatus,
-  location,
-  gametype,
-  sort,
-  page,
-}: Get): Promise<GetReturn> => {
+const get = async ({ query }: Get): Promise<GetReturn> => {
   const session = (await getServerSession(authOptions)) as any;
+
+  const { q, meetingstatus, location, gametype, sort, page } = query;
 
   try {
     const res = await fetch(
@@ -36,12 +31,14 @@ const get = async ({
 export default get;
 
 interface Get {
-  q: string;
-  meetingstatus: string;
-  location: string;
-  gametype: string;
-  sort: string;
-  page: number;
+  query: {
+    q: string;
+    meetingstatus: string;
+    location: string;
+    gametype: string;
+    sort: string;
+    page: number;
+  };
 }
 
 interface GetReturn {
