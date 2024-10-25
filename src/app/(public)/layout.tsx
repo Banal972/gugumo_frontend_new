@@ -1,6 +1,6 @@
-import Footers from "@/components/Layout/Footers/Footers";
-import Headers from "@/components/Layout/Headers/Headers";
 import { authOptions } from "@/lib/authOptions";
+import Footer from "@/ui/layout/footer/Footer";
+import Header from "@/ui/layout/header/Header";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -13,9 +13,9 @@ const PublicLayout = async ({ children }: PublicLayout) => {
 
   return (
     <>
-      <Headers />
+      <Header />
       {children}
-      <Footers />
+      <Footer />
     </>
   );
 };

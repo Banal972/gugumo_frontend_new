@@ -1,13 +1,14 @@
 "use client";
+
 import Wrap from "@/components/Common/Wrap";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import LoginBtn from "@/components/Layout/Headers/LoginBtn";
-import Alarm from "@/components/Layout/Headers/Alarm/Alarm";
-import User from "@/components/Layout/Headers/User";
 import Image from "next/image";
+import LoginBtn from "@/ui/layout/header/LoginBtn";
+import Alarm from "@/ui/layout/header/Alarm/Alarm";
+import User from "@/ui/layout/header/User";
 
-export default function Headers() {
+const Header = () => {
   const { data: session } = useSession() as any;
 
   return (
@@ -34,4 +35,6 @@ export default function Headers() {
       </Wrap>
     </header>
   );
-}
+};
+
+export default Header;

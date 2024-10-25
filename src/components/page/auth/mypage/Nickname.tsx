@@ -1,146 +1,35 @@
 "use client";
-import Alert from "@/components/Modal/Alert";
-import Success from "@/components/Modal/Success";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { useSession } from "next-auth/react";
+
+import checkAction from "@/actions/auth/mypage/checkAction";
+import updateAction from "@/actions/auth/mypage/updateAction";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-export default function Nickname({ setNickname }: { setNickname: any }) {
-  const dispatch = useAppDispatch();
-  const { data: session } = useSession() as any;
-
+const Nickname = () => {
   const { register, handleSubmit, setValue, getValues } = useForm();
 
   const [isCheck, setIsCheck] = useState(false);
 
   const confirmHanlder = async () => {
     const { nickname } = getValues();
-
-    if (nickname === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "닉네임을 입력해주세요." },
-        }),
-      );
-    }
-
-    try {
-      const res = await fetch(
-        `/back/api/v1/member/checkDuplicateNickname?nickname=${nickname}`,
-      );
-
-      if (res.ok) {
-        const data = await res.json();
-
-        if (data.status === "success") {
-          if (data.data) {
-            dispatch(
-              open({
-                Component: Alert,
-                props: { message: "중복된 닉네임이 있습니다." },
-              }),
-            );
-            return setIsCheck(false);
-          } else {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: "사용가능한 닉네임 입니다." },
-              }),
-            );
-            return setIsCheck(true);
-          }
-        } else {
-          dispatch(
-            open({
-              Component: Alert,
-              props: { message: "에러가 발생했습니다." },
-            }),
-          );
-          return setIsCheck(false);
-        }
-      } else {
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생했습니다." },
-          }),
-        );
-        return setIsCheck(false);
-      }
-    } catch (err) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "오류가 발생했습니다." },
-        }),
-      );
+    const res = await checkAction(nickname);
+    const { data } = res;
+    if (data) return window.alert("중복 입니다.");
+    if (!data) {
+      setIsCheck(true);
+      return window.alert("사용할 수 있는 닉네임 입니다.");
     }
   };
 
   const onSubmitHanlder = async (event: any) => {
+    if (!isCheck) return window.alert("중복 체크를 해야합니다.");
     const { nickname } = event;
-
-    if (!isCheck) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "닉네임 중복 체크를 해주세요." },
-        }),
-      );
-    }
-
-    try {
-      const res = await fetch("/back/api/v1/member/updateNickname", {
-        method: "PATCH",
-        headers: {
-          Authorization: session?.accessToken,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ nickname: nickname }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-
-        if (data.status === "success") {
-          dispatch(
-            open({
-              Component: Success,
-              props: { message: "닉네임 수정이 완료 되었습니다." },
-            }),
-          );
-          return setNickname(nickname);
-        } else {
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "닉네임 수정에 실패 하였습니다." },
-            }),
-          );
-        }
-      } else {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "에러가 발생 했습니다." },
-          }),
-        );
-      }
-    } catch (err) {
-      console.error(err);
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "에러가 발생 했습니다." },
-        }),
-      );
-    } finally {
+    const res = await updateAction(nickname);
+    const { status } = res;
+    if (status === "success") {
       setValue("nickname", "");
       setIsCheck(false);
+      window.alert("변경 완료");
     }
   };
 
@@ -150,7 +39,7 @@ export default function Nickname({ setNickname }: { setNickname: any }) {
         <h4 className="text-nowrap text-base font-semibold">개인정보 변경</h4>
         <div className="mt-6 min-w-0 flex-1 md:mt-0">
           <label htmlFor="nickname" className="text-sm text-black md:text-base">
-            닉네임
+            닉네임 수정
           </label>
           <div className="flex gap-2 md:mt-3 md:max-w-[630px] md:gap-4">
             <input
@@ -163,7 +52,7 @@ export default function Nickname({ setNickname }: { setNickname: any }) {
             <button
               type="button"
               onClick={confirmHanlder}
-              className="flex flex-none cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-OnPrimary md:w-[109px] md:text-base"
+              className="flex flex-none cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-OnPrimary transition-colors hover:bg-[#3f92e0] md:w-[109px] md:text-base"
             >
               중복확인
             </button>
@@ -180,4 +69,6 @@ export default function Nickname({ setNickname }: { setNickname: any }) {
       </div>
     </form>
   );
-}
+};
+
+export default Nickname;

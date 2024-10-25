@@ -1,11 +1,12 @@
 "use client";
+
 import Login from "@/components/Modal/Login/Login";
 import { open } from "@/lib/store/features/modals/modal";
 import { useAppDispatch } from "@/lib/store/hook";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function LoginBtn() {
+const LoginBtn = () => {
   const dispatch = useAppDispatch();
   const { data: session } = useSession() as any;
   const router = useRouter();
@@ -25,4 +26,6 @@ export default function LoginBtn() {
       로그인
     </button>
   );
-}
+};
+
+export default LoginBtn;

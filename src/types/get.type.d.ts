@@ -15,9 +15,9 @@ interface GetData {
   pageable: Pageable;
 }
 
-interface GetReturn {
+interface Return<T> {
   status: string;
-  data: GetData;
+  data: T;
   message: any;
 }
 
@@ -32,4 +32,10 @@ interface Pageable {
   totalElements: number;
   numberOfElements: number;
   empty: boolean;
+}
+
+interface MypageReturn {
+  username: string;
+  nickname: string;
+  favoriteSports: string;
 }

@@ -1,7 +1,7 @@
 import Wrap from "@/components/Common/Wrap";
 import Image from "next/image";
 
-const Footers = () => {
+const Footer = () => {
   return (
     <footer className="h-auto bg-Surface px-[5%] py-7 md:h-[180px] md:p-0 md:px-[43px]">
       <Wrap className="block md:flex md:h-full md:flex-col md:justify-center">
@@ -41,4 +41,4 @@ const Footers = () => {
   );
 };
 
-export default Footers;
+export default Footer;
