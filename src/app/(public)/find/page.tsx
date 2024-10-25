@@ -4,7 +4,7 @@ import { open } from "@/lib/store/features/modals/modal";
 import { useAppDispatch } from "@/lib/store/hook";
 import { useForm } from "react-hook-form";
 
-export default function Find() {
+const FindPage = () => {
   const dispatch = useAppDispatch();
 
   const { handleSubmit, register, setValue } = useForm();
@@ -70,4 +70,6 @@ export default function Find() {
       </div>
     </div>
   );
-}
+};
+
+export default FindPage;

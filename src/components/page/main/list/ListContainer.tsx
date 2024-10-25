@@ -9,7 +9,7 @@ import Location from "@/components/page/main/Location";
 import Gametype from "@/components/page/main/Gametype";
 import { Suspense } from "react";
 import SkeletonCard from "@/components/Common/Card/SkeletonCard";
-import get, { Content, Pageable } from "@/actions/listAction";
+import get from "@/actions/listAction";
 import Card from "@/components/Common/Card/Card";
 import Paging from "@/components/Layout/Paging/Paging";
 import { useRouter } from "next/navigation";
