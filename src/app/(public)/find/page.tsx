@@ -1,42 +1,27 @@
 "use client";
-import Success from "@/components/Modal/Success";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { useForm } from "react-hook-form";
+
+import resetPwdAction from "@/actions/public/find/resetPwdAction";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+type FormValues = {
+  email: string;
+};
 
 const FindPage = () => {
-  const dispatch = useAppDispatch();
+  const { handleSubmit, register, setValue } = useForm<FormValues>();
 
-  const { handleSubmit, register, setValue } = useForm();
+  const onSubmitHandler: SubmitHandler<FormValues> = async (data) => {
+    const { email } = data;
 
-  const onSubmitHandler = async (event: any) => {
-    const { email } = event;
+    if (email === "") return alert("이메일을 입력해주세요.");
 
-    if (email === "") {
-      return alert("이메일을 입력해주세요.");
-    }
+    const res = await resetPwdAction(email);
 
-    try {
-      const res = await fetch("/back/api/v1/resetPassword", {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-      if (res.ok) {
-        return dispatch(
-          open({
-            Component: Success,
-            props: { message: "입력된 이메일로 임시 비밀번호를 보냈습닙다." },
-          }),
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setValue("email", "");
-    }
+    setValue("email", "");
+
+    if (!res.data) return window.alert("패스워드 이메일을 실패했습니다.");
+
+    window.alert("패스워드 이메일을 보냈습니다.");
   };
 
   return (
