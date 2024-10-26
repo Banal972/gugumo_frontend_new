@@ -8,7 +8,7 @@ import Alert from "@/components/Modal/Alert";
 import Gametype from "@/components/page/auth/signup/Gametype";
 import { open } from "@/lib/store/features/modals/modal";
 import { useAppDispatch } from "@/lib/store/hook";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -174,14 +174,10 @@ const SignupPage = () => {
 
       const { data, message } = res;
 
-      if (data) {
-        window.alert("회원가입에 성공하였습니다.");
-        return router.push("/");
-      }
+      if (!data) return window.alert(message);
 
-      if (!data) {
-        window.alert(message);
-      }
+      window.alert("회원가입에 성공하였습니다.");
+      return router.push("/");
     }
 
     if (session) {
@@ -196,14 +192,13 @@ const SignupPage = () => {
 
       const { data, message } = res;
 
-      if (data) {
-        window.alert("회원가입에 성공하였습니다.");
-        return router.push("/");
-      }
+      if (!data) return window.alert(message);
 
-      if (!data) {
-        window.alert(message);
-      }
+      window.alert("회원가입에 성공하였습니다.");
+
+      signIn("kakao", {
+        callbackUrl: "/",
+      });
     }
   };
 

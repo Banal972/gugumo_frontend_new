@@ -1,5 +1,10 @@
 "use server";
 
+interface mailCheckActionProps {
+  username: string;
+  emailAuthNum: string;
+}
+
 const mailCheckAction = async ({
   username,
   emailAuthNum,
@@ -25,8 +30,3 @@ const mailCheckAction = async ({
 };
 
 export default mailCheckAction;
-
-interface mailCheckActionProps {
-  username: string;
-  emailAuthNum: string;
-}

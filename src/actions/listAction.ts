@@ -3,6 +3,17 @@
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
+interface Get {
+  query: {
+    q: string;
+    meetingstatus: string;
+    location: string;
+    gametype: string;
+    sort: string;
+    page: number;
+  };
+}
+
 const get = async ({ query }: Get): Promise<Return<Content>> => {
   const session = (await getServerSession(authOptions)) as any;
 
@@ -29,14 +40,3 @@ const get = async ({ query }: Get): Promise<Return<Content>> => {
 };
 
 export default get;
-
-interface Get {
-  query: {
-    q: string;
-    meetingstatus: string;
-    location: string;
-    gametype: string;
-    sort: string;
-    page: number;
-  };
-}

@@ -3,6 +3,14 @@
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
+interface kakaoActionBody {
+  nickname: string;
+  favoriteSports: string;
+  isAgreeTermsUse: boolean;
+  isAgreeCollectingUsingPersonalInformation: boolean;
+  isAgreeMarketing: boolean;
+}
+
 const kakaoAction = async (body: kakaoActionBody): Promise<Return<boolean>> => {
   const session = (await getServerSession(authOptions)) as any;
 
@@ -20,9 +28,7 @@ const kakaoAction = async (body: kakaoActionBody): Promise<Return<boolean>> => {
     });
 
     if (!res.ok) {
-      const json = await res.json();
-      console.log(json);
-      throw new Error("서버 에러");
+      throw new Error("서버에 에러가 발생했습니다.");
     }
 
     return res.json();
@@ -32,11 +38,3 @@ const kakaoAction = async (body: kakaoActionBody): Promise<Return<boolean>> => {
 };
 
 export default kakaoAction;
-
-interface kakaoActionBody {
-  nickname: string;
-  favoriteSports: string;
-  isAgreeTermsUse: boolean;
-  isAgreeCollectingUsingPersonalInformation: boolean;
-  isAgreeMarketing: boolean;
-}
