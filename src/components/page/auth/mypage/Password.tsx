@@ -1,88 +1,41 @@
 "use client";
-import Alert from "@/components/Modal/Alert";
-import Success from "@/components/Modal/Success";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { useSession } from "next-auth/react";
-import { useForm } from "react-hook-form";
+
+import updatePasswordAction from "@/actions/auth/mypage/updatePasswordAction";
+import { HTMLInputTypeAttribute } from "react";
+import { SubmitHandler, useForm, UseFormRegisterReturn } from "react-hook-form";
+
+type FormValues = {
+  password: string;
+  pwConfirm: string;
+};
+
+interface InputProps {
+  type: HTMLInputTypeAttribute;
+  placeholder: string;
+  register: UseFormRegisterReturn;
+}
 
 export default function Password() {
-  const dispatch = useAppDispatch();
+  const { register, handleSubmit, setValue } = useForm<FormValues>();
 
-  const { data: session } = useSession() as any;
+  const onSubmitHanlder: SubmitHandler<FormValues> = async (data) => {
+    const { password, pwConfirm } = data;
 
-  const { register, handleSubmit, setValue } = useForm();
+    if (password === "" || pwConfirm === "")
+      return window.alert("비밀번호를 입력하지 않았습니다.");
+    if (password !== pwConfirm)
+      return window.alert("비밀번호가 동일하지 않습니다.");
 
-  const onSubmitHanlder = async (event: any) => {
-    const { password, pwConfirm } = event;
+    const res = await updatePasswordAction(password);
 
-    if (password === "" || pwConfirm === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "비밀번호를 입력하지 않았습니다." },
-        }),
-      );
+    if (!res.data) {
+      window.alert("비밀번호 변경에 실패하였습니다.");
+      return;
     }
 
-    if (password !== pwConfirm) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "비밀번호가 동일하지 않습니다." },
-        }),
-      );
-    }
-
-    try {
-      const res = await fetch(`/back/api/v1/member/updatePassword`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: session?.accessToken,
-        },
-        body: JSON.stringify({
-          password,
-        }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-
-        if (data.status === "success") {
-          return dispatch(
-            open({
-              Component: Success,
-              props: { message: "비밀번호가 수정 되었습니다." },
-            }),
-          );
-        } else {
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "비밀번호 수정에 실패 하였습니다." },
-            }),
-          );
-        }
-      } else {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "에러가 발생 했습니다." },
-          }),
-        );
-      }
-    } catch (err) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "에러가 발생 했습니다." },
-        }),
-      );
-    } finally {
-      setValue("password", "");
-      setValue("pwConfirm", "");
-    }
+    window.alert("비밀번호가 변경 되었습니다.");
+    setValue("password", "");
+    setValue("pwConfirm", "");
   };
 
   return (
@@ -95,11 +48,10 @@ export default function Password() {
               새 비밀번호
             </label>
             <div className="flex gap-2 md:mt-3 md:max-w-[630px] md:gap-4">
-              <input
+              <Input
                 type="password"
                 placeholder="비밀번호를 입력해주세요."
-                className="h-12 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm outline-none placeholder:text-OnSurface focus:border-primary md:h-14 md:bg-background md:text-base"
-                {...register("password")}
+                register={register("password")}
               />
             </div>
           </div>
@@ -108,24 +60,40 @@ export default function Password() {
               새 비밀번호 확인
             </label>
             <div className="flex gap-2 md:mt-3 md:max-w-[630px] md:gap-4">
-              <input
+              <Input
                 type="password"
                 placeholder="입력한 비밀번호를 입력해주세요."
-                className="h-12 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm outline-none placeholder:text-OnSurface focus:border-primary md:h-14 md:bg-background md:text-base"
-                {...register("pwConfirm")}
+                register={register("pwConfirm")}
               />
             </div>
           </div>
         </div>
       </div>
       <div className="mt-5 flex justify-center md:justify-end">
-        <button
-          type="submit"
-          className={`inline-flex h-[38px] cursor-pointer items-center justify-center rounded border border-primary bg-OnPrimary px-4 text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base`}
-        >
-          비밀번호 수정
-        </button>
+        <Button />
       </div>
     </form>
   );
 }
+
+const Input = ({ type, placeholder, register }: InputProps) => {
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      className="h-12 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm outline-none placeholder:text-OnSurface focus:border-primary md:h-14 md:bg-background md:text-base"
+      {...register}
+    />
+  );
+};
+
+const Button = () => {
+  return (
+    <button
+      type="submit"
+      className="inline-flex h-[38px] cursor-pointer items-center justify-center rounded border border-primary bg-OnPrimary px-4 text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base"
+    >
+      비밀번호 수정
+    </button>
+  );
+};
