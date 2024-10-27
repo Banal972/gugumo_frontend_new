@@ -1,7 +1,7 @@
 "use client";
-import { Editor } from "@toast-ui/react-editor";
+
 import moment from "moment";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import { useForm } from "react-hook-form";
 import DownIcon from "@/asset/image/down.svg";
@@ -11,6 +11,17 @@ import { open } from "@/lib/store/features/modals/modal";
 import Alert from "@/components/Modal/Alert";
 import Success from "@/components/Modal/Success";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEditor, EditorContent, Editor, BubbleMenu } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
+import Underline from "@tiptap/extension-underline";
+import { Color } from "@tiptap/extension-color";
+import TextStyle from "@tiptap/extension-text-style";
+import Toolbar from "@/ui/page/post/toolbar/Toolbar";
+import TextAlign from "@tiptap/extension-text-align";
+import Heading from "@tiptap/extension-heading";
+import Highlight from "@tiptap/extension-highlight";
+import Link from "@tiptap/extension-link";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -18,7 +29,6 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
 export default function Form({ session, edit }: { session: any; edit?: any }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const editorRef = useRef<Editor>(null);
   const { register, handleSubmit, watch, setValue } = useForm();
   const [isMeetingDate, setIsMeetingDate] = useState(false);
   const [isMeetingDeadline, setIsMeetingDeadline] = useState(false);
@@ -32,7 +42,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
 
   useEffect(() => {
     if (edit) {
-      editorRef.current?.getInstance().setMarkdown(edit.content);
+      // editorRef.current?.getInstance().setMarkdown(edit.content);
       Object.keys(edit).forEach((key) => {
         // 가져온 데이터의 각 키와 값을 반복하여 setValue로 설정합니다.
         if (key === "meetingTime") {
@@ -45,7 +55,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         }
       });
     } else {
-      editorRef.current?.getInstance().setMarkdown("");
+      // editorRef.current?.getInstance().setMarkdown("");
     }
   }, [edit]);
 
@@ -186,7 +196,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       openKakao,
       title,
     } = event;
-    const content = editorRef.current?.getInstance().getHTML();
+    // const content = editorRef.current?.getInstance().getHTML();
 
     if (gameType === "") {
       return dispatch(
@@ -252,14 +262,14 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       );
     }
 
-    if (content === "") {
+    /* if (content === "") {
       return dispatch(
         open({
           Component: Alert,
           props: { message: "내용을 입력해주세요." },
         }),
       );
-    }
+    } */
 
     if (!edit) {
       const body = {
@@ -272,7 +282,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         meetingDeadline: moment(meetingDeadline as Date).format("YYYY-MM-DD"),
         openKakao,
         title,
-        content,
+        // content,
         location,
       };
       createMutation.mutate(body);
@@ -287,7 +297,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         meetingDeadline: moment(meetingDeadline as Date).format("YYYY-MM-DD"),
         openKakao,
         title,
-        content,
+        // content,
         location,
         meetingStatus,
       };
@@ -295,6 +305,40 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       editMutataion.mutate(body);
     }
   };
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: "내용을 입력해주세요...",
+        emptyEditorClass:
+          "before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]",
+        emptyNodeClass:
+          "before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]",
+      }),
+      Heading.configure({
+        levels: [1, 2, 3],
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      Underline,
+      TextStyle,
+      Color,
+      Highlight.configure({ multicolor: true }),
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+        defaultProtocol: "https",
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none",
+      },
+    },
+  });
 
   return (
     <form onSubmit={handleSubmit(onSubmitHandler)}>
@@ -647,38 +691,32 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         </div>
 
         <div className="mt-7">
-          <label
-            className="px-[6px] text-sm font-medium md:text-lg"
-            htmlFor="title"
-          >
+          <label className="px-[6px] text-sm font-medium md:text-lg">
             내용
           </label>
-          <div className="mt-3 h-[300px] rounded-xl md:h-[485px]">
-            <Editor
-              height="100%"
-              toolbarItems={[
-                ["heading", "bold", "italic", "strike"],
-                ["hr", "quote"],
-                ["ul", "ol", "task", "indent", "outdent"],
-                ["table", "link"],
-              ]}
-              initialEditType="wysiwyg"
-              hideModeSwitch={true}
-              placeholder="내용을 입력해 주세요."
-              initialValue={""}
-              ref={editorRef}
-            />
+          <div className="mt-3 rounded-xl border p-5">
+            <Toolbar editor={editor} />
+            <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
+              <Toolbar editor={editor} type="bubble" />
+            </BubbleMenu>
+            <EditorContent editor={editor} />
           </div>
         </div>
       </div>
 
       <div className="mt-10 text-center">
-        <button
-          className={`inline-flex cursor-pointer items-center justify-center rounded border border-[#4FAAFF] bg-OnPrimary px-4 py-[9.5px] text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base`}
-        >
-          {!edit ? "새글 작성" : "수정 하기"}
-        </button>
+        <SubmitButton>{!edit ? "새글 작성" : "수정 하기"}</SubmitButton>
       </div>
     </form>
   );
 }
+
+const SubmitButton = ({ children }: { children: ReactNode }) => {
+  return (
+    <button
+      className={`inline-flex cursor-pointer items-center justify-center rounded border border-[#4FAAFF] bg-OnPrimary px-4 py-[9.5px] text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base`}
+    >
+      {children}
+    </button>
+  );
+};
