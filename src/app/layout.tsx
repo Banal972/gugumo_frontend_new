@@ -6,10 +6,11 @@ import "react-calendar/dist/Calendar.css";
 import CustomModal from "@/components/Modal/custom-modal";
 import StoreProvider from "@/lib/store/StoreProvider";
 import AuthProvider from "@/provider/AuthProvider";
-import QueryProvider from "@/provider/QueryProvider";
 import "@/lib/firebase";
 import FCMProvider from "@/provider/FCMProvider";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Providers from "@/provider/Providers";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const metadata: Metadata = {
   title: "구구모 - 구기종목 매칭 서비스",
@@ -76,14 +77,15 @@ const RootLayout = ({ children }: Readonly<RootLayoutProps>) => {
   return (
     <html lang="ko">
       <body>
-        <QueryProvider>
+        <Providers>
           <AuthProvider>
             <StoreProvider>
               <FCMProvider>{children}</FCMProvider>
               <CustomModal />
             </StoreProvider>
           </AuthProvider>
-        </QueryProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </Providers>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
       </body>
     </html>

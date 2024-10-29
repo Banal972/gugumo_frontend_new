@@ -2,8 +2,14 @@
 
 import getActions from "@/actions/auth/post/getAction";
 import List from "@/ui/page/auth/List";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Wrap from "@/components/Common/Wrap";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import SkeletonCard from "@/components/Common/Card/SkeletonCard";
+
+type FormValues = {
+  search: string;
+};
 
 const ListPage = () => {
   const [query, setQuery] = useState<{ q: string; page: number }>({
@@ -11,28 +17,31 @@ const ListPage = () => {
     page: 1,
   });
 
-  const [contents, setContent] = useState<Content[]>([]);
-  const [pageable, setPageable] = useState<Pageable>();
+  const {
+    data: { data },
+    isPending,
+  } = useSuspenseQuery({
+    queryKey: ["post", query],
+    queryFn: () => getActions({ query }),
+  });
 
-  useEffect(() => {
-    const fetchBookamrk = async () => {
-      const res = await getActions({ query });
-      const { content, pageable } = res.data;
-      setPageable(pageable);
-      setContent(content);
-    };
-    fetchBookamrk();
-  }, [query]);
+  const searchHandler = (event: FormValues) => {
+    const { search } = event;
+    setQuery((prev) => ({
+      ...prev,
+      q: search,
+    }));
+  };
 
   return (
     <main className="mt-14 pb-[121px] md:pb-[170px]">
       <Wrap>
-        <List
-          label="작성글"
-          setQuery={setQuery}
-          contents={contents}
-          pageable={pageable}
-        />
+        {isPending &&
+          new Array(12).fill(0).map((_, index) => <SkeletonCard key={index} />)}
+
+        {!isPending && (
+          <List label="북마크" data={data} searchHandler={searchHandler} />
+        )}
       </Wrap>
     </main>
   );

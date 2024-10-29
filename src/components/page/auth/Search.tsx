@@ -1,21 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 
-export default function Search({ setQuery }: SearchProps) {
-  const { register, handleSubmit } = useForm();
+type FormValues = {
+  search: string;
+};
 
-  const onSubmitHandler = (event: any) => {
-    const { search } = event;
-    setQuery((prev) => ({ ...prev, q: search }));
-  };
+const Search = ({ searchHandler }: { searchHandler: any }) => {
+  const { register, handleSubmit } = useForm<FormValues>();
+
+  const onSubmitHandler = handleSubmit(searchHandler);
 
   return (
     <form
       className="relative -order-1 block h-[34px] w-full rounded-lg bg-Surface md:order-1 md:h-[53px] md:w-[492px]"
-      onSubmit={handleSubmit(onSubmitHandler)}
+      onSubmit={onSubmitHandler}
     >
       <input
         type="text"
@@ -36,13 +36,6 @@ export default function Search({ setQuery }: SearchProps) {
       </button>
     </form>
   );
-}
+};
 
-interface SearchProps {
-  setQuery: Dispatch<
-    SetStateAction<{
-      q: string;
-      page: number;
-    }>
-  >;
-}
+export default Search;

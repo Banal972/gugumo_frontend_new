@@ -1,26 +1,47 @@
+"use client";
+
 import getActions from "@/actions/auth/bookmark/getAction";
 import List from "@/ui/page/auth/List";
-import { Suspense } from "react";
 import Wrap from "@/components/Common/Wrap";
 import SkeletonCard from "@/components/Common/Card/SkeletonCard";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
-const ListPage = async () => {
-  const res = await getActions({});
+type FormValues = {
+  search: string;
+};
+
+const ListPage = () => {
+  const [query, setQuery] = useState<{ q: string; page: number }>({
+    q: "",
+    page: 1,
+  });
+
+  const {
+    data: { data },
+    isPending,
+  } = useSuspenseQuery({
+    queryKey: ["bookmark", query],
+    queryFn: () => getActions({ query }),
+  });
+
+  const searchHandler = (event: FormValues) => {
+    const { search } = event;
+    setQuery((prev) => ({
+      ...prev,
+      q: search,
+    }));
+  };
 
   return (
     <main className="mt-14 pb-[121px] md:pb-[170px]">
       <Wrap>
-        <Suspense
-          fallback={new Array(12).fill(0).map((_, index) => (
-            <SkeletonCard key={index} />
-          ))}
-        >
-          <List
-            label="북마크"
-            content={res.data.content}
-            pageable={res.data.pageable}
-          />
-        </Suspense>
+        {isPending &&
+          new Array(12).fill(0).map((_, index) => <SkeletonCard key={index} />)}
+
+        {!isPending && (
+          <List label="북마크" data={data} searchHandler={searchHandler} />
+        )}
       </Wrap>
     </main>
   );
