@@ -21,6 +21,7 @@ const Bookmark = ({ bookmarked, postId }: BookmarkProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookmark"] });
       queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries({ queryKey: ["meeting"] });
     },
   });
 
@@ -29,6 +30,7 @@ const Bookmark = ({ bookmarked, postId }: BookmarkProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookmark"] });
       queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries({ queryKey: ["meeting"] });
     },
   });
 

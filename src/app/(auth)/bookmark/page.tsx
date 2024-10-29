@@ -3,7 +3,7 @@
 import getActions from "@/actions/auth/bookmark/getAction";
 import List from "@/ui/page/auth/List";
 import Wrap from "@/components/Common/Wrap";
-import SkeletonCard from "@/components/Common/Card/SkeletonCard";
+import SkeletonCard from "@/ui/layout/card/SkeletonCard";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 

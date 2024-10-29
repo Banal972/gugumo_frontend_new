@@ -1,5 +1,6 @@
 "use client";
 
+import { LOCATION } from "@/constant/card/constant";
 import { Dispatch, MouseEventHandler, ReactNode, SetStateAction } from "react";
 
 const Location = ({ location, setQuery }: Location) => {
@@ -7,13 +8,19 @@ const Location = ({ location, setQuery }: Location) => {
     <>
       <p className="text-base font-semibold text-OnSurface md:text-lg">지역</p>
       <div className="mt-[11px] flex gap-[4px] overflow-x-auto pb-1 md:flex-wrap md:gap-[14px]">
-        {LOCATION.map((el) => (
+        <Button
+          onClick={() => setQuery((prev) => ({ ...prev, location: "" }))}
+          active={location === ""}
+        >
+          전체
+        </Button>
+        {Object.entries(LOCATION).map((el) => (
           <Button
-            key={el.get}
-            onClick={() => setQuery((prev) => ({ ...prev, location: el.get }))}
-            active={location === el.get}
+            key={el[0]}
+            onClick={() => setQuery((prev) => ({ ...prev, location: el[0] }))}
+            active={location === el[0]}
           >
-            {el.name}
+            {el[1]}
           </Button>
         ))}
       </div>
@@ -33,21 +40,6 @@ const Button = ({ onClick, children, active }: Button) => {
     </button>
   );
 };
-
-const LOCATION = [
-  { get: "", name: "전체" },
-  { get: "SEOUL", name: "서울" },
-  { get: "GYEONGGI", name: "경기" },
-  { get: "INCHEON", name: "인천" },
-  { get: "DAEGU", name: "대구" },
-  { get: "BUSAN", name: "부산" },
-  { get: "GYEONGNAM", name: "경남" },
-  { get: "GYEONGBUK", name: "경북" },
-  { get: "GANGWON", name: "강원" },
-  { get: "JEONNAM", name: "전남" },
-  { get: "JEONBUK", name: "전북" },
-  { get: "OTHER", name: "그외" },
-];
 
 interface Button {
   onClick: MouseEventHandler;

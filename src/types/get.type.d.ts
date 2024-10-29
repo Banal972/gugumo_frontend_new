@@ -7,6 +7,7 @@ interface Content {
   meetingMemberNum: number;
   meetingDeadline: string;
   meetingDateTime: string;
+  meetingDays?: string;
   bookmarked: boolean;
 }
 

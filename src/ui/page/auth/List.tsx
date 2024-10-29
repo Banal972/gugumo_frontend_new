@@ -1,6 +1,6 @@
-import Card from "@/components/Common/Card/Card";
+import Card from "@/ui/layout/card/Card";
 import Paging from "@/components/Layout/Paging/Paging";
-import Search from "@/components/page/auth/Search";
+import Search from "@/ui/form/Search";
 
 interface ListProps {
   label: string;

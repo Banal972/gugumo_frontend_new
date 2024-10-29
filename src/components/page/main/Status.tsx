@@ -1,19 +1,20 @@
 "use client";
 
+import { STATUS } from "@/constant/card/constant";
 import { Dispatch, MouseEventHandler, ReactNode, SetStateAction } from "react";
 
 const Status = ({ status, setQuery }: Status) => {
   return (
     <div className="flex gap-5 md:gap-6">
-      {STATUS.map((staus) => (
+      {Object.entries(STATUS).map((staus) => (
         <Button
-          key={staus.type}
-          active={status === staus.type}
+          key={staus[0]}
+          active={status === staus[0]}
           onClick={() =>
-            setQuery((prev) => ({ ...prev, meetingstatus: staus.type }))
+            setQuery((prev) => ({ ...prev, meetingstatus: staus[0] }))
           }
         >
-          {staus.label}
+          {staus[1]}
         </Button>
       ))}
     </div>
@@ -32,12 +33,6 @@ const Button = ({ active, onClick, children }: Button) => {
     </button>
   );
 };
-
-const STATUS = [
-  { type: "RECRUIT", label: "모집중" },
-  { type: "END", label: "모집완료" },
-  { type: "ALL", label: "전체" },
-];
 
 interface Button {
   active: boolean;

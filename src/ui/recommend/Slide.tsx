@@ -7,9 +7,9 @@ import Bookmark from "@/components/Common/Button/Bookmark/Bookmark";
 import { GAMETYPE, LOCATION, STATUS } from "@/constant/card/constant";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-import SkeletonCard from "@/components/Common/Card/SkeletonCard";
+import SkeletonCard from "@/ui/layout/card/SkeletonCard";
 
-const Slide = ({ posts }: { posts: SlideProps[] }) => {
+const Slide = ({ posts }: { posts: Content[] }) => {
   const router = useRouter();
   const swiperRef = useRef<SwiperRef>(null);
   const onClickHandler = (postId: number) => {
@@ -112,15 +112,3 @@ const Slide = ({ posts }: { posts: SlideProps[] }) => {
 };
 
 export default Slide;
-
-export interface SlideProps {
-  postId: number;
-  meetingStatus: string;
-  gameType: string;
-  location: string;
-  title: string;
-  meetingMemberNum: number;
-  meetingDeadline: string;
-  meetingDateTime: string;
-  bookmarked: boolean;
-}

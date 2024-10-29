@@ -5,7 +5,7 @@ import List from "@/ui/page/auth/List";
 import { useState } from "react";
 import Wrap from "@/components/Common/Wrap";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import SkeletonCard from "@/components/Common/Card/SkeletonCard";
+import SkeletonCard from "@/ui/layout/card/SkeletonCard";
 
 type FormValues = {
   search: string;

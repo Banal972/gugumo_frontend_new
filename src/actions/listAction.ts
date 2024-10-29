@@ -13,7 +13,7 @@ interface Get {
   };
 }
 
-const get = async ({ query }: Get): Promise<Return<Content>> => {
+const get = async ({ query }: Get): Promise<Return<GetData>> => {
   const { q, meetingstatus, location, gametype, sort, page } = query;
 
   const res = await authIntance(

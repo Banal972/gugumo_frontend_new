@@ -16,8 +16,8 @@ export default function Card({ el }: { el: Content }) {
 
   return (
     <div
+      className="cursor-pointer rounded-lg border bg-Surface px-4 py-5 transition-shadow hover:shadow-lg md:border-none md:bg-white"
       onClick={() => clickHandler(el.postId)}
-      className="cursor-pointer rounded-lg border bg-Surface px-4 py-5 md:border-none md:bg-white"
     >
       <div className="flex flex-wrap gap-[5px] leading-none">
         <div

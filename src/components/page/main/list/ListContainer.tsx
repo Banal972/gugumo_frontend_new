@@ -1,22 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import ListSearch from "@/components/page/main/Search";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Status from "@/components/page/main/Status";
 import Sort from "@/components/page/main/Sort";
 import Location from "@/components/page/main/Location";
 import Gametype from "@/components/page/main/Gametype";
-import { Suspense } from "react";
-import SkeletonCard from "@/components/Common/Card/SkeletonCard";
+import SkeletonCard from "@/ui/layout/card/SkeletonCard";
 import get from "@/actions/listAction";
-import Card from "@/components/Common/Card/Card";
+import Card from "@/ui/layout/card/Card";
 import Paging from "@/components/Layout/Paging/Paging";
 import { useRouter } from "next/navigation";
+import Search from "@/ui/form/Search";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+type FormValues = {
+  search: string;
+};
 
 const ListContainer = () => {
-  const [contents, setContent] = useState<Content[]>([]);
-  const [pageable, setPageable] = useState<Pageable>();
   const [query, setQuery] = useState({
     q: "",
     meetingstatus: "RECRUIT",
@@ -26,20 +28,29 @@ const ListContainer = () => {
     page: 1,
   });
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const res = await get({ query });
-      setContent(res.data.content);
-      setPageable(res.data.pageable);
-    };
-    fetchPosts();
-  }, [query]);
+  const {
+    data: {
+      data: { content, pageable },
+    },
+    isPending,
+  } = useSuspenseQuery({
+    queryKey: ["meeting", query],
+    queryFn: () => get({ query }),
+  });
+
+  const searchHandler = (event: FormValues) => {
+    const { search } = event;
+    setQuery((prev) => ({
+      ...prev,
+      q: search,
+    }));
+  };
 
   return (
     <>
       <div className="flex flex-col items-start justify-start gap-6 md:flex-row md:items-center md:justify-between md:gap-5">
         <Status status={query.meetingstatus} setQuery={setQuery} />
-        <ListSearch setQuery={setQuery} />
+        <Search searchHandler={searchHandler} />
       </div>
 
       <div className="mt-[25px] md:mt-9">
@@ -51,21 +62,18 @@ const ListContainer = () => {
       </div>
 
       <div className="mt-[38px] md:mt-[53px] md:rounded-xl md:bg-[#F4F5F8] md:px-[5%] md:pb-[49px] md:pt-[39px] lg:px-[70px]">
-        <Sort sort={query.sort} />
+        <Sort sort={query.sort} setQuery={setQuery} />
 
         <div className="mt-[10px] grid grid-cols-1 gap-[13px] md:mt-7 md:grid-cols-2 md:gap-[30px] lg:grid-cols-3 xl:grid-cols-4">
-          <Suspense
-            fallback={new Array(12).fill(0).map((_, index) => (
-              <SkeletonCard key={index} />
-            ))}
-          >
-            {contents.map((el) => (
-              <Card key={el.postId} el={el} />
-            ))}
-          </Suspense>
+          {isPending &&
+            new Array(12)
+              .fill(0)
+              .map((_, index) => <SkeletonCard key={index} />)}
+
+          {!isPending && content.map((el) => <Card key={el.postId} el={el} />)}
         </div>
 
-        {contents.length <= 0 && (
+        {content.length <= 0 && (
           <p className="text-center">게시물이 존재하지 않습니다.</p>
         )}
 

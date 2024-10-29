@@ -3,6 +3,7 @@ export const STATUS: { [key: string]: string } = {
   END: "모집완료",
   ALL: "전체",
 };
+
 export const GAMETYPE: { [key: string]: string } = {
   BADMINTON: "배드민턴",
   FUTSAL: "풋살",
@@ -11,6 +12,7 @@ export const GAMETYPE: { [key: string]: string } = {
   TABLETENNIS: "탁구",
   BASEBALL: "야구",
 };
+
 export const LOCATION: { [key: string]: string } = {
   SEOUL: "서울",
   GYEONGGI: "경기",
@@ -23,4 +25,10 @@ export const LOCATION: { [key: string]: string } = {
   JEONNAM: "전남",
   JEONBUK: "전북",
   OTHER: "그외",
+};
+
+export const SORT: { [key: string]: string } = {
+  NEW: "최신순",
+  LIKE: "인기순",
+  OLD: "오래된순",
 };

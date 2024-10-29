@@ -2,7 +2,7 @@
 
 import { authIntance } from "@/lib/fetchInstance";
 
-const getRecommend = async (): Promise<Return<Content>> => {
+const getRecommend = async (): Promise<Return<Content[]>> => {
   const res = await authIntance(
     `${process.env.API_URL}/api/v1/meeting/recommend`,
     {},

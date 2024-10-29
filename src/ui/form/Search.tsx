@@ -7,7 +7,7 @@ type FormValues = {
   search: string;
 };
 
-const Search = ({ searchHandler }: { searchHandler: any }) => {
+const Search = ({ searchHandler }: { searchHandler?: any }) => {
   const { register, handleSubmit } = useForm<FormValues>();
 
   const onSubmitHandler = handleSubmit(searchHandler);
