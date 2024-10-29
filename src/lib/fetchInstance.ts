@@ -15,8 +15,6 @@ const baseIntance = async (url: string, options: RequestInit = {}) => {
       ...restOptions,
     };
 
-    console.log(defaultOptions);
-
     const res = await fetch(url, defaultOptions);
     if (!res.ok) {
       throw new Error("서버 에러가 발생했습니다.");

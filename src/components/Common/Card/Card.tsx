@@ -3,7 +3,6 @@ import * as C from "@/constant/card/constant";
 import moment from "moment";
 import Bookmark from "@/components/Common/Button/Bookmark/Bookmark";
 import { useRouter } from "next/navigation";
-import { Content } from "@/actions/listAction";
 
 const TAGSTYLE =
   "py-1 px-[6px] whitespace-nowrap rounded text-[13px] leading-none";
@@ -67,7 +66,7 @@ export default function Card({ el }: { el: Content }) {
         <span className="whitespace-nowrap text-[13px] font-medium text-OnBackgroundGray">
           모집 마감일 {moment(el.meetingDeadline).format("YY.MM.DD")}
         </span>
-        <Bookmark postId={el.postId} bookmarked={el.bookmarked} />
+        <Bookmark bookmarked={el.bookmarked} postId={el.postId} />
       </div>
     </div>
   );

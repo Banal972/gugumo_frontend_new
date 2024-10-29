@@ -1,14 +1,16 @@
 "use server";
 
 import { authIntance } from "@/lib/fetchInstance";
+import { revalidateTag } from "next/cache";
 
-const deleteAction = async (postId: number) => {
+const deleteAction = async (postId: number): Promise<Return<string>> => {
   const res = await authIntance(
     `${process.env.API_URL}/api/v1/bookmark/${postId}`,
     {
       method: "DELETE",
     },
   );
+  revalidateTag("bookmark");
   return res.json();
 };
 

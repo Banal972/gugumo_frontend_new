@@ -1,73 +1,46 @@
 "use client";
+
+import addAction from "@/actions/auth/bookmark/addAction";
+import deleteAction from "@/actions/auth/bookmark/deleteAction";
 import BookmarkSVG from "@/asset/image/bookmark.svg";
-import Alert from "@/components/Modal/Alert";
-import Confirm from "@/components/Modal/Confirm";
-import { useBookMutation } from "@/hooks/useBookmark";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
 import { useSession } from "next-auth/react";
+import { MouseEvent } from "react";
 
-export default function Bookmark({
-  postId,
-  bookmarked,
-  setBookCount,
-}: {
-  postId: number;
+interface BookmarkProps {
   bookmarked: boolean;
-  setBookCount?: any;
-}) {
-  const dispatch = useAppDispatch();
-  const { data: session } = useSession();
-  const { addBookmarkMutation, deleteBookmarkMutation } = useBookMutation();
+  postId: number;
+}
 
-  const bookmarkHandler = async (e: any, postId: number) => {
+const Bookmark = ({ bookmarked, postId }: BookmarkProps) => {
+  const { data: session } = useSession();
+
+  const bookmarkHandler = async (e: MouseEvent) => {
     e.stopPropagation();
 
-    if (!session) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "로그인을 해야합니다." },
-        }),
-      );
-    }
+    if (!session) return alert("로그인을 해야합니다.");
 
     if (!bookmarked) {
-      addBookmarkMutation.mutate({ session, postId });
-
-      if (setBookCount) {
+      const res = await addAction(postId);
+      /* if (setBookCount) {
         setBookCount((prev: any) => prev + 1);
-      }
+      } */
     } else {
-      dispatch(
-        open({
-          Component: Confirm,
-          props: {
-            message: "정말 삭제 하시겠습니까?",
-            onClick: () => {
-              deleteBookmarkMutation.mutate({ session, postId });
-              if (setBookCount) {
-                setBookCount((prev: any) => prev - 1);
-              }
-            },
-          },
-        }),
-      );
+      if (confirm("정말 삭제하시겠습니까?")) {
+        const res = await deleteAction(postId);
+      }
     }
   };
 
   return (
-    <button
-      type="button"
-      onClick={(e) => bookmarkHandler(e, postId)}
-      className="cursor-pointer"
-    >
+    <button type="button" onClick={bookmarkHandler} className="cursor-pointer">
       <BookmarkSVG
-        className={`stroke-[#4FAAFF] group-hover:stroke-white ${bookmarked ? "fill-[#4FAAFF]" : "fill-none"}`}
+        className={`stroke-[#4FAAFF] group-hover:stroke-white ${bookmarked ? "text-[#4FAAFF]" : "text-white"}`}
         width={24}
         height={24}
         alt="북마크 아이콘"
       />
     </button>
   );
-}
+};
+
+export default Bookmark;
