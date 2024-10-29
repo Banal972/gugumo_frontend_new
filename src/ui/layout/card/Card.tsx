@@ -1,7 +1,7 @@
 "use client";
 import * as C from "@/constant/card/constant";
 import moment from "moment";
-import Bookmark from "@/components/Common/Button/Bookmark/Bookmark";
+import Bookmark from "@/ui/Button/Bookmark/Bookmark";
 import { useRouter } from "next/navigation";
 
 const TAGSTYLE =

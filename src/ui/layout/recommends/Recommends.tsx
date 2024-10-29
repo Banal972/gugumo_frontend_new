@@ -1,5 +1,5 @@
-import getRecommend from "@/actions/recommendAction";
-import Slide from "@/ui/recommend/Slide";
+import getRecommend from "@/actions/public/recommendAction";
+import Slide from "@/ui/layout/recommends/Slide";
 import Image from "next/image";
 
 const Recommends = async () => {

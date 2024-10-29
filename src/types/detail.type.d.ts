@@ -1,8 +1,4 @@
-"use server";
-
-import { authIntance } from "@/lib/fetchInstance";
-
-export interface DetailData {
+interface DetailData {
   postId: number;
   author: string;
   meetingType: string;
@@ -24,12 +20,3 @@ export interface DetailData {
   meetingTime?: string;
   meetingDays?: string;
 }
-
-const get = async (postid: string): Promise<Return<DetailData>> => {
-  const res = await authIntance(
-    `${process.env.API_URL}/api/v1/meeting/${postid}`,
-  );
-  return res.json();
-};
-
-export default get;

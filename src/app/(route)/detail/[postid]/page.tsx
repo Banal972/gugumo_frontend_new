@@ -1,10 +1,10 @@
-import Wrap from "@/components/Common/Wrap";
+import Wrap from "@/ui/layout/Wrap";
 import DetailUI from "@/components/page/post/detail/DetailUI";
-import Recommends from "@/components/Layout/Recommends/Recommends";
+import Recommends from "@/ui/layout/recommends/Recommends";
 import Comments from "@/components/page/post/detail/Comment/Comments";
 import { Suspense } from "react";
 import Skeleton from "@/components/page/post/detail/SkeletonUI/Skeleton";
-import get from "@/actions/detailActions";
+import get from "@/actions/public/detailActions";
 
 const Detail = async ({ params }: DetailProps) => {
   const detail = await get(params.postid);

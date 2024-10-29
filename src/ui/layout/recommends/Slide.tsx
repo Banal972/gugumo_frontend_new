@@ -3,7 +3,7 @@
 import { Suspense, useRef } from "react";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
-import Bookmark from "@/components/Common/Button/Bookmark/Bookmark";
+import Bookmark from "@/ui/Button/Bookmark/Bookmark";
 import { GAMETYPE, LOCATION, STATUS } from "@/constant/card/constant";
 import moment from "moment";
 import { useRouter } from "next/navigation";

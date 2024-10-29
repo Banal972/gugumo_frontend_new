@@ -40,3 +40,10 @@ interface MypageReturn {
   nickname: string;
   favoriteSports: string;
 }
+
+interface getProps {
+  query: {
+    q?: string;
+    page?: number;
+  };
+}

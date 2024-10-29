@@ -1,5 +1,5 @@
 import getAction from "@/actions/auth/mypage/getAction";
-import Wrap from "@/components/Common/Wrap";
+import Wrap from "@/ui/layout/Wrap";
 import DeleteUser from "@/components/page/auth/mypage/DeleteUser";
 import Nickname from "@/components/page/auth/mypage/Nickname";
 import Password from "@/components/page/auth/mypage/Password";

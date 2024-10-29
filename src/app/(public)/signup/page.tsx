@@ -3,7 +3,7 @@ import joinAction from "@/actions/public/signup/joinAction";
 import kakaoAction from "@/actions/public/signup/kakaoAction";
 import mailCheckAction from "@/actions/public/signup/mailCheckAction";
 import mailSendAction from "@/actions/public/signup/mailSendAction";
-import Wrap from "@/components/Common/Wrap";
+import Wrap from "@/ui/layout/Wrap";
 import Alert from "@/components/Modal/Alert";
 import Gametype from "@/components/page/auth/signup/Gametype";
 import { open } from "@/lib/store/features/modals/modal";

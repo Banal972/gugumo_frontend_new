@@ -1,4 +1,4 @@
-import Wrap from "@/components/Common/Wrap";
+import Wrap from "@/ui/layout/Wrap";
 import Image from "next/image";
 
 const Footer = () => {

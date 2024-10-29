@@ -8,7 +8,7 @@ const addAction = async (postId: number): Promise<Return<string>> => {
     method: "POST",
     body: JSON.stringify({ postId: postId }),
   });
-  revalidateTag("bookmark");
+  revalidateTag("detail");
   return res.json();
 };
 

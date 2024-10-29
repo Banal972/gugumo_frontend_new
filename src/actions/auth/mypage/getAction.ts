@@ -3,11 +3,7 @@
 import { authIntance } from "@/lib/fetchInstance";
 
 const getAction = async (): Promise<Return<MypageReturn>> => {
-  const res = await authIntance(`${process.env.API_URL}/api/v1/member`, {
-    next: {
-      tags: ["/mypage"],
-    },
-  });
+  const res = await authIntance(`${process.env.API_URL}/api/v1/member`);
   return res.json();
 };
 

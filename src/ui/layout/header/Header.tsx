@@ -1,6 +1,6 @@
 "use client";
 
-import Wrap from "@/components/Common/Wrap";
+import Wrap from "@/ui/layout/Wrap";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Image from "next/image";

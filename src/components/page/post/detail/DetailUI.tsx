@@ -2,11 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import ViewSVG from "@/asset/image/view.svg";
 import BtnList from "@/components/page/post/detail/BtnList";
-import Bookmark from "@/components/Common/Button/Bookmark/Bookmark";
+import Bookmark from "@/ui/Button/Bookmark/Bookmark";
 import moment from "moment";
 import dynamic from "next/dynamic";
 import { ReactNode } from "react";
-import { DetailData } from "@/actions/detailActions";
+import { GAMETYPE, LOCATION, MEETINGTYPE } from "@/constant/card/constant";
 
 const DetailUI = ({ detail }: { detail: DetailData }) => {
   return (
@@ -34,14 +34,15 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
           </div>
         </div>
         <div className="flex items-center gap-[6px] text-primary">
-          {/* <Bookmark
+          <Bookmark
             postId={Number(detail.postId)}
             bookmarked={detail.bookmarked}
-            setBookCount={setBookCount}
           />
           <p className="text-sm font-medium md:text-xl">
-            {bookCount > 0 ? String(bookCount).padStart(2, "0") : bookCount}
-          </p> */}
+            {detail.bookmarkCount > 0
+              ? String(detail.bookmarkCount).padStart(2, "0")
+              : detail.bookmarkCount}
+          </p>
         </div>
       </div>
 
@@ -127,34 +128,6 @@ const ViewerComponent = dynamic(
   () => import("@/components/page/post/detail/ViewerComponent"),
   { ssr: false },
 );
-
-const MEETINGTYPE: { [key: string]: string } = {
-  SHORT: "단기모집",
-  LONG: "장기모집",
-};
-
-const GAMETYPE: { [key: string]: string } = {
-  BADMINTON: "배드민턴",
-  FUTSAL: "풋살",
-  BASKETBALL: "농구",
-  TENNIS: "테니스",
-  TABLETENNIS: "탁구",
-  BASEBALL: "야구",
-};
-
-const LOCATION: { [key: string]: string } = {
-  SEOUL: "서울",
-  GYEONGGI: "경기",
-  INCHEON: "인천",
-  DAEGU: "대구",
-  BUSAN: "부산",
-  GYEONGNAM: "경남",
-  GYEONGBUK: "경북",
-  GANGWON: "강원",
-  JEONNAM: "전남",
-  JEONBUK: "전북",
-  OTHER: "그외",
-};
 
 const Grid = ({ children }: { children: ReactNode }) => {
   return (

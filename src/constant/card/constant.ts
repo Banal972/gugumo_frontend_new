@@ -32,3 +32,8 @@ export const SORT: { [key: string]: string } = {
   LIKE: "인기순",
   OLD: "오래된순",
 };
+
+export const MEETINGTYPE: { [key: string]: string } = {
+  SHORT: "단기모집",
+  LONG: "장기모집",
+};

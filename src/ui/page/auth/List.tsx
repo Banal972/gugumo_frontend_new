@@ -1,5 +1,5 @@
 import Card from "@/ui/layout/card/Card";
-import Paging from "@/components/Layout/Paging/Paging";
+import Paging from "@/ui/layout/paging/Paging";
 import Search from "@/ui/form/Search";
 
 interface ListProps {

@@ -3,7 +3,7 @@
 import getActions from "@/actions/auth/post/getAction";
 import List from "@/ui/page/auth/List";
 import { useState } from "react";
-import Wrap from "@/components/Common/Wrap";
+import Wrap from "@/ui/layout/Wrap";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import SkeletonCard from "@/ui/layout/card/SkeletonCard";
 

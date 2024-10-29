@@ -10,7 +10,7 @@ const deleteAction = async (postId: number): Promise<Return<string>> => {
       method: "DELETE",
     },
   );
-  revalidateTag("bookmark");
+  revalidateTag("detail");
   return res.json();
 };
 
