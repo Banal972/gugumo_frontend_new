@@ -3,14 +3,20 @@
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 
-const baseIntance = async (url: string, options = {}) => {
+const baseIntance = async (url: string, options: RequestInit = {}) => {
+  const { headers, ...restOptions } = options;
+
   try {
-    const defaultOptions = {
+    const defaultOptions: RequestInit = {
       headers: {
+        ...headers,
         "Content-Type": "Application/json",
       },
-      ...options,
+      ...restOptions,
     };
+
+    console.log(defaultOptions);
+
     const res = await fetch(url, defaultOptions);
     if (!res.ok) {
       throw new Error("서버 에러가 발생했습니다.");
@@ -23,12 +29,15 @@ const baseIntance = async (url: string, options = {}) => {
 
 const authIntance = async (url: string, options: RequestInit = {}) => {
   const session = (await getServerSession(authOptions)) as any;
+
+  const { headers, ...restOptions } = options;
+
   const AuthorizationOptions: RequestInit = {
     headers: {
-      ...options.headers,
-      Authorization: session?.accessToken,
+      ...headers,
+      Authorization: session.accessToken,
     },
-    ...options,
+    ...restOptions,
   };
   return baseIntance(url, AuthorizationOptions);
 };
