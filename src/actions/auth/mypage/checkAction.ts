@@ -1,5 +1,11 @@
 "use server";
 
+import { baseIntance } from "@/lib/fetchInstance";
+
+interface checkActionProps {
+  nickname: string;
+}
+
 /* 
   @data 타입
   @true 중복일경우
@@ -8,22 +14,10 @@
 const checkAction = async ({
   nickname,
 }: checkActionProps): Promise<Return<boolean>> => {
-  try {
-    const res = await fetch(
-      `${process.env.API_URL}/api/v1/member/checkDuplicateNickname?nickname=${nickname}`,
-    );
-
-    if (!res.ok) {
-      throw new Error("서버 오류가 발생했습니다.");
-    }
-    return res.json();
-  } catch (err) {
-    throw new Error(err as string);
-  }
+  const res = await baseIntance(
+    `${process.env.API_URL}/api/v1/member/checkDuplicateNickname?nickname=${nickname}`,
+  );
+  return res.json();
 };
 
 export default checkAction;
-
-interface checkActionProps {
-  nickname: string;
-}

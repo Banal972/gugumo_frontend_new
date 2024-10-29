@@ -1,6 +1,7 @@
 "use server";
 
 import { authOptions } from "@/lib/authOptions";
+import { baseIntance } from "@/lib/fetchInstance";
 import { getServerSession } from "next-auth";
 
 interface kakaoActionBody {
@@ -13,28 +14,15 @@ interface kakaoActionBody {
 
 const kakaoAction = async (body: kakaoActionBody): Promise<Return<boolean>> => {
   const session = (await getServerSession(authOptions)) as any;
-
-  try {
-    const res = await fetch(`${process.env.API_URL}/api/v1/kakao/member`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "Application/json",
-      },
-      body: JSON.stringify({
-        ...body,
-        username: session?.username,
-        kakaoId: session?.kakaoId,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("서버에 에러가 발생했습니다.");
-    }
-
-    return res.json();
-  } catch (err) {
-    throw new Error(err as string);
-  }
+  const res = await baseIntance(`${process.env.API_URL}/api/v1/kakao/member`, {
+    method: "POST",
+    body: JSON.stringify({
+      ...body,
+      username: session?.username,
+      kakaoId: session?.kakaoId,
+    }),
+  });
+  return res.json();
 };
 
 export default kakaoAction;
