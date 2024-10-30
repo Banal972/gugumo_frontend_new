@@ -1,6 +1,7 @@
 'use server';
 
 import { authIntance } from '@/lib/fetchInstance';
+import { Return } from '@/types/get.type';
 import { revalidatePath } from 'next/cache';
 
 const updateAction = async (nickname: string): Promise<Return<string>> => {
@@ -8,7 +9,7 @@ const updateAction = async (nickname: string): Promise<Return<string>> => {
     `${process.env.API_URL}/api/v1/member/updateNickname`,
     {
       method: 'PATCH',
-      body: JSON.stringify({ nickname: nickname }),
+      body: JSON.stringify({ nickname }),
     },
   );
   revalidatePath('/mypage');

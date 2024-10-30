@@ -1,9 +1,9 @@
 import ViewSVG from '@/asset/image/view.svg';
 import BtnList from '@/components/page/post/detail/BtnList';
 import { GAMETYPE, LOCATION, MEETINGTYPE } from '@/constant/card/constant';
+import { DetailData } from '@/types/detail.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';
 import moment from 'moment';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReactNode } from 'react';
@@ -11,7 +11,7 @@ import { ReactNode } from 'react';
 const DetailUI = ({ detail }: { detail: DetailData }) => {
   return (
     <>
-      <Link href={'/'} className="inline-block">
+      <Link href="/" className="inline-block">
         <Image
           src="/asset/image/icon/prev_arrow.svg"
           alt="뒤로가기"
@@ -101,6 +101,7 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
             href={detail.openKakao}
             target="_blank"
             className="flex h-8 w-full items-center justify-center whitespace-nowrap rounded bg-primary text-white transition-colors hover:bg-[#3f92e0] md:h-10 md:w-[158px]"
+            rel="noreferrer"
           >
             오픈톡 참여
             <Image
@@ -113,9 +114,7 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
         </div>
       </div>
 
-      <div className="mt-8 box-border min-h-72 w-full border px-4 py-3 text-sm font-medium leading-8 md:mt-24 md:min-h-[848px] md:px-12 md:py-9 md:text-lg">
-        <ViewerComponent content={detail.content} />
-      </div>
+      <div className="mt-8 box-border min-h-72 w-full border px-4 py-3 text-sm font-medium leading-8 md:mt-24 md:min-h-[848px] md:px-12 md:py-9 md:text-lg" />
 
       <BtnList postid={String(detail.postId)} yours={detail.yours} />
     </>
@@ -123,11 +122,6 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
 };
 
 export default DetailUI;
-
-const ViewerComponent = dynamic(
-  () => import('@/components/page/post/detail/ViewerComponent'),
-  { ssr: false },
-);
 
 const Grid = ({ children }: { children: ReactNode }) => {
   return (

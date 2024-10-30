@@ -4,16 +4,20 @@ import joinAction from '@/actions/public/signup/joinAction';
 import kakaoAction from '@/actions/public/signup/kakaoAction';
 import mailCheckAction from '@/actions/public/signup/mailCheckAction';
 import mailSendAction from '@/actions/public/signup/mailSendAction';
-import Alert from '@/components/Modal/Alert';
 import Gametype from '@/components/page/auth/signup/Gametype';
-import { open } from '@/lib/store/features/modals/modal';
-import { useAppDispatch } from '@/lib/store/hook';
 import Wrap from '@/ui/layout/Wrap';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { IoCheckmarkOutline } from 'react-icons/io5';
+
+interface IsServiceT {
+  [key: string]: boolean;
+  isAgreeTermsUse: boolean;
+  isAgreeCollectingUsingPersonalInformation: boolean;
+  isAgreeMarketing: boolean;
+}
 
 const SignupPage = () => {
   const { data: session } = useSession() as any;
@@ -22,14 +26,12 @@ const SignupPage = () => {
   const { register, handleSubmit, getValues, setValue } = useForm();
   const [isSend, setIsSend] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
-  const [isService, setIsService] = useState<isServiceT>({
+  const [isService, setIsService] = useState<IsServiceT>({
     isAgreeTermsUse: false,
     isAgreeCollectingUsingPersonalInformation: false,
     isAgreeMarketing: false,
   });
   const [likeGame, setLikeGame] = useState<string[]>([]);
-
-  const dispatch = useAppDispatch();
 
   const mailSendHandler = async () => {
     if (isSend) return;
@@ -87,78 +89,38 @@ const SignupPage = () => {
     const { nickname, username, emailAuthNum, password, confirmPW } = event;
 
     if (!nickname) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '닉네임을 입력해주세요' },
-        }),
-      );
+      return alert('닉네임을 입력해주세요');
     }
 
     if (!isService.isAgreeTermsUse) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '서비스 이용약관에 동의해주세요.' },
-        }),
-      );
+      return alert('서비스 이용약관에 동의해주세요.');
     }
 
     if (!isService.isAgreeCollectingUsingPersonalInformation) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '개인정보 수집 및 이용에 동의해주세요' },
-        }),
-      );
+      return alert('개인정보 수집 및 이용에 동의해주세요');
     }
 
     if (!session) {
       // 기본 회원가입
 
       if (!username) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: '이메일을 입력해주세요' },
-          }),
-        );
+        return alert('이메일을 입력해주세요');
       }
 
       if (!isCheck) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: '이메일 인증이 필요합니다.' },
-          }),
-        );
+        return alert('이메일 인증이 필요합니다.');
       }
 
       if (!emailAuthNum) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: '인증번호를 입력해주세요' },
-          }),
-        );
+        return alert('인증번호를 입력해주세요');
       }
 
       if (!password) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: '비밀번호를 입력해주세요' },
-          }),
-        );
+        return alert('비밀번호를 입력해주세요');
       }
 
       if (password !== confirmPW) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: '비밀번호가 서로 다릅니다.' },
-          }),
-        );
+        return alert('비밀번호가 서로 다릅니다.');
       }
 
       const res = await joinAction({
@@ -232,7 +194,7 @@ const SignupPage = () => {
                   placeholder="이메일을 입력하세요."
                   className="sign-input"
                   {...register('username', {
-                    disabled: session ? true : false,
+                    disabled: session,
                   })}
                 />
                 {!session && (
@@ -296,6 +258,7 @@ const SignupPage = () => {
               <div className="pb-5 pt-4 md:py-5">
                 <div className="flex justify-between gap-1 px-5 md:px-6">
                   <div
+                    role="none"
                     className="flex cursor-pointer items-center gap-3"
                     onClick={allCheckHandler}
                   >
@@ -329,10 +292,11 @@ const SignupPage = () => {
                     },
                   ].map(({ id, label }, index) => (
                     <div
-                      key={index}
+                      key={id}
                       className={`flex items-center ${index !== 0 ? 'mt-4' : ''}`}
                     >
                       <div
+                        role="none"
                         className="flex cursor-pointer gap-3"
                         onClick={() => isServiceHandler(id, !isService[id])}
                       >
@@ -373,10 +337,3 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
-
-interface isServiceT {
-  [key: string]: boolean;
-  isAgreeTermsUse: boolean;
-  isAgreeCollectingUsingPersonalInformation: boolean;
-  isAgreeMarketing: boolean;
-}

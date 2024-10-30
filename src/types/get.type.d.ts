@@ -11,17 +11,6 @@ interface Content {
   bookmarked: boolean;
 }
 
-interface GetData {
-  content: Content[];
-  pageable: Pageable;
-}
-
-interface Return<T> {
-  status: string;
-  data: T;
-  message: any;
-}
-
 interface Pageable {
   number: number;
   size: number;
@@ -35,13 +24,24 @@ interface Pageable {
   empty: boolean;
 }
 
-interface MypageReturn {
+export interface GetData {
+  content: Content[];
+  pageable: Pageable;
+}
+
+export interface Return<T> {
+  status: string;
+  data: T;
+  message: any;
+}
+
+export interface MypageReturn {
   username: string;
   nickname: string;
   favoriteSports: string;
 }
 
-interface getProps {
+export interface GetProps {
   query: {
     q?: string;
     page?: number;

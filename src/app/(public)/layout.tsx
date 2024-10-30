@@ -4,7 +4,11 @@ import Header from '@/ui/layout/header/Header';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-const PublicLayout = async ({ children }: PublicLayout) => {
+interface PublicLayoutProps {
+  children: React.ReactNode;
+}
+
+const PublicLayout = async ({ children }: PublicLayoutProps) => {
   const session = (await getServerSession(authOptions)) as any;
 
   if (session && session.accessToken) {
@@ -20,7 +24,3 @@ const PublicLayout = async ({ children }: PublicLayout) => {
   );
 };
 export default PublicLayout;
-
-interface PublicLayout {
-  children: React.ReactNode;
-}

@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface initialStateT {
+interface InitialStateT {
   Component: any;
   isOpen: boolean;
   props?: any;
 }
 
-const initialState: initialStateT[] = [];
+const initialState: InitialStateT[] = [];
 
 const modalSlice = createSlice({
   name: 'modal',

@@ -17,7 +17,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
+
+// eslint-disable-next-line import/no-mutable-exports
 let messaging: Messaging;
+
 if (typeof window !== 'undefined') {
   messaging = getMessaging(app);
 }

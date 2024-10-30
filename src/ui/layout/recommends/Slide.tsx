@@ -1,6 +1,7 @@
 'use client';
 
 import { GAMETYPE, LOCATION, STATUS } from '@/constant/card/constant';
+import { Content } from '@/types/get.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';
 import SkeletonCard from '@/ui/layout/card/SkeletonCard';
 import moment from 'moment';
@@ -39,20 +40,20 @@ const Slide = ({ posts }: { posts: Content[] }) => {
       }}
       centeredSlides={false}
       spaceBetween={26}
-      loop={posts.length > 3 ? true : false}
+      loop={posts.length > 3}
       speed={600}
       autoplay={{
         delay: 6000,
       }}
     >
       <Suspense
-        fallback={new Array(8).fill(0).map((_, index) => (
-          <SwiperSlide key={index} className="rounded border">
+        fallback={Array.from({ length: 8 }, (_, index) => index).map((item) => (
+          <SwiperSlide key={item} className="rounded border">
             <SkeletonCard />
           </SwiperSlide>
         ))}
       >
-        {posts.map((e: any) => (
+        {posts.map((e: Content) => (
           <SwiperSlide
             key={e.postId}
             className="group hover:shadow-xl"

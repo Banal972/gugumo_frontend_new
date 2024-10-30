@@ -1,8 +1,9 @@
+import baseIntance from '@/lib/baseInstnace';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import KakaoProvider from 'next-auth/providers/kakao';
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -33,15 +34,13 @@ export const authOptions: NextAuthOptions = {
 
             if (data.status === 'success') {
               return { token: data.data };
-            } else {
-              return null;
             }
-          } else {
-            console.log(response);
             return null;
           }
+          // console.log(response);
+          return null;
         } catch (err) {
-          console.log(err);
+          // console.log(err);
           return null;
         }
       },
@@ -56,37 +55,39 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ user, token, account }: any): Promise<any> {
+      const currentToken = token;
+
       if (account?.type !== 'credentials' && user) {
-        const response = await fetch(`${process.env.API_URL}/kakao/login`, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
+        const response = await baseIntance(
+          `${process.env.API_URL}/kakao/login`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              username: user.email,
+              nickname: user.name,
+              kakaoId: user.id,
+              profilePath: user.image,
+            }),
           },
-          body: JSON.stringify({
-            username: user.email,
-            nickname: user.name,
-            kakaoId: user.id,
-            profilePath: user.image,
-          }),
-        });
+        );
 
         const data = await response.json();
 
         if (data.status !== 'fail') {
-          token.accessToken = data.data;
+          currentToken.accessToken = data.data;
         } else {
-          token.username = user.email;
-          token.nickname = user.name;
-          token.kakaoId = user.id;
+          currentToken.username = user.email;
+          currentToken.nickname = user.name;
+          currentToken.kakaoId = user.id;
         }
       }
 
       if (account?.type === 'credentials' && user) {
-        token.accessToken = user.token;
+        currentToken.accessToken = user.token;
       }
 
       if (account) {
-        token.type = account.type;
+        currentToken.type = account.type;
       }
 
       return token;
@@ -109,3 +110,5 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+export default authOptions;

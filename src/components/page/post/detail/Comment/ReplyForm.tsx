@@ -41,7 +41,7 @@ export default function ReplyForm({
         },
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     } finally {
       setCommnetShow({
         commentId: 0,

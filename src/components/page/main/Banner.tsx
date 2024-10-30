@@ -23,16 +23,16 @@ export default function Banner() {
           spaceBetween: 23,
         },
       }}
-      centeredSlides={true}
+      centeredSlides
       spaceBetween={13}
-      loop={true}
+      loop
       autoplay={{
         delay: 6000,
       }}
       speed={600}
     >
-      {new Array(4).fill(0).map((_, index) => (
-        <SwiperSlide key={index}>
+      {Array.from({ length: 4 }, (_, index) => index).map((item, index) => (
+        <SwiperSlide key={item}>
           <div className="relative overflow-hidden rounded-lg">
             <Image
               className="hidden md:block"

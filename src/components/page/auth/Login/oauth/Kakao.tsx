@@ -9,8 +9,9 @@ export default function Kakao() {
 
   return (
     <div
+      role="none"
       onClick={onSignInHandler}
       className="size-[34px] cursor-pointer rounded-full bg-[url(/asset/image/modal/kakao.png)] bg-cover bg-center"
-    ></div>
+    />
   );
 }

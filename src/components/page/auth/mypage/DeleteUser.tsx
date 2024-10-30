@@ -20,6 +20,7 @@ const DeleteUser = () => {
   return (
     <div className="mt-[88px] text-center md:mt-20">
       <button
+        type="button"
         onClick={delUserHandler}
         className="cursor-pointer border-b border-OnBackgroundGray px-1 pb-[2px] text-xs font-medium text-OnBackgroundGray transition-colors hover:border-[#676767] hover:text-[#676767] md:text-base"
       >

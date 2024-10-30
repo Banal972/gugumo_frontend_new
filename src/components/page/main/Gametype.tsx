@@ -4,7 +4,7 @@ import { GAMETYPE } from '@/constant/card/constant';
 import Image from 'next/image';
 import { Dispatch, MouseEventHandler, SetStateAction } from 'react';
 
-interface Gametype {
+interface GametypeProps {
   gametype: string;
   setQuery: Dispatch<
     SetStateAction<{
@@ -18,9 +18,9 @@ interface Gametype {
   >;
 }
 
-const Gametype = ({ gametype, setQuery }: Gametype) => {
-  const onClickHandler = (gametype: string) => {
-    setQuery((prev) => ({ ...prev, gametype }));
+const Gametype = ({ gametype, setQuery }: GametypeProps) => {
+  const onClickHandler = (type: string) => {
+    setQuery((prev) => ({ ...prev, gametype: type }));
   };
 
   return (
@@ -30,8 +30,8 @@ const Gametype = ({ gametype, setQuery }: Gametype) => {
         <Button
           gametype={gametype}
           onClick={() => onClickHandler('')}
-          get={''}
-          label={'전체'}
+          get=""
+          label="전체"
         />
         {Object.entries(GAMETYPE).map((game) => {
           let option = {
@@ -82,9 +82,12 @@ const Gametype = ({ gametype, setQuery }: Gametype) => {
                 height: 30,
               };
               break;
+            default:
+              break;
           }
           return (
             <Button
+              key={game[0]}
               option={option}
               gametype={gametype}
               onClick={() => onClickHandler(game[0])}
@@ -115,6 +118,7 @@ interface ButtonProps {
 const Button = ({ onClick, option, gametype, get, label }: ButtonProps) => {
   return (
     <button
+      type="button"
       onClick={onClick}
       key={get}
       className={`relative box-border size-[77px] flex-none cursor-pointer overflow-hidden rounded-full border border-primary transition-colors hover:bg-primary hover:text-white ${gametype === get ? 'bg-primary text-white' : 'bg-background text-primary'}`}

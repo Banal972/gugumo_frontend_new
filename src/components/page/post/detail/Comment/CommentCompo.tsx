@@ -54,6 +54,7 @@ const CommentCompo = ({
   };
 
   const deleteHandler = async (commentId: number) => {
+    console.log(commentId);
     const onClick = () => {
       try {
         // deleteComment({ session, comment_id: commentId });
@@ -67,7 +68,7 @@ const CommentCompo = ({
         console.log(err);
       }
     };
-    dispatch(open({ Component: Confirm, props: { onClick: onClick } }));
+    dispatch(open({ Component: Confirm, props: { onClick } }));
   };
 
   const onEditShowHandler = (commentId: number) => {
@@ -105,6 +106,7 @@ const CommentCompo = ({
                 </dl>
                 <div className="ml-auto flex gap-[10px] md:gap-5">
                   <button
+                    type="button"
                     onClick={() => onReplyShowHandler(el.commentId)}
                     className="cursor-pointer text-[13px] text-OnBackgroundGray"
                   >
@@ -113,12 +115,14 @@ const CommentCompo = ({
                   {el.yours && (
                     <>
                       <button
+                        type="button"
                         onClick={() => onEditShowHandler(el.commentId)}
                         className="cursor-pointer text-[13px] text-OnBackgroundGray"
                       >
                         수정
                       </button>
                       <button
+                        type="button"
                         onClick={() => deleteHandler(el.commentId)}
                         className="cursor-pointer text-[13px] text-OnBackgroundGray"
                       >

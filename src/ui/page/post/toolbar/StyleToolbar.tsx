@@ -1,8 +1,12 @@
 import ToolbarBtn from '@/ui/page/post/toolbar/ToolbarBtn';
 import { Editor } from '@tiptap/react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ChromePicker } from 'react-color';
 import { RiMarkPenLine, RiPaletteLine } from 'react-icons/ri';
+
+interface StyleToolbarProps {
+  editor: Editor;
+}
 
 const StyleToolbar = ({ editor }: StyleToolbarProps) => {
   const [highlight, setHighlight] = useState('#000');
@@ -23,11 +27,15 @@ const StyleToolbar = ({ editor }: StyleToolbarProps) => {
           <div ref={highlightRef} className="top-100% absolute left-0">
             <ChromePicker
               color={highlight}
-              onChange={(color) => {
-                setHighlight(color.hex);
+              onChange={(getColor) => {
+                setHighlight(getColor.hex);
               }}
-              onChangeComplete={(color) => {
-                editor.chain().focus().setHighlight({ color: color.hex }).run();
+              onChangeComplete={(getColor) => {
+                editor
+                  .chain()
+                  .focus()
+                  .setHighlight({ color: getColor.hex })
+                  .run();
               }}
             />
           </div>
@@ -41,11 +49,11 @@ const StyleToolbar = ({ editor }: StyleToolbarProps) => {
           <div ref={colorRef} className="top-100% absolute left-0">
             <ChromePicker
               color={color}
-              onChange={(color) => {
-                setColor(color.hex);
+              onChange={(getColor) => {
+                setColor(getColor.hex);
               }}
-              onChangeComplete={(color) => {
-                editor.chain().focus().setColor(color.hex).run();
+              onChangeComplete={(getColor) => {
+                editor.chain().focus().setColor(getColor.hex).run();
               }}
             />
           </div>
@@ -56,7 +64,3 @@ const StyleToolbar = ({ editor }: StyleToolbarProps) => {
 };
 
 export default StyleToolbar;
-
-interface StyleToolbarProps {
-  editor: Editor;
-}

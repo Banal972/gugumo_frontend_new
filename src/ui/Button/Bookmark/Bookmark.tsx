@@ -40,14 +40,14 @@ const Bookmark = ({ bookmarked, postId }: BookmarkProps) => {
     if (!session) return alert('로그인을 해야합니다.');
 
     if (!bookmarked) {
-      addMutation.mutate(postId);
+      return addMutation.mutate(postId);
       /* if (setBookCount) {
         setBookCount((prev: any) => prev + 1);
       } */
-    } else {
-      if (confirm('정말 삭제하시겠습니까?')) {
-        deleteMutation.mutate(postId);
-      }
+    }
+
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      deleteMutation.mutate(postId);
     }
   };
 

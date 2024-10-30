@@ -1,4 +1,4 @@
-interface DetailData {
+export interface DetailData {
   postId: number;
   author: string;
   meetingType: string;

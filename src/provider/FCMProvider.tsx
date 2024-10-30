@@ -3,7 +3,19 @@
 import { messaging } from '@/lib/firebase';
 import { getToken, onMessage } from 'firebase/messaging';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+
+type FCMProviderProps = { children: ReactNode };
+
+function createNotification(title: string, body: string) {
+  if (Notification.permission === 'granted') {
+    return new Notification(title, {
+      body,
+      icon: '/icons/android-icon-48x48.png',
+    });
+  }
+  console.error('Notification permission not granted.');
+}
 
 const subscribeFetch = async (session: any, token: string) => {
   if (!session) return;
@@ -31,21 +43,17 @@ const subscribeFetch = async (session: any, token: string) => {
   }
 };
 
-export default function FCMProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const FCMProvider = ({ children }: FCMProviderProps) => {
   const { data: session, status } = useSession() as any;
   const [token, setToken] = useState('');
   const requestPermission = async () => {
     const permission = await Notification.requestPermission();
 
     if (permission === 'granted') {
-      const token = await getToken(messaging, {
+      const fcmToken = await getToken(messaging, {
         vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY,
       });
-      setToken(token);
+      setToken(fcmToken);
     } else {
       console.log('메세지 알림 거부');
     }
@@ -56,10 +64,7 @@ export default function FCMProvider({
       if (notification) {
         const { title, body } = notification;
         if (title && body) {
-          new Notification(title, {
-            body,
-            icon: '/icons/android-icon-48x48.png',
-          });
+          createNotification(title, body);
         }
       }
     });
@@ -74,5 +79,7 @@ export default function FCMProvider({
     subscribeFetch(session, token);
   }, [status, token]);
 
-  return <>{children}</>;
-}
+  return children;
+};
+
+export default FCMProvider;

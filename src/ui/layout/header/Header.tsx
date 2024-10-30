@@ -14,8 +14,8 @@ const Header = () => {
   return (
     <header className="relative z-20 mt-6 w-full md:mt-10">
       <Wrap className="flex items-center justify-between">
-        <Link href={'/'} className="w-[91px] md:w-[172px]">
-          <img src="/asset/image/logo.svg" alt="로고" />
+        <Link href="/" className="w-[91px] md:w-[172px]">
+          <Image src="/asset/image/logo.svg" alt="로고" />
         </Link>
 
         {!session?.accessToken && <LoginBtn />}
@@ -23,9 +23,9 @@ const Header = () => {
         {session?.accessToken && (
           <div className="flex items-center gap-3 md:gap-[26px]">
             <Alarm session={session} />
-            <Link className="w-4 md:w-auto" href={'/bookmark'}>
+            <Link className="w-4 md:w-auto" href="/bookmark">
               <Image
-                src={'/asset/image/icon/bookmark.png'}
+                src="/asset/image/icon/bookmark.png"
                 width={24}
                 height={29}
                 alt="북마크"

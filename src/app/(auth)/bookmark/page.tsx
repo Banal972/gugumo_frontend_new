@@ -37,7 +37,9 @@ const ListPage = () => {
     <main className="mt-14 pb-[121px] md:pb-[170px]">
       <Wrap>
         {isPending &&
-          new Array(12).fill(0).map((_, index) => <SkeletonCard key={index} />)}
+          Array.from({ length: 12 }, (_, index) => index).map((item) => (
+            <SkeletonCard key={item} />
+          ))}
 
         {!isPending && (
           <List label="북마크" data={data} searchHandler={searchHandler} />

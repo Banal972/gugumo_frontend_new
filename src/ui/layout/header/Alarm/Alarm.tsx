@@ -34,7 +34,8 @@ export default function Alarm({ session }: { session: any }) {
 
   return (
     <div className="relative">
-      <div
+      <button
+        type="button"
         className="w-6 cursor-pointer md:w-auto"
         onClick={() => setIsAlarm(!isAlarm)}
       >
@@ -44,7 +45,7 @@ export default function Alarm({ session }: { session: any }) {
           width={36}
           height={36}
         />
-      </div>
+      </button>
       {isAlarm && (
         <div className="absolute right-0 top-full box-border flex max-h-[264px] w-[272px] translate-x-1/4 flex-col overflow-y-hidden rounded-lg bg-white px-[30px] py-[22px] md:max-h-[334px] md:w-[342px] md:translate-x-0">
           <div className="flex flex-none justify-between">
@@ -68,6 +69,7 @@ export default function Alarm({ session }: { session: any }) {
                     <ul className="mt-2">
                       {alarm.data.map((elm) => (
                         <li
+                          role="none"
                           key={elm.id}
                           className={`flex gap-2 whitespace-nowrap ${
                             !elm.read ? 'bg-Surface' : 'bg-gray-300'

@@ -1,6 +1,7 @@
 'use server';
 
 import { authIntance } from '@/lib/fetchInstance';
+import { Return } from '@/types/get.type';
 import { revalidateTag } from 'next/cache';
 
 const deleteAction = async (postId: number): Promise<Return<string>> => {

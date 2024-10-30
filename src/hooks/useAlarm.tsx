@@ -27,7 +27,7 @@ const alarmfetchs = async ({ queryKey }: { queryKey: [string, any] }) => {
   const result = data.reduce<{
     [key: string]: { createDate: string; data: AlarmT[] };
   }>((acc, current) => {
-    let date = moment(current.createDate).format('YYYY-MM-DD');
+    const date = moment(current.createDate).format('YYYY-MM-DD');
 
     // 새로운 그룹으로 만들어줌
     if (!acc[date]) {

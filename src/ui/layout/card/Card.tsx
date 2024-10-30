@@ -1,6 +1,7 @@
 'use client';
 
 import * as C from '@/constant/card/constant';
+import { Content } from '@/types/get.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
@@ -17,6 +18,7 @@ export default function Card({ el }: { el: Content }) {
 
   return (
     <div
+      role="none"
       className="cursor-pointer rounded-lg border bg-Surface px-4 py-5 transition-shadow hover:shadow-lg md:border-none md:bg-white"
       onClick={() => clickHandler(el.postId)}
     >

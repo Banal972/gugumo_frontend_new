@@ -6,7 +6,7 @@ import SkeletonNickname from '@/components/page/auth/mypage/SkeletonUI/SkeletonN
 import SkeletonPassword from '@/components/page/auth/mypage/SkeletonUI/SkeletonPassword';
 import SkeletonUser from '@/components/page/auth/mypage/SkeletonUI/SkeletonUser';
 import { GAMETYPE } from '@/constant/card/constant';
-import { authOptions } from '@/lib/authOptions';
+import authOptions from '@/lib/authOptions';
 import Wrap from '@/ui/layout/Wrap';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
@@ -33,7 +33,7 @@ const Mypage = async () => {
 
         <div className="mt-4 flex flex-col items-center gap-6 md:mt-[60px] md:flex-row md:gap-7">
           <Suspense fallback={<SkeletonUser />}>
-            <div className="size-[78px] rounded-full border bg-[url(/asset/image/user/user.png)] bg-[length:95%_95%] bg-center bg-no-repeat md:size-[104px]"></div>
+            <div className="size-[78px] rounded-full border bg-[url(/asset/image/user/user.png)] bg-[length:95%_95%] bg-center bg-no-repeat md:size-[104px]" />
             <div className="flex flex-wrap items-center justify-center gap-[7px] text-base font-medium md:justify-start">
               <div className="flex flex-none gap-[7px]">
                 닉네임

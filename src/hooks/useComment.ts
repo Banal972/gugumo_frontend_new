@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-interface commentDataT {
+interface CommentDataT {
   commentId: number;
   author: string;
   content: string;
@@ -16,15 +16,15 @@ interface commentDataT {
   authorExpired: boolean;
 }
 
-interface commentT {
+/* interface CommentT {
   status: string;
   length: number;
-  comments: commentDataT[];
-  replys: commentDataT[];
+  comments: CommentDataT[];
+  replys: CommentDataT[];
   message?: any;
-}
+} */
 
-interface commentOptionsT {
+interface CommentOptionsT {
   session: any;
   postid: string;
 }
@@ -45,11 +45,11 @@ const fetchCommnets = async ({
     throw new Error('등록에 실패 하였습니다.');
   }
   const data = await response.json();
-  const comments: commentDataT[] = data.data.filter(
-    (el: commentDataT) => !el.parentCommentId,
+  const comments: CommentDataT[] = data.data.filter(
+    (el: CommentDataT) => !el.parentCommentId,
   );
-  const replys: commentDataT[] = data.data.filter(
-    (el: commentDataT) => el.parentCommentId,
+  const replys: CommentDataT[] = data.data.filter(
+    (el: CommentDataT) => el.parentCommentId,
   );
 
   return {
@@ -101,7 +101,7 @@ const deleteComment = async (data: any) => {
   }
 };
 
-export const commentOptions = ({ session, postid }: commentOptionsT) => {
+export const commentOptions = ({ session, postid }: CommentOptionsT) => {
   return queryOptions({
     queryKey: ['commnet', session, postid],
     queryFn: fetchCommnets,

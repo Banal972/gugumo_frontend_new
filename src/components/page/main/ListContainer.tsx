@@ -66,9 +66,9 @@ const ListContainer = () => {
 
         <div className="mt-[10px] grid grid-cols-1 gap-[13px] md:mt-7 md:grid-cols-2 md:gap-[30px] lg:grid-cols-3 xl:grid-cols-4">
           {isPending &&
-            new Array(12)
-              .fill(0)
-              .map((_, index) => <SkeletonCard key={index} />)}
+            Array.from({ length: 12 }, (_, index) => index).map((item) => (
+              <SkeletonCard key={item} />
+            ))}
 
           {!isPending && content.map((el) => <Card key={el.postId} el={el} />)}
         </div>
@@ -98,12 +98,13 @@ const WriteButton = () => {
 
   return (
     <button
+      type="button"
       onClick={writeHandler}
-      className={`group inline-flex cursor-pointer items-center gap-1 rounded border border-primary bg-OnPrimary px-4 py-[0.4em] text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base`}
+      className="group inline-flex cursor-pointer items-center gap-1 rounded border border-primary bg-OnPrimary px-4 py-[0.4em] text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base"
     >
       <Image
         className="group-hover:brightness-0 group-hover:invert"
-        src={'/asset/image/icon/write.svg'}
+        src="/asset/image/icon/write.svg"
         alt="작성 아이콘"
         width={24}
         height={24}

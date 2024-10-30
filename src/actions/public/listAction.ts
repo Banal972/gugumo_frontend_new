@@ -1,6 +1,7 @@
 'use server';
 
 import { authIntance } from '@/lib/fetchInstance';
+import { GetData, Return } from '@/types/get.type';
 
 interface Get {
   query: {

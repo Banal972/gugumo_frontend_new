@@ -1,3 +1,4 @@
+import { Content, Pageable } from '@/types/get.type';
 import Search from '@/ui/form/Search';
 import Card from '@/ui/layout/card/Card';
 import Paging from '@/ui/layout/paging/Paging';

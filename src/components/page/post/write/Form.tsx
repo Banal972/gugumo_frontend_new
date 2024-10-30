@@ -15,7 +15,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
-import { useEditor, EditorContent, Editor, BubbleMenu } from '@tiptap/react';
+import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
@@ -370,10 +370,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
                 <option value="END">모집완료</option>
               </select>
               <DownIcon
-                className={
-                  'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
-                }
-                stroke={'#878787'}
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                stroke="#878787"
               />
             </div>
           </div>
@@ -396,10 +394,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               <option value="LONG">장기모집</option>
             </select>
             <DownIcon
-              className={
-                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
-              }
-              stroke={'#878787'}
+              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+              stroke="#878787"
             />
           </div>
         </div>
@@ -453,10 +449,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               </option>
             </select>
             <DownIcon
-              className={
-                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
-              }
-              stroke={'#878787'}
+              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+              stroke="#878787"
             />
           </div>
         </div>
@@ -495,10 +489,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               </option>
             </select>
             <DownIcon
-              className={
-                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
-              }
-              stroke={'#878787'}
+              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+              stroke="#878787"
             />
           </div>
         </div>
@@ -534,10 +526,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               </option>
             </select>
             <DownIcon
-              className={
-                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
-              }
-              stroke={'#878787'}
+              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+              stroke="#878787"
             />
           </div>
         </div>
@@ -563,10 +553,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
                 />
               )}
               <DownIcon
-                className={
-                  'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
-                }
-                stroke={'#878787'}
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                stroke="#878787"
               />
             </div>
           </div>
@@ -594,10 +582,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
                 ))}
               </select>
               <DownIcon
-                className={
-                  'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
-                }
-                stroke={'#878787'}
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                stroke="#878787"
               />
             </div>
           </div>
@@ -609,10 +595,10 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               모임 요일
             </label>
             <div className="flex min-w-0 flex-wrap justify-start gap-[10px]">
-              {['월', '화', '수', '목', '금', '토', '일'].map((el, index) => (
+              {['월', '화', '수', '목', '금', '토', '일'].map((el) => (
                 <div
                   onClick={() => selectDayHandler(el)}
-                  key={index}
+                  key={el}
                   className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${selectDays.includes(el) ? 'bg-primary text-white' : 'bg-Surface text-OnSurface'}`}
                 >
                   {el}
@@ -642,10 +628,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               />
             )}
             <DownIcon
-              className={
-                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
-              }
-              stroke={'#878787'}
+              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+              stroke="#878787"
             />
           </div>
         </div>
@@ -691,9 +675,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         </div>
 
         <div className="mt-7">
-          <label className="px-[6px] text-sm font-medium md:text-lg">
-            내용
-          </label>
+          <p className="px-[6px] text-sm font-medium md:text-lg">내용</p>
           <div className="mt-3 rounded-xl border p-5">
             <Toolbar editor={editor} />
             <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
@@ -714,7 +696,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
 const SubmitButton = ({ children }: { children: ReactNode }) => {
   return (
     <button
-      className={`inline-flex cursor-pointer items-center justify-center rounded border border-[#4FAAFF] bg-OnPrimary px-4 py-[9.5px] text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base`}
+      type="submit"
+      className="inline-flex cursor-pointer items-center justify-center rounded border border-[#4FAAFF] bg-OnPrimary px-4 py-[9.5px] text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base"
     >
       {children}
     </button>

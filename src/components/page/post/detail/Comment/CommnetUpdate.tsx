@@ -20,13 +20,13 @@ export default function CommnetUpdate({
   const { mutate: patchCommnet } = usePatchCommnet();
 
   const onSubmitHandler = async (data: any) => {
-    const { content } = data;
+    const { content: contents } = data;
 
     try {
       patchCommnet({
         comment_id: commentId,
         session,
-        body: { content },
+        body: { contents },
       });
       dispatch(
         open({
@@ -53,7 +53,7 @@ export default function CommnetUpdate({
           className="block h-[68px] w-full resize-none rounded border border-transparent bg-Surface p-3 text-sm font-semibold outline-none placeholder:text-OnBackgroundGray focus:border-primary md:h-[108px] md:rounded-xl md:px-4 md:py-5 md:text-base"
           placeholder="댓글을 입력해주세요."
           {...register('content', { value: content })}
-        ></textarea>
+        />
         <button
           type="submit"
           className="mt-2 cursor-pointer rounded bg-primary px-4 py-2 text-sm font-semibold text-OnPrimary md:mt-6 md:text-base"

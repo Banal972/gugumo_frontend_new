@@ -1,61 +1,41 @@
 'use client';
 
-import Alert from '@/components/Modal/Alert';
-import Kakao from '@/components/Modal/Login/oAuth/Kakao';
-import { open } from '@/lib/store/features/modals/modal';
-import { useAppDispatch } from '@/lib/store/hook';
+import Kakao from '@/components/page/auth/Login/oauth/Kakao';
 import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const Login = ({ isOpen, onClose }: LoginProps) => {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
-  const [active, setActive] = useState(false);
-  const dispatch = useAppDispatch();
 
   const onSubmit = async (event: any) => {
     const { username, password } = event;
 
     if (username === '') {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '이메일을 입력해주세요.' },
-        }),
-      );
+      return alert('이메일을 입력해주세요.');
     }
 
     if (password === '') {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '비밀번호을 입력해주세요.' },
-        }),
-      );
+      return alert('비밀번호을 입력해주세요.');
     }
 
     const res = await signIn('credentials', {
-      username: username,
-      password: password,
+      username,
+      password,
       redirect: false,
     });
 
     if (res?.ok) {
       router.push('/');
       return onClose();
-    } else {
-      dispatch(
-        open({
-          Component: Alert,
-          props: { message: '로그인에 실패 하였습니다.' },
-        }),
-      );
     }
+
+    alert('로그인에 실패 하였습니다.');
   };
 
   useEffect(() => {
@@ -64,9 +44,6 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
     if (isOpen) {
       html.style.overflowY = 'hidden';
     }
-    setTimeout(() => {
-      setActive(true);
-    }, 200);
   }, [isOpen]);
 
   return (
@@ -123,7 +100,10 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
             {...register('password')}
           />
           <div className="mt-5 text-center">
-            <button className="h-9 rounded bg-primary px-4 text-sm font-semibold leading-none text-OnPrimary transition-colors hover:bg-[#3f92e0] md:text-base">
+            <button
+              type="submit"
+              className="h-9 rounded bg-primary px-4 text-sm font-semibold leading-none text-OnPrimary transition-colors hover:bg-[#3f92e0] md:text-base"
+            >
               로그인 하기
             </button>
           </div>
@@ -138,9 +118,9 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
           </div>
         </div>
         <div className="mt-[34px] text-center text-[13px] font-medium text-primary">
-          <Link href={'/find'}>비밀번호 찾기</Link>
+          <Link href="/find">비밀번호 찾기</Link>
           <Link
-            href={'/signup'}
+            href="/signup"
             className="relative ml-[10px] pl-[10px] before:absolute before:left-0 before:top-0 before:block before:h-full before:w-[1px] before:bg-primary"
           >
             회원가입 하기

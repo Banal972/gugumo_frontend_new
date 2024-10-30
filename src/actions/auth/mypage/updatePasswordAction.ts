@@ -1,6 +1,7 @@
 'use server';
 
 import { authIntance } from '@/lib/fetchInstance';
+import { Return } from '@/types/get.type';
 
 const updatePasswordAction = async (
   password: string,

@@ -1,8 +1,9 @@
 'use server';
 
 import { baseIntance } from '@/lib/fetchInstance';
+import { Return } from '@/types/get.type';
 
-interface checkActionProps {
+interface CheckActionProps {
   nickname: string;
 }
 
@@ -13,7 +14,7 @@ interface checkActionProps {
 */
 const checkAction = async ({
   nickname,
-}: checkActionProps): Promise<Return<boolean>> => {
+}: CheckActionProps): Promise<Return<boolean>> => {
   const res = await baseIntance(
     `${process.env.API_URL}/api/v1/member/checkDuplicateNickname?nickname=${nickname}`,
   );

@@ -1,6 +1,7 @@
 'use server';
 
 import { authIntance } from '@/lib/fetchInstance';
+import { Content, Return } from '@/types/get.type';
 
 const getRecommend = async (): Promise<Return<Content[]>> => {
   const res = await authIntance(

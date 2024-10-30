@@ -29,12 +29,12 @@ const User = () => {
       {isOpen && (
         <ul className="absolute right-0 top-full mt-[10px] whitespace-nowrap rounded border border-primary bg-background px-[30px] py-5 text-center text-[13px] font-medium">
           <li>
-            <Link href={'/post/list'} className="text-OnSurface">
+            <Link href="/post/list" className="text-OnSurface">
               작성글
             </Link>
           </li>
           <li className="mt-3">
-            <Link href={'/mypage'} className="text-OnSurface">
+            <Link href="/mypage" className="text-OnSurface">
               회원정보
             </Link>
           </li>

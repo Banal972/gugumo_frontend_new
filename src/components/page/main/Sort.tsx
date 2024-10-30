@@ -5,12 +5,26 @@ import { motion } from 'framer-motion';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { IoChevronDown } from 'react-icons/io5';
 
+interface SortProps {
+  sort: string;
+  setQuery: Dispatch<
+    SetStateAction<{
+      q: string;
+      meetingstatus: string;
+      location: string;
+      gametype: string;
+      sort: string;
+      page: number;
+    }>
+  >;
+}
+
 const variants = {
   open: { opacity: 1 },
   closed: { opacity: 0 },
 };
 
-const Sort = ({ sort, setQuery }: Sort) => {
+const Sort = ({ sort, setQuery }: SortProps) => {
   const dropMenuRef = useRef<HTMLUListElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -37,6 +51,7 @@ const Sort = ({ sort, setQuery }: Sort) => {
     <div className="relative z-10 flex justify-end text-[13px]">
       <div className="relative inline-block">
         <p
+          role="none"
           onClick={() => setIsOpen(!isOpen)}
           className="flex cursor-pointer items-center gap-[5.5px]"
         >
@@ -50,6 +65,8 @@ const Sort = ({ sort, setQuery }: Sort) => {
         >
           {Object.entries(SORT).map((sorts) => (
             <li
+              role="none"
+              key={sorts[0]}
               onClick={() => liClickHanlder(sorts[0])}
               className="cursor-pointer"
             >
@@ -63,17 +80,3 @@ const Sort = ({ sort, setQuery }: Sort) => {
 };
 
 export default Sort;
-
-interface Sort {
-  sort: string;
-  setQuery: Dispatch<
-    SetStateAction<{
-      q: string;
-      meetingstatus: string;
-      location: string;
-      gametype: string;
-      sort: string;
-      page: number;
-    }>
-  >;
-}

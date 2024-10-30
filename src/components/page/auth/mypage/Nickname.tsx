@@ -62,7 +62,7 @@ const Nickname = () => {
       <div className="mt-5 flex justify-center md:justify-end">
         <button
           type="submit"
-          className={`inline-flex h-[38px] cursor-pointer items-center justify-center rounded border border-primary bg-OnPrimary px-4 text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base`}
+          className="inline-flex h-[38px] cursor-pointer items-center justify-center rounded border border-primary bg-OnPrimary px-4 text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base"
         >
           개인정보 수정
         </button>

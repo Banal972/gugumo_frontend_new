@@ -1,6 +1,7 @@
 'use server';
 
 import { baseIntance } from '@/lib/fetchInstance';
+import { Return } from '@/types/get.type';
 
 interface joinActionBody {
   username: string;

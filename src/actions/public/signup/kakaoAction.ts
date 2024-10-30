@@ -2,6 +2,7 @@
 
 import { authOptions } from '@/lib/authOptions';
 import { baseIntance } from '@/lib/fetchInstance';
+import { Return } from '@/types/get.type';
 import { getServerSession } from 'next-auth';
 
 interface kakaoActionBody {
