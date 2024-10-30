@@ -4,15 +4,12 @@ import postAction from '@/actions/comment/postAction';
 import EditBtn from '@/components/post/detail/Button/EditBtn';
 import User from '@/components/post/detail/Comment/atom/User';
 import ReplyForm from '@/components/post/detail/Comment/form/ReplyForm';
+import { CmntFormValue, PostidType } from '@/types/cmnt.type';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-type FormValue = {
-  content: string;
-};
-
-const CmntForm = ({ postId }: { postId: string }) => {
+const CmntForm = ({ postId }: { postId: PostidType }) => {
   const { data: session } = useSession() as any;
 
   const {
@@ -20,7 +17,7 @@ const CmntForm = ({ postId }: { postId: string }) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormValue>();
+  } = useForm<CmntFormValue>();
 
   const onSubmitHandler = handleSubmit(async (data) => {
     const { content } = data;

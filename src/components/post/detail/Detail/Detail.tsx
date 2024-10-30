@@ -1,14 +1,15 @@
 import ViewSVG from '@/asset/image/view.svg';
 import BtnList from '@/components/post/detail/BtnList';
+import Grid from '@/components/post/detail/Detail/atom/Grid';
+import GridText from '@/components/post/detail/Detail/atom/GridText';
 import { GAMETYPE, LOCATION, MEETINGTYPE } from '@/constant/card/constant';
 import { DetailData } from '@/types/detail.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ReactNode } from 'react';
 
-const DetailUI = ({ detail }: { detail: DetailData }) => {
+const Detail = ({ detail }: { detail: DetailData }) => {
   return (
     <>
       <Link href="/" className="inline-block">
@@ -121,20 +122,4 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
   );
 };
 
-export default DetailUI;
-
-const Grid = ({ children }: { children: ReactNode }) => {
-  return (
-    <div className="grid grid-cols-[62px_1fr] items-center gap-3 text-xs font-medium text-OnSurface md:grid-cols-[102px_1fr] md:text-lg">
-      {children}
-    </div>
-  );
-};
-
-const GridText = ({ children }: { children: ReactNode }) => {
-  return (
-    <h4 className="box-border flex h-8 w-full items-center justify-center text-nowrap rounded bg-Surface text-center md:h-10 md:px-6 md:py-3">
-      {children}
-    </h4>
-  );
-};
+export default Detail;

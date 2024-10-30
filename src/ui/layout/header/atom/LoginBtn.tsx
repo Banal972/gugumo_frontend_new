@@ -1,6 +1,6 @@
 'use client';
 
-import Login from '@/components/page/auth/Login/Login';
+import Login from '@/components/auth/Login/Login';
 import useModal from '@/hooks/useModal';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';

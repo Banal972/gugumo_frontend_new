@@ -3,30 +3,25 @@
 import postAction from '@/actions/comment/postAction';
 import EditBtn from '@/components/post/detail/Button/EditBtn';
 import ReplyForm from '@/components/post/detail/Comment/form/ReplyForm';
-import { Dispatch, SetStateAction } from 'react';
+import {
+  CmntFormValue,
+  PostidType,
+  SetCommnetShowType,
+} from '@/types/cmnt.type';
 import { useForm } from 'react-hook-form';
 
 interface ReplyFormProps {
   parentId: number;
-  postId: string;
-  setCommnetShow: Dispatch<
-    SetStateAction<{
-      commentId: number;
-      type: string;
-    }>
-  >;
+  postId: PostidType;
+  setCommnetShow: SetCommnetShowType;
 }
-
-type FormValue = {
-  content: string;
-};
 
 const Reply = ({ parentId, postId, setCommnetShow }: ReplyFormProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValue>();
+  } = useForm<CmntFormValue>();
 
   const onSubmitHandler = handleSubmit(async (data) => {
     const { content } = data;

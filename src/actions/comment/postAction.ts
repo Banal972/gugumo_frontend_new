@@ -1,13 +1,13 @@
 'use server';
 
 import authIntance from '@/lib/fetchInstance';
+import { CommentDataType } from '@/types/cmnt.type';
 import { Return } from '@/types/get.type';
 import { revalidateTag } from 'next/cache';
 
-interface PostActionBody {
+interface PostActionBody
+  extends Pick<CommentDataType, 'content' | 'parentCommentId'> {
   postId: string;
-  content: string;
-  parentCommentId?: number;
 }
 
 const postAction = async (body: PostActionBody): Promise<Return<string>> => {

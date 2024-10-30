@@ -1,9 +1,9 @@
 'use client';
 
 import Wrap from '@/ui/layout/Wrap';
-import Alarm from '@/ui/layout/header/Alarm/Alarm';
-import LoginBtn from '@/ui/layout/header/LoginBtn';
-import User from '@/ui/layout/header/User';
+import Alarm from '@/ui/layout/header/atom/Alarm';
+import LoginBtn from '@/ui/layout/header/atom/LoginBtn';
+import User from '@/ui/layout/header/atom/User';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';

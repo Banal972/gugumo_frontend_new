@@ -8,7 +8,7 @@ import Status from '@/components/page/main/Status';
 import Search from '@/ui/form/Search';
 import Paging from '@/ui/layout/Paging';
 import Card from '@/ui/layout/card/Card';
-import SkeletonCard from '@/ui/layout/card/SkeletonCard';
+import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';

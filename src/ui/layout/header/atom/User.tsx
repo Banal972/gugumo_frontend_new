@@ -1,6 +1,6 @@
 'use client';
 
-import LogoutBtn from '@/ui/layout/header/LogoutBtn';
+import LogoutBtn from '@/ui/layout/header/atom/LogoutBtn';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';

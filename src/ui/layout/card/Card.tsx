@@ -3,13 +3,11 @@
 import * as C from '@/constant/card/constant';
 import { Content } from '@/types/get.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';
+import Tag from '@/ui/layout/card/atom/Tag';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 
-const TAGSTYLE =
-  'py-1 px-[6px] whitespace-nowrap rounded text-[13px] leading-none';
-
-export default function Card({ el }: { el: Content }) {
+const Card = ({ el }: { el: Content }) => {
   const router = useRouter();
 
   const clickHandler = (postid: number) => {
@@ -23,17 +21,17 @@ export default function Card({ el }: { el: Content }) {
       onClick={() => clickHandler(el.postId)}
     >
       <div className="flex flex-wrap gap-[5px] leading-none">
-        <div
-          className={`${TAGSTYLE} ${el.meetingStatus !== 'END' ? 'bg-[#BFE0FF] text-[#4378FF]' : 'bg-OnSurface text-background'}`}
+        <Tag
+          className={`${el.meetingStatus !== 'END' ? 'bg-[#BFE0FF] text-[#4378FF]' : 'bg-OnSurface text-background'}`}
         >
           {C.STATUS[el.meetingStatus]}
-        </div>
-        <div className={`${TAGSTYLE} bg-[#D2FFAE] text-[#54A900]`}>
+        </Tag>
+        <Tag className="bg-[#D2FFAE] text-[#54A900]">
           {C.GAMETYPE[el.gameType]}
-        </div>
-        <div className={`${TAGSTYLE} bg-[#FDC9AF] text-[#FF6414]`}>
+        </Tag>
+        <Tag className="bg-[#FDC9AF] text-[#FF6414]">
           {C.LOCATION[el.location]}
-        </div>
+        </Tag>
       </div>
 
       <h4 className="mt-[11px] line-clamp-2 h-10 text-ellipsis break-keep text-base font-medium leading-[1.3]">
@@ -73,4 +71,6 @@ export default function Card({ el }: { el: Content }) {
       </div>
     </div>
   );
-}
+};
+
+export default Card;

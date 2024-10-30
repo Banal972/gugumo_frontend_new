@@ -1,13 +1,11 @@
 'use server';
 
 import authIntance from '@/lib/fetchInstance';
+import { CommentDataType } from '@/types/cmnt.type';
 import { Return } from '@/types/get.type';
 import { revalidateTag } from 'next/cache';
 
-interface PatchActionBody {
-  commentId: number;
-  content: string;
-}
+type PatchActionBody = Pick<CommentDataType, 'commentId' | 'content'>;
 
 const patchAction = async (body: PatchActionBody): Promise<Return<string>> => {
   const res = await authIntance(

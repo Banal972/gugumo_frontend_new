@@ -3,32 +3,23 @@
 import patchAction from '@/actions/comment/patchAction';
 import EditBtn from '@/components/post/detail/Button/EditBtn';
 import ReplyForm from '@/components/post/detail/Comment/form/ReplyForm';
-import { Dispatch, SetStateAction } from 'react';
+import { CmntFormValue, SetCommnetShowType } from '@/types/cmnt.type';
 import { useForm } from 'react-hook-form';
 
 interface CmntUpdateProps {
-  setCommnetShow: Dispatch<
-    SetStateAction<{
-      commentId: number;
-      type: string;
-    }>
-  >;
+  setCommnetShow: SetCommnetShowType;
   commentId: number;
   value: string;
 }
-
-type FormValue = {
-  content: string;
-};
 
 const CmntUpdate = ({ value, commentId, setCommnetShow }: CmntUpdateProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValue>();
+  } = useForm<CmntFormValue>();
 
-  const onSubmitHandler = handleSubmit(async (data: any) => {
+  const onSubmitHandler = handleSubmit(async (data) => {
     const { content } = data;
 
     const res = await patchAction({

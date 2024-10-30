@@ -3,7 +3,7 @@
 import { GAMETYPE, LOCATION, STATUS } from '@/constant/card/constant';
 import { Content } from '@/types/get.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';
-import SkeletonCard from '@/ui/layout/card/SkeletonCard';
+import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { Suspense, useRef } from 'react';

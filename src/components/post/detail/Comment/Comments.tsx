@@ -1,9 +1,10 @@
 import getAction from '@/actions/comment/getAction';
 import CmntForm from '@/components/post/detail/Comment/CmntForm';
 import Cmnt from '@/components/post/detail/Comment/atom/Cmnt';
+import { PostidType } from '@/types/cmnt.type';
 
 interface CommentsProps {
-  postid: string;
+  postid: PostidType;
 }
 
 const Comments = async ({ postid }: CommentsProps) => {

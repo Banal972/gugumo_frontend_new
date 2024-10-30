@@ -2,7 +2,7 @@
 
 import getActions from '@/actions/auth/bookmark/getAction';
 import Wrap from '@/ui/layout/Wrap';
-import SkeletonCard from '@/ui/layout/card/SkeletonCard';
+import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
 import List from '@/ui/page/auth/List';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';

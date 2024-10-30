@@ -1,13 +1,14 @@
 import get from '@/actions/meeting/detailActions';
 import Comments from '@/components/post/detail/Comment/Comments';
-import DetailUI from '@/components/post/detail/DetailUI';
+import Detail from '@/components/post/detail/Detail/Detail';
 import Skeleton from '@/components/post/detail/SkeletonUI/Skeleton';
+import { PostidType } from '@/types/cmnt.type';
 import Wrap from '@/ui/layout/Wrap';
 import Recommends from '@/ui/layout/recommends/Recommends';
 import { Suspense } from 'react';
 
 interface DetailProps {
-  params: { postid: string };
+  params: { postid: PostidType };
 }
 
 export const generateMetadata = async ({ params }: DetailProps) => {
@@ -17,14 +18,14 @@ export const generateMetadata = async ({ params }: DetailProps) => {
   };
 };
 
-const Detail = async ({ params }: DetailProps) => {
+const DetailPage = async ({ params }: DetailProps) => {
   const detail = await get(params.postid);
 
   return (
     <main className="pb-36 pt-10 md:pb-40 md:pt-[108px]">
       <Wrap>
         <Suspense fallback={<Skeleton />}>
-          <DetailUI detail={detail.data} />
+          <Detail detail={detail.data} />
           <Recommends />
           <Comments postid={params.postid} />
         </Suspense>
@@ -33,4 +34,4 @@ const Detail = async ({ params }: DetailProps) => {
   );
 };
 
-export default Detail;
+export default DetailPage;
