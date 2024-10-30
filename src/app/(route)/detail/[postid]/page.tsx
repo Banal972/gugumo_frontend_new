@@ -1,4 +1,4 @@
-import get from '@/actions/public/detailActions';
+import get from '@/actions/meeting/detailActions';
 import Comments from '@/components/page/post/detail/Comment/Comments';
 import DetailUI from '@/components/page/post/detail/DetailUI';
 import Skeleton from '@/components/page/post/detail/SkeletonUI/Skeleton';

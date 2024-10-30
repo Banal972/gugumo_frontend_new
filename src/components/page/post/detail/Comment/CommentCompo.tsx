@@ -1,29 +1,19 @@
 'use client';
 
-import Alert from '@/components/Modal/Alert';
-import Confirm from '@/components/Modal/Confirm';
-import Success from '@/components/Modal/Success';
 import CommnetUpdate from '@/components/page/post/detail/Comment/CommnetUpdate';
 import ReplyForm from '@/components/page/post/detail/Comment/ReplyForm';
 import User from '@/components/page/post/detail/Comment/User';
 import { commentOptions } from '@/hooks/useComment';
-import { open } from '@/lib/store/features/modals/modal';
-import { useAppDispatch } from '@/lib/store/hook';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import 'moment/locale/ko';
+import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 
-const CommentCompo = ({
-  session,
-  postid,
-}: {
-  session: any;
-  postid: string;
-}) => {
-  const dispatch = useAppDispatch();
+const CommentCompo = ({ postid }: { postid: string }) => {
+  const { data: session } = useSession() as any;
 
-  const { data: comment } = useQuery(commentOptions({ session, postid }));
+  const { data: comment } = useQuery(commentOptions({ postid }));
 
   const [commnetShow, setCommnetShow] = useState({
     commentId: 0,
@@ -31,14 +21,7 @@ const CommentCompo = ({
   });
 
   const onReplyShowHandler = (commentId: number) => {
-    if (!session || !session.accessToken) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '로그인을 해야합니다.' },
-        }),
-      );
-    }
+    if (!session || !session.accessToken) return alert('로그인을 해야합니다.');
 
     if (commnetShow.commentId === commentId && commnetShow.type === 'reply') {
       return setCommnetShow({
@@ -54,21 +37,7 @@ const CommentCompo = ({
   };
 
   const deleteHandler = async (commentId: number) => {
-    console.log(commentId);
-    const onClick = () => {
-      try {
-        // deleteComment({ session, comment_id: commentId });
-        dispatch(
-          open({
-            Component: Success,
-            props: { message: '삭제가 완료 되었습니다.' },
-          }),
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    dispatch(open({ Component: Confirm, props: { onClick } }));
+    alert('삭제가 완료 되었습니다.');
   };
 
   const onEditShowHandler = (commentId: number) => {
@@ -183,12 +152,14 @@ const CommentCompo = ({
                         {reply.yours && (
                           <>
                             <button
+                              type="button"
                               onClick={() => onEditShowHandler(reply.commentId)}
                               className="cursor-pointer text-[13px] text-OnBackgroundGray"
                             >
                               수정
                             </button>
                             <button
+                              type="button"
                               onClick={() => deleteHandler(reply.commentId)}
                               className="cursor-pointer text-[13px] text-OnBackgroundGray"
                             >

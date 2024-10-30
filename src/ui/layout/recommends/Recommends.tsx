@@ -1,4 +1,4 @@
-import getRecommend from '@/actions/public/recommendAction';
+import getRecommend from '@/actions/meeting/recommendAction';
 import Slide from '@/ui/layout/recommends/Slide';
 import Image from 'next/image';
 

@@ -1,117 +1,28 @@
+import deleteAction from '@/actions/comment/deleteAction';
+import getAction from '@/actions/comment/getAction';
+import patchAction from '@/actions/comment/patchAction';
+import postAction from '@/actions/comment/postAction';
 import {
   queryOptions,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
 
-interface CommentDataT {
-  commentId: number;
-  author: string;
-  content: string;
-  createdDateTime: string;
-  parentCommentId?: number;
-  orderNum: number;
-  notRoot: boolean;
-  yours: boolean;
-  authorExpired: boolean;
-}
-
-/* interface CommentT {
-  status: string;
-  length: number;
-  comments: CommentDataT[];
-  replys: CommentDataT[];
-  message?: any;
-} */
-
 interface CommentOptionsT {
-  session: any;
   postid: string;
 }
 
-const fetchCommnets = async ({
-  queryKey,
-}: {
-  queryKey: [string, any, string];
-}) => {
-  const [, session, postid] = queryKey;
-  const response = await fetch(`/back/api/v1/comment/${postid}`, {
-    headers: {
-      Authorization: session?.accessToken,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('등록에 실패 하였습니다.');
-  }
-  const data = await response.json();
-  const comments: CommentDataT[] = data.data.filter(
-    (el: CommentDataT) => !el.parentCommentId,
-  );
-  const replys: CommentDataT[] = data.data.filter(
-    (el: CommentDataT) => el.parentCommentId,
-  );
-
-  return {
-    status: data.status,
-    length: data.data.length,
-    comments,
-    replys,
-    message: data.message,
-  };
-};
-
-const postCommnet = async (newComment: any) => {
-  const response = await fetch('/back/api/v1/comment/new', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: newComment.session.accessToken,
-    },
-    body: JSON.stringify(newComment.body),
-  });
-  if (!response.ok) {
-    throw new Error('등록에 실패 하였습니다.');
-  }
-};
-
-const patchCommnet = async (data: any) => {
-  const response = await fetch(`/back/api/v1/comment/${data.comment_id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: data.session.accessToken,
-    },
-    body: JSON.stringify(data.body),
-  });
-  if (!response.ok) {
-    throw new Error('수정에 실패했습니다.');
-  }
-};
-
-const deleteComment = async (data: any) => {
-  const response = await fetch(`/back/api/v1/comment/${data.comment_id}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: data.session.accessToken,
-    },
-  });
-  if (!response.ok) {
-    throw new Error('삭제에 실패했습니다.');
-  }
-};
-
-export const commentOptions = ({ session, postid }: CommentOptionsT) => {
+export const commentOptions = ({ postid }: CommentOptionsT) => {
   return queryOptions({
-    queryKey: ['commnet', session, postid],
-    queryFn: fetchCommnets,
+    queryKey: ['commnet', postid],
+    queryFn: () => getAction(postid),
   });
 };
 
 export const usePostCommnet = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (newComment: any) => postCommnet(newComment),
+    mutationFn: (newComment: any) => postAction(newComment),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['commnet'],
@@ -123,7 +34,7 @@ export const usePostCommnet = () => {
 export const useDeleteComment = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => deleteComment(data),
+    mutationFn: (data: any) => deleteAction(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['commnet'],
@@ -135,14 +46,11 @@ export const useDeleteComment = () => {
 export const usePatchCommnet = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => patchCommnet(data),
+    mutationFn: (data: any) => patchAction(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['commnet'],
       });
-    },
-    onError: (err) => {
-      console.log(err);
     },
   });
 };

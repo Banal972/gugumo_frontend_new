@@ -1,6 +1,6 @@
 'use client';
 
-import get from '@/actions/public/listAction';
+import get from '@/actions/meeting/listAction';
 import Gametype from '@/components/page/main/Gametype';
 import Location from '@/components/page/main/Location';
 import Sort from '@/components/page/main/Sort';
