@@ -12,7 +12,7 @@ const authIntance = async (url: string, options: RequestInit = {}) => {
   const AuthorizationOptions: RequestInit = {
     headers: {
       ...headers,
-      Authorization: session.accessToken,
+      Authorization: session?.accessToken,
     },
     ...restOptions,
   };

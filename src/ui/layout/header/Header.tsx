@@ -15,7 +15,12 @@ const Header = () => {
     <header className="relative z-20 mt-6 w-full md:mt-10">
       <Wrap className="flex items-center justify-between">
         <Link href="/" className="w-[91px] md:w-[172px]">
-          <Image src="/asset/image/logo.svg" alt="로고" />
+          <Image
+            src="/asset/image/logo.svg"
+            alt="로고"
+            width={172}
+            height={0}
+          />
         </Link>
 
         {!session?.accessToken && <LoginBtn />}

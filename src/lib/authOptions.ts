@@ -90,7 +90,7 @@ const authOptions: NextAuthOptions = {
         currentToken.type = account.type;
       }
 
-      return token;
+      return currentToken;
     },
     async session({ token }: any): Promise<any> {
       const session = {} as any;
