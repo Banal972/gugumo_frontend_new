@@ -1,18 +1,19 @@
-"use client";
-import joinAction from "@/actions/public/signup/joinAction";
-import kakaoAction from "@/actions/public/signup/kakaoAction";
-import mailCheckAction from "@/actions/public/signup/mailCheckAction";
-import mailSendAction from "@/actions/public/signup/mailSendAction";
-import Wrap from "@/ui/layout/Wrap";
-import Alert from "@/components/Modal/Alert";
-import Gametype from "@/components/page/auth/signup/Gametype";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCheckmarkOutline } from "react-icons/io5";
+'use client';
+
+import joinAction from '@/actions/public/signup/joinAction';
+import kakaoAction from '@/actions/public/signup/kakaoAction';
+import mailCheckAction from '@/actions/public/signup/mailCheckAction';
+import mailSendAction from '@/actions/public/signup/mailSendAction';
+import Alert from '@/components/Modal/Alert';
+import Gametype from '@/components/page/auth/signup/Gametype';
+import { open } from '@/lib/store/features/modals/modal';
+import { useAppDispatch } from '@/lib/store/hook';
+import Wrap from '@/ui/layout/Wrap';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCheckmarkOutline } from 'react-icons/io5';
 
 const SignupPage = () => {
   const { data: session } = useSession() as any;
@@ -33,27 +34,27 @@ const SignupPage = () => {
   const mailSendHandler = async () => {
     if (isSend) return;
     const { username } = getValues();
-    if (!username) return window.alert("메일을 입력해주세요.");
+    if (!username) return window.alert('메일을 입력해주세요.');
     const res = await mailSendAction(username);
     const { status } = res;
-    if (status === "success") {
-      window.alert("인증번호 메일을 보냈습니다.");
+    if (status === 'success') {
+      window.alert('인증번호 메일을 보냈습니다.');
       setIsSend(true);
     }
   };
 
   const mailAuthCheckHanlder = async () => {
-    if (isCheck) return window.alert("이미 인증처리가 완료 되어있습니다.");
+    if (isCheck) return window.alert('이미 인증처리가 완료 되어있습니다.');
     const { username, emailAuthNum } = getValues();
-    if (!emailAuthNum) return window.alert("인증번호를 입력해주세요.");
+    if (!emailAuthNum) return window.alert('인증번호를 입력해주세요.');
 
     const res = await mailCheckAction({ username, emailAuthNum });
 
     const { status } = res;
 
-    if (status === "success") {
+    if (status === 'success') {
       setIsCheck(true);
-      return window.alert("인증이 완료 되었습니다.");
+      return window.alert('인증이 완료 되었습니다.');
     }
   };
 
@@ -89,7 +90,7 @@ const SignupPage = () => {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "닉네임을 입력해주세요" },
+          props: { message: '닉네임을 입력해주세요' },
         }),
       );
     }
@@ -98,7 +99,7 @@ const SignupPage = () => {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "서비스 이용약관에 동의해주세요." },
+          props: { message: '서비스 이용약관에 동의해주세요.' },
         }),
       );
     }
@@ -107,7 +108,7 @@ const SignupPage = () => {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "개인정보 수집 및 이용에 동의해주세요" },
+          props: { message: '개인정보 수집 및 이용에 동의해주세요' },
         }),
       );
     }
@@ -119,7 +120,7 @@ const SignupPage = () => {
         return dispatch(
           open({
             Component: Alert,
-            props: { message: "이메일을 입력해주세요" },
+            props: { message: '이메일을 입력해주세요' },
           }),
         );
       }
@@ -128,7 +129,7 @@ const SignupPage = () => {
         return dispatch(
           open({
             Component: Alert,
-            props: { message: "이메일 인증이 필요합니다." },
+            props: { message: '이메일 인증이 필요합니다.' },
           }),
         );
       }
@@ -137,7 +138,7 @@ const SignupPage = () => {
         return dispatch(
           open({
             Component: Alert,
-            props: { message: "인증번호를 입력해주세요" },
+            props: { message: '인증번호를 입력해주세요' },
           }),
         );
       }
@@ -146,7 +147,7 @@ const SignupPage = () => {
         return dispatch(
           open({
             Component: Alert,
-            props: { message: "비밀번호를 입력해주세요" },
+            props: { message: '비밀번호를 입력해주세요' },
           }),
         );
       }
@@ -155,7 +156,7 @@ const SignupPage = () => {
         return dispatch(
           open({
             Component: Alert,
-            props: { message: "비밀번호가 서로 다릅니다." },
+            props: { message: '비밀번호가 서로 다릅니다.' },
           }),
         );
       }
@@ -164,7 +165,7 @@ const SignupPage = () => {
         username,
         nickname,
         password,
-        favoriteSports: likeGame.join(","),
+        favoriteSports: likeGame.join(','),
         isAgreeTermsUse: isService.isAgreeTermsUse,
         isAgreeCollectingUsingPersonalInformation:
           isService.isAgreeCollectingUsingPersonalInformation,
@@ -176,14 +177,14 @@ const SignupPage = () => {
 
       if (!data) return window.alert(message);
 
-      window.alert("회원가입에 성공하였습니다.");
-      return router.push("/");
+      window.alert('회원가입에 성공하였습니다.');
+      return router.push('/');
     }
 
     if (session) {
       const res = await kakaoAction({
         nickname,
-        favoriteSports: likeGame.join(","),
+        favoriteSports: likeGame.join(','),
         isAgreeTermsUse: isService.isAgreeTermsUse,
         isAgreeCollectingUsingPersonalInformation:
           isService.isAgreeCollectingUsingPersonalInformation,
@@ -194,17 +195,17 @@ const SignupPage = () => {
 
       if (!data) return window.alert(message);
 
-      window.alert("회원가입에 성공하였습니다.");
+      window.alert('회원가입에 성공하였습니다.');
 
-      signIn("kakao", {
-        callbackUrl: "/",
+      signIn('kakao', {
+        callbackUrl: '/',
       });
     }
   };
 
   useEffect(() => {
-    setValue("nickname", session?.nickname);
-    setValue("username", session?.username);
+    setValue('nickname', session?.nickname);
+    setValue('username', session?.username);
   }, [session]);
 
   return (
@@ -223,14 +224,14 @@ const SignupPage = () => {
                 type="text"
                 placeholder="닉네임"
                 className="sign-input"
-                {...register("nickname")}
+                {...register('nickname')}
               />
               <div className="relative">
                 <input
                   type="text"
                   placeholder="이메일을 입력하세요."
                   className="sign-input"
-                  {...register("username", {
+                  {...register('username', {
                     disabled: session ? true : false,
                   })}
                 />
@@ -238,9 +239,9 @@ const SignupPage = () => {
                   <button
                     type="button"
                     onClick={mailSendHandler}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md border border-primary px-2 py-1 text-[13px] font-normal ${!isSend ? "bg-OnPrimary text-primary" : "bg-primary text-OnPrimary"}`}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md border border-primary px-2 py-1 text-[13px] font-normal ${!isSend ? 'bg-OnPrimary text-primary' : 'bg-primary text-OnPrimary'}`}
                   >
-                    {!isSend ? "인증요청" : "인증요청됨"}
+                    {!isSend ? '인증요청' : '인증요청됨'}
                   </button>
                 )}
               </div>
@@ -250,30 +251,30 @@ const SignupPage = () => {
                     type="text"
                     placeholder="인증번호를 입력하세요"
                     className="sign-input"
-                    {...register("emailAuthNum")}
+                    {...register('emailAuthNum')}
                   />
                   <button
                     type="button"
                     onClick={mailAuthCheckHanlder}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md border border-primary px-2 py-1 text-[13px] font-normal ${!isCheck ? "bg-OnPrimary text-primary" : "bg-primary text-OnPrimary"}`}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md border border-primary px-2 py-1 text-[13px] font-normal ${!isCheck ? 'bg-OnPrimary text-primary' : 'bg-primary text-OnPrimary'}`}
                   >
-                    {!isCheck ? "확인" : "확인됨"}
+                    {!isCheck ? '확인' : '확인됨'}
                   </button>
                 </div>
               )}
-              {(!session || session.type !== "oauth") && (
+              {(!session || session.type !== 'oauth') && (
                 <>
                   <input
                     type="password"
                     placeholder="비밀번호"
                     className="sign-input"
-                    {...register("password")}
+                    {...register('password')}
                   />
                   <input
                     type="password"
                     placeholder="비밀번호 확인"
                     className="sign-input"
-                    {...register("confirmPW")}
+                    {...register('confirmPW')}
                   />
                 </>
               )}
@@ -315,21 +316,21 @@ const SignupPage = () => {
                 <div className="mt-4 border-t border-t-white px-5 pt-6 md:mt-6 md:px-6">
                   {[
                     {
-                      id: "isAgreeTermsUse",
-                      label: "서비스 이용약관 동의 (필수)",
+                      id: 'isAgreeTermsUse',
+                      label: '서비스 이용약관 동의 (필수)',
                     },
                     {
-                      id: "isAgreeCollectingUsingPersonalInformation",
-                      label: "개인정보 수집 및 이용 동의 (필수)",
+                      id: 'isAgreeCollectingUsingPersonalInformation',
+                      label: '개인정보 수집 및 이용 동의 (필수)',
                     },
                     {
-                      id: "isAgreeMarketing",
-                      label: "마케팅 수신 동의 (선택)",
+                      id: 'isAgreeMarketing',
+                      label: '마케팅 수신 동의 (선택)',
                     },
                   ].map(({ id, label }, index) => (
                     <div
                       key={index}
-                      className={`flex items-center ${index !== 0 ? "mt-4" : ""}`}
+                      className={`flex items-center ${index !== 0 ? 'mt-4' : ''}`}
                     >
                       <div
                         className="flex cursor-pointer gap-3"

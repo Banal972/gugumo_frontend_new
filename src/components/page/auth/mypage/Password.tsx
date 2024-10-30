@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import updatePasswordAction from "@/actions/auth/mypage/updatePasswordAction";
-import { HTMLInputTypeAttribute } from "react";
-import { SubmitHandler, useForm, UseFormRegisterReturn } from "react-hook-form";
+import updatePasswordAction from '@/actions/auth/mypage/updatePasswordAction';
+import { HTMLInputTypeAttribute } from 'react';
+import { SubmitHandler, useForm, UseFormRegisterReturn } from 'react-hook-form';
 
 type FormValues = {
   password: string;
@@ -21,21 +21,21 @@ export default function Password() {
   const onSubmitHanlder: SubmitHandler<FormValues> = async (data) => {
     const { password, pwConfirm } = data;
 
-    if (password === "" || pwConfirm === "")
-      return window.alert("비밀번호를 입력하지 않았습니다.");
+    if (password === '' || pwConfirm === '')
+      return window.alert('비밀번호를 입력하지 않았습니다.');
     if (password !== pwConfirm)
-      return window.alert("비밀번호가 동일하지 않습니다.");
+      return window.alert('비밀번호가 동일하지 않습니다.');
 
     const res = await updatePasswordAction(password);
 
     if (!res.data) {
-      window.alert("비밀번호 변경에 실패하였습니다.");
+      window.alert('비밀번호 변경에 실패하였습니다.');
       return;
     }
 
-    window.alert("비밀번호가 변경 되었습니다.");
-    setValue("password", "");
-    setValue("pwConfirm", "");
+    window.alert('비밀번호가 변경 되었습니다.');
+    setValue('password', '');
+    setValue('pwConfirm', '');
   };
 
   return (
@@ -51,7 +51,7 @@ export default function Password() {
               <Input
                 type="password"
                 placeholder="비밀번호를 입력해주세요."
-                register={register("password")}
+                register={register('password')}
               />
             </div>
           </div>
@@ -63,7 +63,7 @@ export default function Password() {
               <Input
                 type="password"
                 placeholder="입력한 비밀번호를 입력해주세요."
-                register={register("pwConfirm")}
+                register={register('pwConfirm')}
               />
             </div>
           </div>

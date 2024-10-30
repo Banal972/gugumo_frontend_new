@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { authIntance } from "@/lib/fetchInstance";
+import { authIntance } from '@/lib/fetchInstance';
 
 interface mailCheckActionProps {
   username: string;
@@ -12,7 +12,7 @@ const mailCheckAction = async ({
   emailAuthNum,
 }: mailCheckActionProps): Promise<Return<string>> => {
   const res = await authIntance(`${process.env.API_URL}/api/v1/mailAuthCheck`, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({ email: username, emailAuthNum }),
   });
   return res.json();

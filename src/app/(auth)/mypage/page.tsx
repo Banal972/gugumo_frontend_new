@@ -1,16 +1,16 @@
-import getAction from "@/actions/auth/mypage/getAction";
-import Wrap from "@/ui/layout/Wrap";
-import DeleteUser from "@/components/page/auth/mypage/DeleteUser";
-import Nickname from "@/components/page/auth/mypage/Nickname";
-import Password from "@/components/page/auth/mypage/Password";
-import SkeletonNickname from "@/components/page/auth/mypage/SkeletonUI/SkeletonNickname";
-import SkeletonPassword from "@/components/page/auth/mypage/SkeletonUI/SkeletonPassword";
-import SkeletonUser from "@/components/page/auth/mypage/SkeletonUI/SkeletonUser";
-import { GAMETYPE } from "@/constant/card/constant";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
-import Image from "next/image";
-import { Suspense } from "react";
+import getAction from '@/actions/auth/mypage/getAction';
+import DeleteUser from '@/components/page/auth/mypage/DeleteUser';
+import Nickname from '@/components/page/auth/mypage/Nickname';
+import Password from '@/components/page/auth/mypage/Password';
+import SkeletonNickname from '@/components/page/auth/mypage/SkeletonUI/SkeletonNickname';
+import SkeletonPassword from '@/components/page/auth/mypage/SkeletonUI/SkeletonPassword';
+import SkeletonUser from '@/components/page/auth/mypage/SkeletonUI/SkeletonUser';
+import { GAMETYPE } from '@/constant/card/constant';
+import { authOptions } from '@/lib/authOptions';
+import Wrap from '@/ui/layout/Wrap';
+import { getServerSession } from 'next-auth';
+import Image from 'next/image';
+import { Suspense } from 'react';
 
 const Mypage = async () => {
   const session = (await getServerSession(authOptions)) as any;
@@ -42,7 +42,7 @@ const Mypage = async () => {
                 </p>
               </div>
               <div className="flex gap-[7px]">
-                {res.data.favoriteSports.split(",").map((el) => (
+                {res.data.favoriteSports.split(',').map((el) => (
                   <p
                     key={el}
                     className="rounded-full border border-OnSurface px-2 py-1 text-[13px] font-medium leading-none text-OnSurface"
@@ -61,7 +61,7 @@ const Mypage = async () => {
           <Nickname />
         </Suspense>
 
-        {session?.type !== "oauth" && (
+        {session?.type !== 'oauth' && (
           <Suspense fallback={<SkeletonPassword />}>
             <Password />
           </Suspense>

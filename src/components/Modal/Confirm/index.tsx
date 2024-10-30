@@ -1,6 +1,7 @@
-"use client";
-import Image from "next/image";
-import React, { useEffect } from "react";
+'use client';
+
+import Image from 'next/image';
+import React, { useEffect } from 'react';
 
 const Confirm = ({
   isOpen,
@@ -14,10 +15,10 @@ const Confirm = ({
   message?: string;
 }) => {
   useEffect(() => {
-    const html = document.querySelector("html");
+    const html = document.querySelector('html');
     if (!html) return;
     if (isOpen) {
-      html.style.overflowY = "hidden";
+      html.style.overflowY = 'hidden';
     }
   }, [isOpen]);
 
@@ -26,14 +27,14 @@ const Confirm = ({
       <div className="absolute left-1/2 top-1/2 z-50 w-full max-w-[239px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-primary bg-white px-[23px] py-[18px] text-center">
         <Image
           className="mx-auto"
-          src={"/asset/image/modal/confirm.png"}
+          src={'/asset/image/modal/confirm.png'}
           width={43}
           height={43}
           alt="에러창"
         />
 
         <p className="mt-4 whitespace-nowrap text-base font-medium leading-[21px]">
-          {message ? message : "댓글을 삭제 하시겠습니까?"}
+          {message ? message : '댓글을 삭제 하시겠습니까?'}
         </p>
 
         <div className="mt-[29px] flex justify-center gap-[7px]">

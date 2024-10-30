@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { SORT } from "@/constant/card/constant";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { IoChevronDown } from "react-icons/io5";
-import { motion } from "framer-motion";
+import { SORT } from '@/constant/card/constant';
+import { motion } from 'framer-motion';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { IoChevronDown } from 'react-icons/io5';
 
 const variants = {
   open: { opacity: 1 },
@@ -28,9 +28,9 @@ const Sort = ({ sort, setQuery }: Sort) => {
       // useRef current에 담긴 엘리먼트 바깥을 클릭 시 드롭메뉴 닫힘
       if (isOpen && !dropMenuRef.current.contains(e.target)) setIsOpen(false);
     };
-    document.addEventListener("click", handleOutsideClose);
+    document.addEventListener('click', handleOutsideClose);
 
-    return () => document.removeEventListener("click", handleOutsideClose);
+    return () => document.removeEventListener('click', handleOutsideClose);
   }, [isOpen]);
 
   return (
@@ -44,9 +44,9 @@ const Sort = ({ sort, setQuery }: Sort) => {
         </p>
         <motion.ul
           ref={dropMenuRef}
-          animate={isOpen ? "open" : "closed"}
+          animate={isOpen ? 'open' : 'closed'}
           variants={variants}
-          className={`absolute left-1/2 top-full box-border flex -translate-x-1/2 flex-col gap-2 whitespace-nowrap rounded-lg border border-Surface bg-white px-[15px] py-5 text-center ${isOpen ? "pointer-events-auto" : "pointer-events-none"}`}
+          className={`absolute left-1/2 top-full box-border flex -translate-x-1/2 flex-col gap-2 whitespace-nowrap rounded-lg border border-Surface bg-white px-[15px] py-5 text-center ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >
           {Object.entries(SORT).map((sorts) => (
             <li

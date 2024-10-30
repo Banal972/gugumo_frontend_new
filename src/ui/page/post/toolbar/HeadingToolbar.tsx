@@ -1,7 +1,7 @@
-import ToolbarBtn from "@/ui/page/post/toolbar/ToolbarBtn";
-import { LuHeading1, LuHeading2, LuHeading3 } from "react-icons/lu";
-import { PiParagraph } from "react-icons/pi";
-import { Editor } from "@tiptap/react";
+import ToolbarBtn from '@/ui/page/post/toolbar/ToolbarBtn';
+import { Editor } from '@tiptap/react';
+import { LuHeading1, LuHeading2, LuHeading3 } from 'react-icons/lu';
+import { PiParagraph } from 'react-icons/pi';
 
 interface HeadingToolbarProps {
   editor: Editor;

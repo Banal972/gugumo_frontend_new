@@ -1,6 +1,7 @@
-"use client";
-import Image from "next/image";
-import React, { useEffect } from "react";
+'use client';
+
+import Image from 'next/image';
+import React, { useEffect } from 'react';
 
 const Alert = ({
   isOpen,
@@ -12,10 +13,10 @@ const Alert = ({
   message: string;
 }) => {
   useEffect(() => {
-    const html = document.querySelector("html");
+    const html = document.querySelector('html');
     if (!html) return;
     if (isOpen) {
-      html.style.overflowY = "hidden";
+      html.style.overflowY = 'hidden';
     }
   }, [isOpen]);
 
@@ -24,7 +25,7 @@ const Alert = ({
       <div className="absolute left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-Error bg-white px-[43px] py-[18px] text-center">
         <Image
           className="mx-auto"
-          src={"/asset/image/modal/error.png"}
+          src={'/asset/image/modal/error.png'}
           width={43}
           height={43}
           alt="에러창"

@@ -1,15 +1,15 @@
-import ToolbarBtn from "@/ui/page/post/toolbar/ToolbarBtn";
-import { useEffect, useRef, useState } from "react";
-import { ChromePicker } from "react-color";
-import { RiMarkPenLine, RiPaletteLine } from "react-icons/ri";
-import { Editor } from "@tiptap/react";
+import ToolbarBtn from '@/ui/page/post/toolbar/ToolbarBtn';
+import { Editor } from '@tiptap/react';
+import { useEffect, useRef, useState } from 'react';
+import { ChromePicker } from 'react-color';
+import { RiMarkPenLine, RiPaletteLine } from 'react-icons/ri';
 
 const StyleToolbar = ({ editor }: StyleToolbarProps) => {
-  const [highlight, setHighlight] = useState("#000");
+  const [highlight, setHighlight] = useState('#000');
   const [openHighlight, setOpenHighlight] = useState<boolean>(false);
   const highlightRef = useRef<HTMLDivElement>(null);
 
-  const [color, setColor] = useState<string>("#000");
+  const [color, setColor] = useState<string>('#000');
   const [openColor, setOpenColor] = useState<boolean>(false);
   const colorRef = useRef<HTMLDivElement>(null);
 

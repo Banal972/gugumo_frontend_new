@@ -1,47 +1,47 @@
-"use client"
-import { close } from "@/lib/store/features/modals/modal";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hook";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react"
-import { createPortal } from "react-dom";
+'use client';
+
+import { close } from '@/lib/store/features/modals/modal';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hook';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function CustomModal() {
-  
   const params = useParams();
-  const modals = useAppSelector(state=>state.modal);
+  const modals = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
-  const [mounted,setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     const html = document.querySelector('html');
-    if(!html) return;
-    html.style.overflowY = "auto";
+    if (!html) return;
+    html.style.overflowY = 'auto';
     dispatch(close());
-  },[params,dispatch]);
+  }, [params, dispatch]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setMounted(true);
-  },[]);
+  }, []);
 
-  if(!mounted){
+  if (!mounted) {
     return null;
   }
 
   return createPortal(
     <>
-      {
-       modals.map((info,index)=>{
-        const {Component,isOpen,props} = info;
-        const onClose = ()=>{
+      {modals.map((info, index) => {
+        const { Component, isOpen, props } = info;
+        const onClose = () => {
           const html = document.querySelector('html');
-          if(!html) return;
-          html.style.overflowY = "auto";
+          if (!html) return;
+          html.style.overflowY = 'auto';
           dispatch(close(Component));
-        }
-        return <Component key={index} isOpen={isOpen} onClose={onClose} {...props}/>
-       }) 
-      }
+        };
+        return (
+          <Component key={index} isOpen={isOpen} onClose={onClose} {...props} />
+        );
+      })}
     </>,
-    document.body
-  )
+    document.body,
+  );
 }

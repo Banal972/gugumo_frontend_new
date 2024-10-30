@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import moment from "moment";
-import { ReactNode, useEffect, useState } from "react";
-import Calendar from "react-calendar";
-import { useForm } from "react-hook-form";
-import DownIcon from "@/asset/image/down.svg";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/lib/store/hook";
-import { open } from "@/lib/store/features/modals/modal";
-import Alert from "@/components/Modal/Alert";
-import Success from "@/components/Modal/Success";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEditor, EditorContent, Editor, BubbleMenu } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
-import Underline from "@tiptap/extension-underline";
-import { Color } from "@tiptap/extension-color";
-import TextStyle from "@tiptap/extension-text-style";
-import Toolbar from "@/ui/page/post/toolbar/Toolbar";
-import TextAlign from "@tiptap/extension-text-align";
-import Heading from "@tiptap/extension-heading";
-import Highlight from "@tiptap/extension-highlight";
-import Link from "@tiptap/extension-link";
+import DownIcon from '@/asset/image/down.svg';
+import Alert from '@/components/Modal/Alert';
+import Success from '@/components/Modal/Success';
+import { open } from '@/lib/store/features/modals/modal';
+import { useAppDispatch } from '@/lib/store/hook';
+import Toolbar from '@/ui/page/post/toolbar/Toolbar';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Color } from '@tiptap/extension-color';
+import Heading from '@tiptap/extension-heading';
+import Highlight from '@tiptap/extension-highlight';
+import Link from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
+import TextAlign from '@tiptap/extension-text-align';
+import TextStyle from '@tiptap/extension-text-style';
+import Underline from '@tiptap/extension-underline';
+import { useEditor, EditorContent, Editor, BubbleMenu } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { ReactNode, useEffect, useState } from 'react';
+import Calendar from 'react-calendar';
+import { useForm } from 'react-hook-form';
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -37,7 +37,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
     new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
   );
   const [selectDays, setSelectDays] = useState<string[]>([]);
-  const meetingTypeWatch = watch("meetingType", "SHORT");
+  const meetingTypeWatch = watch('meetingType', 'SHORT');
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -45,10 +45,10 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       // editorRef.current?.getInstance().setMarkdown(edit.content);
       Object.keys(edit).forEach((key) => {
         // 가져온 데이터의 각 키와 값을 반복하여 setValue로 설정합니다.
-        if (key === "meetingTime") {
-          setValue(key, edit[key].split(":")[0]);
-        } else if (key === "meetingDays") {
-          const array: string[] = edit[key].split(";");
+        if (key === 'meetingTime') {
+          setValue(key, edit[key].split(':')[0]);
+        } else if (key === 'meetingDays') {
+          const array: string[] = edit[key].split(';');
           setSelectDays([...array]);
         } else {
           setValue(key, edit[key]);
@@ -80,10 +80,10 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
   const createMutation = useMutation({
     mutationFn: async (body: any) => {
       try {
-        const response = await fetch("/back/api/v1/meeting/new", {
-          method: "POST",
+        const response = await fetch('/back/api/v1/meeting/new', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: session.accessToken,
           },
           body: JSON.stringify(body),
@@ -91,14 +91,14 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         if (response.ok) {
           const data = await response.json();
 
-          if (data.status === "success") {
+          if (data.status === 'success') {
             dispatch(
               open({
                 Component: Success,
                 props: {
-                  message: "등록이 완료 되었습니다.",
+                  message: '등록이 완료 되었습니다.',
                   onClick: () => {
-                    router.push("/");
+                    router.push('/');
                   },
                 },
               }),
@@ -107,7 +107,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             return dispatch(
               open({
                 Component: Alert,
-                props: { message: "등록에 실패 했습니다." },
+                props: { message: '등록에 실패 했습니다.' },
               }),
             );
           }
@@ -117,14 +117,14 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         dispatch(
           open({
             Component: Alert,
-            props: { message: "오류가 발생 했습니다." },
+            props: { message: '오류가 발생 했습니다.' },
           }),
         );
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["meeting"],
+        queryKey: ['meeting'],
       });
     },
   });
@@ -133,9 +133,9 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
     mutationFn: async (body: any) => {
       try {
         const response = await fetch(`/back/api/v1/meeting/${edit.postId}`, {
-          method: "PATCH",
+          method: 'PATCH',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: session.accessToken,
           },
           body: JSON.stringify(body),
@@ -143,18 +143,18 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         if (response.ok) {
           const data = await response.json();
 
-          if (data.status === "success") {
+          if (data.status === 'success') {
             dispatch(
               open({
                 Component: Success,
-                props: { message: "수정이 완료 되었습니다." },
+                props: { message: '수정이 완료 되었습니다.' },
               }),
             );
           } else {
             return dispatch(
               open({
                 Component: Alert,
-                props: { message: "수정에 실패 했습니다." },
+                props: { message: '수정에 실패 했습니다.' },
               }),
             );
           }
@@ -163,7 +163,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
           return dispatch(
             open({
               Component: Alert,
-              props: { message: "수정에 실패 했습니다." },
+              props: { message: '수정에 실패 했습니다.' },
             }),
           );
         }
@@ -172,16 +172,16 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         dispatch(
           open({
             Component: Alert,
-            props: { message: "오류가 발생 했습니다." },
+            props: { message: '오류가 발생 했습니다.' },
           }),
         );
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["meeting"],
+        queryKey: ['meeting'],
       });
-      router.push("/");
+      router.push('/');
     },
   });
 
@@ -198,30 +198,30 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
     } = event;
     // const content = editorRef.current?.getInstance().getHTML();
 
-    if (gameType === "") {
+    if (gameType === '') {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "구기종목을 선택해주세요." },
+          props: { message: '구기종목을 선택해주세요.' },
         }),
       );
     }
 
-    if (location === "") {
+    if (location === '') {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "지역 선택을 해야합니다." },
+          props: { message: '지역 선택을 해야합니다.' },
         }),
       );
     }
 
-    if (meetingType === "LONG") {
-      if (meetingTime === "") {
+    if (meetingType === 'LONG') {
+      if (meetingTime === '') {
         return dispatch(
           open({
             Component: Alert,
-            props: { message: "시간대을 선택해주세요." },
+            props: { message: '시간대을 선택해주세요.' },
           }),
         );
       }
@@ -229,35 +229,35 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         return dispatch(
           open({
             Component: Alert,
-            props: { message: "요일을 선택해주세요." },
+            props: { message: '요일을 선택해주세요.' },
           }),
         );
       }
     }
 
-    if (meetingMemberNum === "") {
+    if (meetingMemberNum === '') {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "모집인원을 선택해주세요." },
+          props: { message: '모집인원을 선택해주세요.' },
         }),
       );
     }
 
-    if (openKakao === "") {
+    if (openKakao === '') {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "오픈카톡을 입력해주세요.." },
+          props: { message: '오픈카톡을 입력해주세요..' },
         }),
       );
     }
 
-    if (title === "") {
+    if (title === '') {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "제목을 입력해주세요." },
+          props: { message: '제목을 입력해주세요.' },
         }),
       );
     }
@@ -276,10 +276,10 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         meetingType,
         gameType,
         meetingMemberNum,
-        meetingDate: moment(meetingDate as Date).format("YYYY-MM-DD"),
-        meetingDays: selectDays.join(";"),
+        meetingDate: moment(meetingDate as Date).format('YYYY-MM-DD'),
+        meetingDays: selectDays.join(';'),
         meetingTime,
-        meetingDeadline: moment(meetingDeadline as Date).format("YYYY-MM-DD"),
+        meetingDeadline: moment(meetingDeadline as Date).format('YYYY-MM-DD'),
         openKakao,
         title,
         // content,
@@ -291,10 +291,10 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         meetingType,
         gameType,
         meetingMemberNum,
-        meetingDate: moment(meetingDate as Date).format("YYYY-MM-DD"),
-        meetingDays: selectDays.join(";"),
+        meetingDate: moment(meetingDate as Date).format('YYYY-MM-DD'),
+        meetingDays: selectDays.join(';'),
         meetingTime,
-        meetingDeadline: moment(meetingDeadline as Date).format("YYYY-MM-DD"),
+        meetingDeadline: moment(meetingDeadline as Date).format('YYYY-MM-DD'),
         openKakao,
         title,
         // content,
@@ -310,17 +310,17 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: "내용을 입력해주세요...",
+        placeholder: '내용을 입력해주세요...',
         emptyEditorClass:
-          "before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]",
+          'before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]',
         emptyNodeClass:
-          "before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]",
+          'before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]',
       }),
       Heading.configure({
         levels: [1, 2, 3],
       }),
       TextAlign.configure({
-        types: ["heading", "paragraph"],
+        types: ['heading', 'paragraph'],
       }),
       Underline,
       TextStyle,
@@ -329,13 +329,13 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       Link.configure({
         openOnClick: false,
         autolink: true,
-        defaultProtocol: "https",
+        defaultProtocol: 'https',
       }),
     ],
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none",
+          'prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none',
       },
     },
   });
@@ -364,16 +364,16 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               <select
                 id="meetingStatus"
                 className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-                {...register("meetingStatus")}
+                {...register('meetingStatus')}
               >
                 <option value="RECRUIT">모집중</option>
                 <option value="END">모집완료</option>
               </select>
               <DownIcon
                 className={
-                  "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                  'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
                 }
-                stroke={"#878787"}
+                stroke={'#878787'}
               />
             </div>
           </div>
@@ -390,16 +390,16 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             <select
               id="meetingType"
               className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-              {...register("meetingType")}
+              {...register('meetingType')}
             >
               <option value="SHORT">단기모집</option>
               <option value="LONG">장기모집</option>
             </select>
             <DownIcon
               className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
               }
-              stroke={"#878787"}
+              stroke={'#878787'}
             />
           </div>
         </div>
@@ -414,8 +414,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
           <div className="relative">
             <select
               id="location"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch("location") ? "text-gray-400" : ""}`}
-              {...register("location")}
+              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch('location') ? 'text-gray-400' : ''}`}
+              {...register('location')}
             >
               <option value="">지역 선택을 선택해주세요.</option>
               <option value="SEOUL" className="text-black">
@@ -454,9 +454,9 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             </select>
             <DownIcon
               className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
               }
-              stroke={"#878787"}
+              stroke={'#878787'}
             />
           </div>
         </div>
@@ -471,8 +471,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
           <div className="relative">
             <select
               id="gameType"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch("gameType") ? "text-gray-400" : ""}`}
-              {...register("gameType")}
+              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch('gameType') ? 'text-gray-400' : ''}`}
+              {...register('gameType')}
             >
               <option value="">구기종목을 선택해주세요.</option>
               <option value="BADMINTON" className="text-black">
@@ -496,9 +496,9 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             </select>
             <DownIcon
               className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
               }
-              stroke={"#878787"}
+              stroke={'#878787'}
             />
           </div>
         </div>
@@ -513,8 +513,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
           <div className="relative">
             <select
               id="meetingMemberNum"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch("meetingMemberNum") ? "text-gray-400" : ""}`}
-              {...register("meetingMemberNum")}
+              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch('meetingMemberNum') ? 'text-gray-400' : ''}`}
+              {...register('meetingMemberNum')}
             >
               <option value="">모집인원을 선택해주세요.</option>
               <option value="1" className="text-black">
@@ -535,14 +535,14 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             </select>
             <DownIcon
               className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
               }
-              stroke={"#878787"}
+              stroke={'#878787'}
             />
           </div>
         </div>
 
-        {meetingTypeWatch === "SHORT" && (
+        {meetingTypeWatch === 'SHORT' && (
           <div className="flex min-w-0 flex-col gap-[10px]">
             <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
               모임 날짜
@@ -552,7 +552,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
                 onClick={() => setIsMeetingDate(!isMeetingDate)}
                 className="box-border flex h-11 w-full cursor-pointer items-center rounded-lg bg-Surface px-4 text-sm font-medium md:h-16 md:text-base"
               >
-                {moment(meetingDate as Date).format("YYYY-MM-DD")}
+                {moment(meetingDate as Date).format('YYYY-MM-DD')}
               </div>
               {isMeetingDate && (
                 <Calendar
@@ -564,15 +564,15 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               )}
               <DownIcon
                 className={
-                  "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                  'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
                 }
-                stroke={"#878787"}
+                stroke={'#878787'}
               />
             </div>
           </div>
         )}
 
-        {meetingTypeWatch === "LONG" && (
+        {meetingTypeWatch === 'LONG' && (
           <div className="flex min-w-0 flex-col gap-[10px]">
             <label
               htmlFor="meetingTime"
@@ -583,8 +583,8 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             <div className="relative">
               <select
                 id="meetingTime"
-                className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch("meetingTime") ? "text-gray-400" : ""}`}
-                {...register("meetingTime")}
+                className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch('meetingTime') ? 'text-gray-400' : ''}`}
+                {...register('meetingTime')}
               >
                 <option value="">시간대을 선택해주세요.</option>
                 {Array.from({ length: 24 }, (_, i) => (
@@ -595,25 +595,25 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               </select>
               <DownIcon
                 className={
-                  "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                  'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
                 }
-                stroke={"#878787"}
+                stroke={'#878787'}
               />
             </div>
           </div>
         )}
 
-        {meetingTypeWatch === "LONG" && (
+        {meetingTypeWatch === 'LONG' && (
           <div className="flex min-w-0 flex-col gap-[10px]">
             <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
               모임 요일
             </label>
             <div className="flex min-w-0 flex-wrap justify-start gap-[10px]">
-              {["월", "화", "수", "목", "금", "토", "일"].map((el, index) => (
+              {['월', '화', '수', '목', '금', '토', '일'].map((el, index) => (
                 <div
                   onClick={() => selectDayHandler(el)}
                   key={index}
-                  className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${selectDays.includes(el) ? "bg-primary text-white" : "bg-Surface text-OnSurface"}`}
+                  className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${selectDays.includes(el) ? 'bg-primary text-white' : 'bg-Surface text-OnSurface'}`}
                 >
                   {el}
                 </div>
@@ -631,7 +631,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               onClick={() => setIsMeetingDeadline(!isMeetingDeadline)}
               className="box-border flex h-11 w-full cursor-pointer items-center rounded-lg bg-Surface px-4 text-sm font-medium md:h-16 md:text-base"
             >
-              {moment(meetingDeadline as Date).format("YYYY-MM-DD")}
+              {moment(meetingDeadline as Date).format('YYYY-MM-DD')}
             </div>
             {isMeetingDeadline && (
               <Calendar
@@ -643,9 +643,9 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             )}
             <DownIcon
               className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                'pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'
               }
-              stroke={"#878787"}
+              stroke={'#878787'}
             />
           </div>
         </div>
@@ -659,7 +659,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
               type="text"
               placeholder="오픈카톡 주소를 입력해주세요."
               className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-              {...register("openKakao")}
+              {...register('openKakao')}
             />
           </div>
         </div>
@@ -686,7 +686,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
             type="text"
             placeholder="제목을 입력해주세요"
             className="mt-3 h-11 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-14 md:text-base"
-            {...register("title")}
+            {...register('title')}
           />
         </div>
 
@@ -705,7 +705,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       </div>
 
       <div className="mt-10 text-center">
-        <SubmitButton>{!edit ? "새글 작성" : "수정 하기"}</SubmitButton>
+        <SubmitButton>{!edit ? '새글 작성' : '수정 하기'}</SubmitButton>
       </div>
     </form>
   );

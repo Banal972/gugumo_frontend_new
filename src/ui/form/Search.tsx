@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useForm } from "react-hook-form";
+import Image from 'next/image';
+import { useForm } from 'react-hook-form';
 
 type FormValues = {
   search: string;
@@ -21,7 +21,7 @@ const Search = ({ searchHandler }: { searchHandler?: any }) => {
         type="text"
         className="box-border h-full w-full bg-transparent px-3 text-[13px] font-medium outline-none md:text-base"
         placeholder="제목, 글 내용을 검색해보세요!"
-        {...register("search")}
+        {...register('search')}
       />
       <button
         type="submit"

@@ -1,6 +1,7 @@
-"use client";
-import { commentOptions } from "@/hooks/useComment";
-import { useQuery } from "@tanstack/react-query";
+'use client';
+
+import { commentOptions } from '@/hooks/useComment';
+import { useQuery } from '@tanstack/react-query';
 
 const CommentLength = ({
   session,

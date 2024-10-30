@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import getActions from "@/actions/auth/post/getAction";
-import List from "@/ui/page/auth/List";
-import { useState } from "react";
-import Wrap from "@/ui/layout/Wrap";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import SkeletonCard from "@/ui/layout/card/SkeletonCard";
+import getActions from '@/actions/auth/post/getAction';
+import Wrap from '@/ui/layout/Wrap';
+import SkeletonCard from '@/ui/layout/card/SkeletonCard';
+import List from '@/ui/page/auth/List';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
 type FormValues = {
   search: string;
@@ -13,7 +13,7 @@ type FormValues = {
 
 const ListPage = () => {
   const [query, setQuery] = useState<{ q: string; page: number }>({
-    q: "",
+    q: '',
     page: 1,
   });
 
@@ -21,7 +21,7 @@ const ListPage = () => {
     data: { data },
     isPending,
   } = useSuspenseQuery({
-    queryKey: ["post", query],
+    queryKey: ['post', query],
     queryFn: () => getActions({ query }),
   });
 

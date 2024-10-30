@@ -1,6 +1,6 @@
-import moment from "moment";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
 
 export interface AlarmT {
   id: number;
@@ -15,7 +15,7 @@ const alarmfetchs = async ({ queryKey }: { queryKey: [string, any] }) => {
   const [, session] = queryKey;
 
   if (!session) return;
-  const response = await fetch("/back/api/v1/notification", {
+  const response = await fetch('/back/api/v1/notification', {
     headers: {
       Authorization: session?.accessToken,
     },
@@ -27,7 +27,7 @@ const alarmfetchs = async ({ queryKey }: { queryKey: [string, any] }) => {
   const result = data.reduce<{
     [key: string]: { createDate: string; data: AlarmT[] };
   }>((acc, current) => {
-    let date = moment(current.createDate).format("YYYY-MM-DD");
+    let date = moment(current.createDate).format('YYYY-MM-DD');
 
     // 새로운 그룹으로 만들어줌
     if (!acc[date]) {
@@ -50,13 +50,13 @@ const alarmfetchs = async ({ queryKey }: { queryKey: [string, any] }) => {
 const readHandler = async (data: any) => {
   const { session, notiId } = data;
   const response = await fetch(`/back/api/v1/notification/read/${notiId}`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
       Authorization: session?.accessToken,
     },
   });
   if (!response.ok) {
-    throw new Error("에러가 발생했습니다.");
+    throw new Error('에러가 발생했습니다.');
   }
 };
 
@@ -64,27 +64,27 @@ const readHandler = async (data: any) => {
 const deleteHandler = async (data: any) => {
   const { session, notiId } = data;
   const response = await fetch(`/back/api/v1/notification/${notiId}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
       Authorization: session?.accessToken,
     },
   });
   if (!response.ok) {
-    throw new Error("에러가 발생했습니다.");
+    throw new Error('에러가 발생했습니다.');
   }
 };
 
 // 전체읽기
 const allReadHandler = async (data: any) => {
   const { session } = data;
-  const response = await fetch("/back/api/v1/notification/read", {
-    method: "PATCH",
+  const response = await fetch('/back/api/v1/notification/read', {
+    method: 'PATCH',
     headers: {
       Authorization: session?.accessToken,
     },
   });
   if (!response.ok) {
-    throw new Error("에러가 발생했습니다.");
+    throw new Error('에러가 발생했습니다.');
   }
 };
 
@@ -98,7 +98,7 @@ export const useAlarm = (session: any) => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["alarm", session],
+    queryKey: ['alarm', session],
     queryFn: alarmfetchs,
   });
 
@@ -106,7 +106,7 @@ export const useAlarm = (session: any) => {
     mutationFn: readHandler,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["alarm"],
+        queryKey: ['alarm'],
       });
       router.push(`/detail/${variables.postId}`);
     },
@@ -116,7 +116,7 @@ export const useAlarm = (session: any) => {
     mutationFn: deleteHandler,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["alarm"],
+        queryKey: ['alarm'],
       });
     },
   });
@@ -125,7 +125,7 @@ export const useAlarm = (session: any) => {
     mutationFn: allReadHandler,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["alarm"],
+        queryKey: ['alarm'],
       });
     },
   });

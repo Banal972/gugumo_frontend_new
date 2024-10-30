@@ -1,14 +1,14 @@
-import CommentFrom from "@/components/page/post/detail/Comment/CommentFrom";
-import { commentOptions } from "@/hooks/useComment";
+import CommentCompo from '@/components/page/post/detail/Comment/CommentCompo';
+import CommentFrom from '@/components/page/post/detail/Comment/CommentFrom';
+import CommentLength from '@/components/page/post/detail/Comment/CommentLength';
+import { commentOptions } from '@/hooks/useComment';
+import { authOptions } from '@/lib/authOptions';
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
-} from "@tanstack/react-query";
-import CommentCompo from "@/components/page/post/detail/Comment/CommentCompo";
-import CommentLength from "@/components/page/post/detail/Comment/CommentLength";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
+} from '@tanstack/react-query';
+import { getServerSession } from 'next-auth';
 
 const Comments = async ({ postid }: CommentsProps) => {
   const session = (await getServerSession(authOptions)) as any;

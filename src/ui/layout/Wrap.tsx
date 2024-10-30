@@ -1,7 +1,13 @@
-export default function Wrap({children,className} : {children? :React.ReactNode,className? : string}) {
+export default function Wrap({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={`max-w-[1200px] mx-auto w-[95%] ${className}`}>
-        {children}
+    <div className={`mx-auto w-[95%] max-w-[1200px] ${className}`}>
+      {children}
     </div>
-  )
+  );
 }

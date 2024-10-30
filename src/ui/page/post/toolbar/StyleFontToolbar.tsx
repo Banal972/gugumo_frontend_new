@@ -1,4 +1,6 @@
-import ToolbarBtn from "@/ui/page/post/toolbar/ToolbarBtn";
+import ToolbarBtn from '@/ui/page/post/toolbar/ToolbarBtn';
+import { Editor } from '@tiptap/react';
+import { useCallback } from 'react';
 import {
   RiBold,
   RiItalic,
@@ -6,28 +8,26 @@ import {
   RiLinkUnlink,
   RiStrikethrough,
   RiUnderline,
-} from "react-icons/ri";
-import { Editor } from "@tiptap/react";
-import { useCallback } from "react";
+} from 'react-icons/ri';
 
 interface StyleFontToolbarProps {
   editor: Editor;
 }
 const StyleFontToolbar = ({ editor }: StyleFontToolbarProps) => {
   const setLink = useCallback(() => {
-    const previousUrl = editor.getAttributes("link").href;
-    const url = window.prompt("URL", previousUrl);
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('URL', previousUrl);
 
     if (url === null) {
       return;
     }
 
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
 
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }, [editor]);
 
   const unLink = useCallback(() => {
@@ -50,12 +50,12 @@ const StyleFontToolbar = ({ editor }: StyleFontToolbarProps) => {
       <ToolbarBtn onClick={() => editor.chain().focus().toggleStrike().run()}>
         <RiStrikethrough />
       </ToolbarBtn>
-      {!editor.isActive("link") && (
+      {!editor.isActive('link') && (
         <ToolbarBtn onClick={setLink}>
           <RiLinksLine />
         </ToolbarBtn>
       )}
-      {editor.isActive("link") && (
+      {editor.isActive('link') && (
         <ToolbarBtn onClick={unLink}>
           <RiLinkUnlink />
         </ToolbarBtn>

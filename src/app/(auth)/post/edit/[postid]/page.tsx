@@ -1,7 +1,7 @@
-import Wrap from "@/ui/layout/Wrap";
-import Form from "@/components/page/post/write/Form";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import Form from '@/components/page/post/write/Form';
+import { authOptions } from '@/lib/authOptions';
+import Wrap from '@/ui/layout/Wrap';
+import { getServerSession } from 'next-auth';
 
 export default async function Edit({ params }: { params: { postid: string } }) {
   const session = (await getServerSession(authOptions)) as any;

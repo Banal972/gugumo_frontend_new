@@ -1,6 +1,6 @@
-import Card from "@/ui/layout/card/Card";
-import Paging from "@/ui/layout/paging/Paging";
-import Search from "@/ui/form/Search";
+import Search from '@/ui/form/Search';
+import Card from '@/ui/layout/card/Card';
+import Paging from '@/ui/layout/paging/Paging';
 
 interface ListProps {
   label: string;

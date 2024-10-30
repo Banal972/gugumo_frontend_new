@@ -1,17 +1,17 @@
-import Image from "next/image";
-import Link from "next/link";
-import ViewSVG from "@/asset/image/view.svg";
-import BtnList from "@/components/page/post/detail/BtnList";
-import Bookmark from "@/ui/Button/Bookmark/Bookmark";
-import moment from "moment";
-import dynamic from "next/dynamic";
-import { ReactNode } from "react";
-import { GAMETYPE, LOCATION, MEETINGTYPE } from "@/constant/card/constant";
+import ViewSVG from '@/asset/image/view.svg';
+import BtnList from '@/components/page/post/detail/BtnList';
+import { GAMETYPE, LOCATION, MEETINGTYPE } from '@/constant/card/constant';
+import Bookmark from '@/ui/Button/Bookmark/Bookmark';
+import moment from 'moment';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ReactNode } from 'react';
 
 const DetailUI = ({ detail }: { detail: DetailData }) => {
   return (
     <>
-      <Link href={"/"} className="inline-block">
+      <Link href={'/'} className="inline-block">
         <Image
           src="/asset/image/icon/prev_arrow.svg"
           alt="뒤로가기"
@@ -26,8 +26,8 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-1 border-b border-Outline pb-[18px] text-sm font-medium text-OnBackgroundGray md:mt-7 md:text-lg">
         <div className="flex items-center gap-[10px] md:gap-[18px]">
-          <p>{detail.author !== "" ? detail.author : "탈퇴한 유저"}</p>
-          <p>{moment(detail.createdDateTime).format("YYYY-MM-DD")}</p>
+          <p>{detail.author !== '' ? detail.author : '탈퇴한 유저'}</p>
+          <p>{moment(detail.createdDateTime).format('YYYY-MM-DD')}</p>
           <div className="flex items-center gap-[10px]">
             <ViewSVG width={24} height={24} stroke="#A5A5A5" />
             {detail.viewCount}
@@ -40,7 +40,7 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
           />
           <p className="text-sm font-medium md:text-xl">
             {detail.bookmarkCount > 0
-              ? String(detail.bookmarkCount).padStart(2, "0")
+              ? String(detail.bookmarkCount).padStart(2, '0')
               : detail.bookmarkCount}
           </p>
         </div>
@@ -72,14 +72,14 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
         {detail.meetingDays && (
           <Grid>
             <GridText>모임 요일</GridText>
-            <p>{detail.meetingDays.split(";").join(",")}</p>
+            <p>{detail.meetingDays.split(';').join(',')}</p>
           </Grid>
         )}
 
         {detail.meetingDateTime && (
           <Grid>
             <GridText>모임 날짜</GridText>
-            <p>{moment(detail.meetingDateTime).format("YYYY-MM-DD")}</p>
+            <p>{moment(detail.meetingDateTime).format('YYYY-MM-DD')}</p>
           </Grid>
         )}
 
@@ -125,7 +125,7 @@ const DetailUI = ({ detail }: { detail: DetailData }) => {
 export default DetailUI;
 
 const ViewerComponent = dynamic(
-  () => import("@/components/page/post/detail/ViewerComponent"),
+  () => import('@/components/page/post/detail/ViewerComponent'),
   { ssr: false },
 );
 

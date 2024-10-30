@@ -1,11 +1,12 @@
-"use client";
-import * as C from "@/constant/card/constant";
-import moment from "moment";
-import Bookmark from "@/ui/Button/Bookmark/Bookmark";
-import { useRouter } from "next/navigation";
+'use client';
+
+import * as C from '@/constant/card/constant';
+import Bookmark from '@/ui/Button/Bookmark/Bookmark';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
 
 const TAGSTYLE =
-  "py-1 px-[6px] whitespace-nowrap rounded text-[13px] leading-none";
+  'py-1 px-[6px] whitespace-nowrap rounded text-[13px] leading-none';
 
 export default function Card({ el }: { el: Content }) {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function Card({ el }: { el: Content }) {
     >
       <div className="flex flex-wrap gap-[5px] leading-none">
         <div
-          className={`${TAGSTYLE} ${el.meetingStatus !== "END" ? "bg-[#BFE0FF] text-[#4378FF]" : "bg-OnSurface text-background"}`}
+          className={`${TAGSTYLE} ${el.meetingStatus !== 'END' ? 'bg-[#BFE0FF] text-[#4378FF]' : 'bg-OnSurface text-background'}`}
         >
           {C.STATUS[el.meetingStatus]}
         </div>
@@ -42,7 +43,7 @@ export default function Card({ el }: { el: Content }) {
           <li className="flex text-OnBackgroundGray">
             <p className="pr-[9px]">시간</p>
             <p className="border-l border-OnBackgroundGray pl-[9px]">
-              {moment(el.meetingDateTime).format("YYYY-MM-DD")}
+              {moment(el.meetingDateTime).format('YYYY-MM-DD')}
             </p>
           </li>
         )}
@@ -50,7 +51,7 @@ export default function Card({ el }: { el: Content }) {
           <li className="mt-1 flex text-OnBackgroundGray">
             <p className="pr-[9px]">요일</p>
             <p className="border-l border-OnBackgroundGray pl-[9px]">
-              {el.meetingDays.split(";").join(",")}
+              {el.meetingDays.split(';').join(',')}
             </p>
           </li>
         )}
@@ -64,7 +65,7 @@ export default function Card({ el }: { el: Content }) {
 
       <div className="mt-[9.5px] flex flex-wrap items-center justify-between gap-[7px] border-t border-Outline pt-[9.5px]">
         <span className="whitespace-nowrap text-[13px] font-medium text-OnBackgroundGray">
-          모집 마감일 {moment(el.meetingDeadline).format("YY.MM.DD")}
+          모집 마감일 {moment(el.meetingDeadline).format('YY.MM.DD')}
         </span>
         <Bookmark bookmarked={el.bookmarked} postId={el.postId} />
       </div>

@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { authIntance } from "@/lib/fetchInstance";
+import { authIntance } from '@/lib/fetchInstance';
 
 const get = async (postid: string): Promise<Return<DetailData>> => {
   const res = await authIntance(

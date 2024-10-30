@@ -1,14 +1,15 @@
-"use client";
-import Alert from "@/components/Modal/Alert";
-import Success from "@/components/Modal/Success";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+'use client';
+
+import Alert from '@/components/Modal/Alert';
+import Success from '@/components/Modal/Success';
+import { open } from '@/lib/store/features/modals/modal';
+import { useAppDispatch } from '@/lib/store/hook';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const BUTTONSTYLE =
-  "inline-flex items-center bg-OnPrimary text-sm md:text-base font-medium border rounded py-[9.5px] px-4 justify-center cursor-pointer";
+  'inline-flex items-center bg-OnPrimary text-sm md:text-base font-medium border rounded py-[9.5px] px-4 justify-center cursor-pointer';
 
 export default function BtnList({
   postid,
@@ -30,7 +31,7 @@ export default function BtnList({
     mutationFn: async () => {
       try {
         const response = await fetch(`/back/api/v1/meeting/${postid}`, {
-          method: "DELETE",
+          method: 'DELETE',
           headers: {
             Authorization: session.accessToken,
           },
@@ -38,14 +39,14 @@ export default function BtnList({
         if (response.ok) {
           const data = await response.json();
 
-          if (data.status === "success") {
+          if (data.status === 'success') {
             dispatch(
               open({
                 Component: Success,
                 props: {
-                  message: "게시글을 삭제 하였습니다.",
+                  message: '게시글을 삭제 하였습니다.',
                   onClick: () => {
-                    router.push("/");
+                    router.push('/');
                   },
                 },
               }),
@@ -55,7 +56,7 @@ export default function BtnList({
               open({
                 Component: Alert,
                 props: {
-                  message: "삭제하는데 실패 하였습니다.",
+                  message: '삭제하는데 실패 하였습니다.',
                 },
               }),
             );
@@ -65,7 +66,7 @@ export default function BtnList({
             open({
               Component: Alert,
               props: {
-                message: "삭제하는데 실패 하였습니다.",
+                message: '삭제하는데 실패 하였습니다.',
               },
             }),
           );
@@ -75,7 +76,7 @@ export default function BtnList({
           open({
             Component: Alert,
             props: {
-              message: "오류가 발생 했습니다.",
+              message: '오류가 발생 했습니다.',
             },
           }),
         );
@@ -83,7 +84,7 @@ export default function BtnList({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["meeting"],
+        queryKey: ['meeting'],
       });
     },
   });
@@ -99,7 +100,7 @@ export default function BtnList({
         </button>
       )}
       <button
-        onClick={() => router.push("/")}
+        onClick={() => router.push('/')}
         className={`${BUTTONSTYLE} border-primary text-primary transition-all hover:bg-primary hover:text-white`}
       >
         목록 보기

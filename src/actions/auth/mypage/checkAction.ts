@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { baseIntance } from "@/lib/fetchInstance";
+import { baseIntance } from '@/lib/fetchInstance';
 
 interface checkActionProps {
   nickname: string;

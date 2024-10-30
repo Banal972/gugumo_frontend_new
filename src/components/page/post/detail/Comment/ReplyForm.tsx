@@ -1,8 +1,8 @@
-import Alert from "@/components/Modal/Alert";
-import { usePostCommnet } from "@/hooks/useComment";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { useForm } from "react-hook-form";
+import Alert from '@/components/Modal/Alert';
+import { usePostCommnet } from '@/hooks/useComment';
+import { open } from '@/lib/store/features/modals/modal';
+import { useAppDispatch } from '@/lib/store/hook';
+import { useForm } from 'react-hook-form';
 
 export default function ReplyForm({
   session,
@@ -22,11 +22,11 @@ export default function ReplyForm({
   const onSubmitHandler = (data: any) => {
     const { content } = data;
 
-    if (content === "") {
+    if (content === '') {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "답글을 입력해야 합니다." },
+          props: { message: '답글을 입력해야 합니다.' },
         }),
       );
     }
@@ -45,7 +45,7 @@ export default function ReplyForm({
     } finally {
       setCommnetShow({
         commentId: 0,
-        type: "reply",
+        type: 'reply',
       });
     }
   };
@@ -57,7 +57,7 @@ export default function ReplyForm({
           <textarea
             className="block h-[68px] w-full resize-none rounded border border-transparent bg-Surface p-3 text-sm font-semibold outline-none placeholder:text-OnBackgroundGray focus:border-primary md:h-[108px] md:rounded-xl md:px-4 md:py-5 md:text-base"
             placeholder="답글을 달아주세요"
-            {...register("content", { maxLength: 1000, minLength: 1 })}
+            {...register('content', { maxLength: 1000, minLength: 1 })}
           />
           <button
             type="submit"

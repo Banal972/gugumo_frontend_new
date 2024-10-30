@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import addAction from "@/actions/auth/bookmark/addAction";
-import deleteAction from "@/actions/auth/bookmark/deleteAction";
-import BookmarkSVG from "@/asset/image/bookmark.svg";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { MouseEvent } from "react";
+import addAction from '@/actions/auth/bookmark/addAction';
+import deleteAction from '@/actions/auth/bookmark/deleteAction';
+import BookmarkSVG from '@/asset/image/bookmark.svg';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { MouseEvent } from 'react';
 
 interface BookmarkProps {
   bookmarked: boolean;
@@ -19,25 +19,25 @@ const Bookmark = ({ bookmarked, postId }: BookmarkProps) => {
   const addMutation = useMutation({
     mutationFn: addAction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookmark"] });
-      queryClient.invalidateQueries({ queryKey: ["post"] });
-      queryClient.invalidateQueries({ queryKey: ["meeting"] });
+      queryClient.invalidateQueries({ queryKey: ['bookmark'] });
+      queryClient.invalidateQueries({ queryKey: ['post'] });
+      queryClient.invalidateQueries({ queryKey: ['meeting'] });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteAction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookmark"] });
-      queryClient.invalidateQueries({ queryKey: ["post"] });
-      queryClient.invalidateQueries({ queryKey: ["meeting"] });
+      queryClient.invalidateQueries({ queryKey: ['bookmark'] });
+      queryClient.invalidateQueries({ queryKey: ['post'] });
+      queryClient.invalidateQueries({ queryKey: ['meeting'] });
     },
   });
 
   const bookmarkHandler = async (e: MouseEvent) => {
     e.stopPropagation();
 
-    if (!session) return alert("로그인을 해야합니다.");
+    if (!session) return alert('로그인을 해야합니다.');
 
     if (!bookmarked) {
       addMutation.mutate(postId);
@@ -45,7 +45,7 @@ const Bookmark = ({ bookmarked, postId }: BookmarkProps) => {
         setBookCount((prev: any) => prev + 1);
       } */
     } else {
-      if (confirm("정말 삭제하시겠습니까?")) {
+      if (confirm('정말 삭제하시겠습니까?')) {
         deleteMutation.mutate(postId);
       }
     }
@@ -54,7 +54,7 @@ const Bookmark = ({ bookmarked, postId }: BookmarkProps) => {
   return (
     <button type="button" onClick={bookmarkHandler} className="cursor-pointer">
       <BookmarkSVG
-        className={`stroke-[#4FAAFF] group-hover:stroke-white ${bookmarked ? "text-[#4FAAFF]" : "text-white"}`}
+        className={`stroke-[#4FAAFF] group-hover:stroke-white ${bookmarked ? 'text-[#4FAAFF]' : 'text-white'}`}
         width={24}
         height={24}
         alt="북마크 아이콘"

@@ -1,6 +1,7 @@
-"use client";
-import Image from "next/image";
-import React, { useEffect } from "react";
+'use client';
+
+import Image from 'next/image';
+import React, { useEffect } from 'react';
 
 const Success = ({
   isOpen,
@@ -14,10 +15,10 @@ const Success = ({
   onClick?: () => void;
 }) => {
   useEffect(() => {
-    const html = document.querySelector("html");
+    const html = document.querySelector('html');
     if (!html) return;
     if (isOpen) {
-      html.style.overflowY = "hidden";
+      html.style.overflowY = 'hidden';
     }
   }, [isOpen]);
 
@@ -26,7 +27,7 @@ const Success = ({
       <div className="absolute left-1/2 top-1/2 z-50 w-full max-w-[389px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-primary bg-white px-[23px] py-[18px] text-center">
         <Image
           className="mx-auto"
-          src={"/asset/image/modal/success.png"}
+          src={'/asset/image/modal/success.png'}
           width={43}
           height={43}
           alt="에러창"

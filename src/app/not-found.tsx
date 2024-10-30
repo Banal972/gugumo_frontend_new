@@ -1,6 +1,7 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { MouseEventHandler, ReactNode } from "react";
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { MouseEventHandler, ReactNode } from 'react';
 
 const NotFound = () => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const NotFound = () => {
       </dl>
       <div className="mt-[100px] flex gap-[18px]">
         <Button onClick={() => router.back()}>이전으로</Button>
-        <Button onClick={() => router.push("/")}>메인으로</Button>
+        <Button onClick={() => router.push('/')}>메인으로</Button>
       </div>
     </div>
   );

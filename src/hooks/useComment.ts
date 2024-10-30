@@ -2,7 +2,7 @@ import {
   queryOptions,
   useMutation,
   useQueryClient,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query';
 
 interface commentDataT {
   commentId: number;
@@ -42,7 +42,7 @@ const fetchCommnets = async ({
   });
 
   if (!response.ok) {
-    throw new Error("등록에 실패 하였습니다.");
+    throw new Error('등록에 실패 하였습니다.');
   }
   const data = await response.json();
   const comments: commentDataT[] = data.data.filter(
@@ -62,48 +62,48 @@ const fetchCommnets = async ({
 };
 
 const postCommnet = async (newComment: any) => {
-  const response = await fetch("/back/api/v1/comment/new", {
-    method: "POST",
+  const response = await fetch('/back/api/v1/comment/new', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: newComment.session.accessToken,
     },
     body: JSON.stringify(newComment.body),
   });
   if (!response.ok) {
-    throw new Error("등록에 실패 하였습니다.");
+    throw new Error('등록에 실패 하였습니다.');
   }
 };
 
 const patchCommnet = async (data: any) => {
   const response = await fetch(`/back/api/v1/comment/${data.comment_id}`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: data.session.accessToken,
     },
     body: JSON.stringify(data.body),
   });
   if (!response.ok) {
-    throw new Error("수정에 실패했습니다.");
+    throw new Error('수정에 실패했습니다.');
   }
 };
 
 const deleteComment = async (data: any) => {
   const response = await fetch(`/back/api/v1/comment/${data.comment_id}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
       Authorization: data.session.accessToken,
     },
   });
   if (!response.ok) {
-    throw new Error("삭제에 실패했습니다.");
+    throw new Error('삭제에 실패했습니다.');
   }
 };
 
 export const commentOptions = ({ session, postid }: commentOptionsT) => {
   return queryOptions({
-    queryKey: ["commnet", session, postid],
+    queryKey: ['commnet', session, postid],
     queryFn: fetchCommnets,
   });
 };
@@ -114,7 +114,7 @@ export const usePostCommnet = () => {
     mutationFn: (newComment: any) => postCommnet(newComment),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["commnet"],
+        queryKey: ['commnet'],
       });
     },
   });
@@ -126,7 +126,7 @@ export const useDeleteComment = () => {
     mutationFn: (data: any) => deleteComment(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["commnet"],
+        queryKey: ['commnet'],
       });
     },
   });
@@ -138,7 +138,7 @@ export const usePatchCommnet = () => {
     mutationFn: (data: any) => patchCommnet(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["commnet"],
+        queryKey: ['commnet'],
       });
     },
     onError: (err) => {

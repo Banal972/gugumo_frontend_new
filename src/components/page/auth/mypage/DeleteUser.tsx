@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import deleteUserAction from "@/actions/auth/mypage/deleteAction";
-import { signOut } from "next-auth/react";
+import deleteUserAction from '@/actions/auth/mypage/deleteAction';
+import { signOut } from 'next-auth/react';
 
 const DeleteUser = () => {
   const delUserHandler = async () => {
-    if (window.confirm("정말 탈퇴하시겠습니까?")) {
+    if (window.confirm('정말 탈퇴하시겠습니까?')) {
       const res = await deleteUserAction();
       if (res.data) {
-        window.alert("회원탈퇴 완료");
+        window.alert('회원탈퇴 완료');
         signOut({
           redirect: true,
-          callbackUrl: "/",
+          callbackUrl: '/',
         });
       }
     }

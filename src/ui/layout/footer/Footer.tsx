@@ -1,5 +1,5 @@
-import Wrap from "@/ui/layout/Wrap";
-import Image from "next/image";
+import Wrap from '@/ui/layout/Wrap';
+import Image from 'next/image';
 
 const Footer = () => {
   return (
@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="flex flex-col items-start justify-between md:flex-row md:items-center">
           <div className="mt-[19px] flex w-full flex-col items-center justify-center text-center md:mt-0 md:w-auto md:items-start md:justify-normal md:text-left">
             <Image
-              src={"/asset/image/simbol.svg"}
+              src={'/asset/image/simbol.svg'}
               alt="구구모 심볼"
               width={100}
               height={56}

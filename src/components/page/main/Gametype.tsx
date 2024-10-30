@@ -1,7 +1,8 @@
-"use client";
-import { GAMETYPE } from "@/constant/card/constant";
-import Image from "next/image";
-import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+'use client';
+
+import { GAMETYPE } from '@/constant/card/constant';
+import Image from 'next/image';
+import { Dispatch, MouseEventHandler, SetStateAction } from 'react';
 
 interface Gametype {
   gametype: string;
@@ -28,55 +29,55 @@ const Gametype = ({ gametype, setQuery }: Gametype) => {
       <div className="mt-[11px] flex gap-[4px] overflow-x-auto pb-1 md:flex-wrap md:gap-[14px]">
         <Button
           gametype={gametype}
-          onClick={() => onClickHandler("")}
-          get={""}
-          label={"전체"}
+          onClick={() => onClickHandler('')}
+          get={''}
+          label={'전체'}
         />
         {Object.entries(GAMETYPE).map((game) => {
           let option = {
-            src: "",
+            src: '',
             width: 0,
             height: 0,
           };
           switch (game[0]) {
-            case "BADMINTON":
+            case 'BADMINTON':
               option = {
-                src: "/asset/image/balltype/ball01.png",
+                src: '/asset/image/balltype/ball01.png',
                 width: 35,
                 height: 35,
               };
               break;
-            case "FUTSAL":
+            case 'FUTSAL':
               option = {
-                src: "/asset/image/balltype/ball03.png",
+                src: '/asset/image/balltype/ball03.png',
                 width: 31,
                 height: 31,
               };
               break;
-            case "BASKETBALL":
+            case 'BASKETBALL':
               option = {
-                src: "/asset/image/balltype/ball02.png",
+                src: '/asset/image/balltype/ball02.png',
                 width: 31,
                 height: 32,
               };
               break;
-            case "TENNIS":
+            case 'TENNIS':
               option = {
-                src: "/asset/image/balltype/ball04.png",
+                src: '/asset/image/balltype/ball04.png',
                 width: 31,
                 height: 30,
               };
               break;
-            case "TABLETENNIS":
+            case 'TABLETENNIS':
               option = {
-                src: "/asset/image/balltype/ball05.png",
+                src: '/asset/image/balltype/ball05.png',
                 width: 34,
                 height: 34,
               };
               break;
-            case "BASEBALL":
+            case 'BASEBALL':
               option = {
-                src: "/asset/image/balltype/ball06.png",
+                src: '/asset/image/balltype/ball06.png',
                 width: 30,
                 height: 30,
               };
@@ -116,16 +117,16 @@ const Button = ({ onClick, option, gametype, get, label }: ButtonProps) => {
     <button
       onClick={onClick}
       key={get}
-      className={`relative box-border size-[77px] flex-none cursor-pointer overflow-hidden rounded-full border border-primary transition-colors hover:bg-primary hover:text-white ${gametype === get ? "bg-primary text-white" : "bg-background text-primary"}`}
+      className={`relative box-border size-[77px] flex-none cursor-pointer overflow-hidden rounded-full border border-primary transition-colors hover:bg-primary hover:text-white ${gametype === get ? 'bg-primary text-white' : 'bg-background text-primary'}`}
     >
       <div
-        className={`absolute bottom-0 left-0 right-0 top-0 flex ${get === "" ? "" : "flex-col gap-[2px]"} items-center justify-center text-sm font-medium`}
+        className={`absolute bottom-0 left-0 right-0 top-0 flex ${get === '' ? '' : 'flex-col gap-[2px]'} items-center justify-center text-sm font-medium`}
       >
         {option && (
           <Image
             src={
-              gametype === get && gametype === "BADMINTON"
-                ? "/asset/image/balltype/ball01_active.png"
+              gametype === get && gametype === 'BADMINTON'
+                ? '/asset/image/balltype/ball01_active.png'
                 : option.src
             }
             width={option.width}

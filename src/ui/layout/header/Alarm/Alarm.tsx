@@ -1,8 +1,9 @@
-"use client";
-import Image from "next/image";
-import { useAlarm } from "@/hooks/useAlarm";
-import React, { MouseEvent, useState } from "react";
-import moment from "moment";
+'use client';
+
+import { useAlarm } from '@/hooks/useAlarm';
+import moment from 'moment';
+import Image from 'next/image';
+import React, { MouseEvent, useState } from 'react';
 
 export default function Alarm({ session }: { session: any }) {
   const [isAlarm, setIsAlarm] = useState(false);
@@ -62,14 +63,14 @@ export default function Alarm({ session }: { session: any }) {
                 {getAlarms.map((alarm) => (
                   <div className="mt-4 first:mt-0" key={alarm.createDate}>
                     <p className="ml-[3px] text-[13px] text-OnSurface">
-                      {moment(alarm.createDate).format("MM월 DD일")}
+                      {moment(alarm.createDate).format('MM월 DD일')}
                     </p>
                     <ul className="mt-2">
                       {alarm.data.map((elm) => (
                         <li
                           key={elm.id}
                           className={`flex gap-2 whitespace-nowrap ${
-                            !elm.read ? "bg-Surface" : "bg-gray-300"
+                            !elm.read ? 'bg-Surface' : 'bg-gray-300'
                           } mt-2 cursor-pointer items-center justify-between rounded px-3 py-[14px] first:mt-0`}
                           onClick={(e) => onReadHandler(e, elm.id, elm.postId)}
                         >

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import checkAction from "@/actions/auth/mypage/checkAction";
-import updateAction from "@/actions/auth/mypage/updateAction";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import checkAction from '@/actions/auth/mypage/checkAction';
+import updateAction from '@/actions/auth/mypage/updateAction';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 const Nickname = () => {
   const { register, handleSubmit, setValue, getValues } = useForm();
@@ -14,22 +14,22 @@ const Nickname = () => {
     const { nickname } = getValues();
     const res = await checkAction(nickname);
     const { data } = res;
-    if (data) return window.alert("중복 입니다.");
+    if (data) return window.alert('중복 입니다.');
     if (!data) {
       setIsCheck(true);
-      return window.alert("사용할 수 있는 닉네임 입니다.");
+      return window.alert('사용할 수 있는 닉네임 입니다.');
     }
   };
 
   const onSubmitHanlder = async (event: any) => {
-    if (!isCheck) return window.alert("중복 체크를 해야합니다.");
+    if (!isCheck) return window.alert('중복 체크를 해야합니다.');
     const { nickname } = event;
     const res = await updateAction(nickname);
     const { status } = res;
-    if (status === "success") {
-      setValue("nickname", "");
+    if (status === 'success') {
+      setValue('nickname', '');
       setIsCheck(false);
-      window.alert("변경 완료");
+      window.alert('변경 완료');
     }
   };
 
@@ -47,7 +47,7 @@ const Nickname = () => {
               type="text"
               placeholder="닉네임을 입력하세요."
               className="h-12 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm outline-none placeholder:text-OnSurface focus:border-primary md:h-14 md:bg-background md:text-base"
-              {...register("nickname")}
+              {...register('nickname')}
             />
             <button
               type="button"

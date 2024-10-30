@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Login from "@/components/Modal/Login/Login";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import Login from '@/components/Modal/Login/Login';
+import { open } from '@/lib/store/features/modals/modal';
+import { useAppDispatch } from '@/lib/store/hook';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const LoginBtn = () => {
   const dispatch = useAppDispatch();
@@ -13,7 +13,7 @@ const LoginBtn = () => {
 
   const onLoginHandler = () => {
     if (session && !session.accessToken) {
-      return router.push("/signup");
+      return router.push('/signup');
     }
     dispatch(open({ Component: Login }));
   };

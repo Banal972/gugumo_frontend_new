@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { authIntance } from "@/lib/fetchInstance";
+import { authIntance } from '@/lib/fetchInstance';
 
 const updatePasswordAction = async (
   password: string,
@@ -8,7 +8,7 @@ const updatePasswordAction = async (
   const res = await authIntance(
     `${process.env.API_URL}/api/v1/member/updatePassword`,
     {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify({
         password,
       }),

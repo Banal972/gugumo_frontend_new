@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { authIntance } from "@/lib/fetchInstance";
+import { authIntance } from '@/lib/fetchInstance';
 
 const getRecommend = async (): Promise<Return<Content[]>> => {
   const res = await authIntance(

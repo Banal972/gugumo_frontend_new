@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { signOut } from "next-auth/react";
+import { signOut } from 'next-auth/react';
 
 const LogoutBtn = () => {
   return (
     <button
       type="button"
-      onClick={() => signOut({ callbackUrl: "/" })}
+      onClick={() => signOut({ callbackUrl: '/' })}
       className="text-OnSurface"
     >
       로그아웃

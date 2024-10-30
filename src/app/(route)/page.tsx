@@ -1,7 +1,7 @@
-import Wrap from "@/ui/layout/Wrap";
-import Banner from "@/components/page/main/Banner";
-import Recommends from "@/ui/layout/recommends/Recommends";
-import ListContainer from "@/components/page/main/ListContainer";
+import Banner from '@/components/page/main/Banner';
+import ListContainer from '@/components/page/main/ListContainer';
+import Wrap from '@/ui/layout/Wrap';
+import Recommends from '@/ui/layout/recommends/Recommends';
 
 const Home = () => {
   return (

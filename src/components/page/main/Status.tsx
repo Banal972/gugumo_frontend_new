@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { STATUS } from "@/constant/card/constant";
-import { Dispatch, MouseEventHandler, ReactNode, SetStateAction } from "react";
+import { STATUS } from '@/constant/card/constant';
+import { Dispatch, MouseEventHandler, ReactNode, SetStateAction } from 'react';
 
 const Status = ({ status, setQuery }: Status) => {
   return (
@@ -27,7 +27,7 @@ const Button = ({ active, onClick, children }: Button) => {
   return (
     <button
       onClick={onClick}
-      className={`cursor-pointer text-nowrap text-lg font-medium text-OnSurface transition-colors hover:text-primary md:text-2xl ${active && "font-semibold text-primary"}`}
+      className={`cursor-pointer text-nowrap text-lg font-medium text-OnSurface transition-colors hover:text-primary md:text-2xl ${active && 'font-semibold text-primary'}`}
     >
       {children}
     </button>

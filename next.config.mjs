@@ -1,7 +1,7 @@
-import withPWA from "next-pwa";
+import withPWA from 'next-pwa';
 
 const pwa = withPWA({
-  dest: "public", // 서비스 워커
+  dest: 'public', // 서비스 워커
 });
 /* register: true, // 서비스 워커 자동 등록
   skipWaiting: true, // 새로운 서비스 워커가 즉시 활성화
@@ -13,14 +13,14 @@ const nextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ["@svgr/webpack"],
+      use: ['@svgr/webpack'],
     });
     return config;
   },
   async rewrites() {
     return [
       {
-        source: "/back/:path*",
+        source: '/back/:path*',
         destination: `${process.env.API_URL}/:path*`,
       },
     ];

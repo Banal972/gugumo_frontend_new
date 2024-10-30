@@ -1,6 +1,6 @@
-import getRecommend from "@/actions/public/recommendAction";
-import Slide from "@/ui/layout/recommends/Slide";
-import Image from "next/image";
+import getRecommend from '@/actions/public/recommendAction';
+import Slide from '@/ui/layout/recommends/Slide';
+import Image from 'next/image';
 
 const Recommends = async () => {
   const posts = await getRecommend();
@@ -23,11 +23,11 @@ export default Recommends;
 const NavButton = ({ type }: NavButton) => {
   return (
     <button
-      className={`relative hidden h-8 w-8 flex-none cursor-pointer rounded-full border border-primary text-primary disabled:hidden md:block xl:h-10 xl:w-10 ${type === "left" ? "slide-prev" : "slide-next"}`}
+      className={`relative hidden h-8 w-8 flex-none cursor-pointer rounded-full border border-primary text-primary disabled:hidden md:block xl:h-10 xl:w-10 ${type === 'left' ? 'slide-prev' : 'slide-next'}`}
     >
       <Image
-        className={`absolute left-1/2 top-1/2 w-[60%] -translate-x-1/2 -translate-y-1/2 ${type === "right" && "-scale-x-100"} md:w-auto`}
-        src={"/asset/image/icon/slide-arrow.png"}
+        className={`absolute left-1/2 top-1/2 w-[60%] -translate-x-1/2 -translate-y-1/2 ${type === 'right' && '-scale-x-100'} md:w-auto`}
+        src={'/asset/image/icon/slide-arrow.png'}
         width={22}
         height={20}
         alt="네비게이션 버튼"
@@ -37,5 +37,5 @@ const NavButton = ({ type }: NavButton) => {
 };
 
 interface NavButton {
-  type: "left" | "right";
+  type: 'left' | 'right';
 }

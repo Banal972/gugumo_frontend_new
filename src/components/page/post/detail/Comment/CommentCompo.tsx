@@ -1,17 +1,18 @@
-"use client";
-import { commentOptions } from "@/hooks/useComment";
-import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
-import CommnetUpdate from "@/components/page/post/detail/Comment/CommnetUpdate";
-import ReplyForm from "@/components/page/post/detail/Comment/ReplyForm";
-import User from "@/components/page/post/detail/Comment/User";
-import moment from "moment";
-import "moment/locale/ko";
-import { useAppDispatch } from "@/lib/store/hook";
-import { open } from "@/lib/store/features/modals/modal";
-import Alert from "@/components/Modal/Alert";
-import Confirm from "@/components/Modal/Confirm";
-import Success from "@/components/Modal/Success";
+'use client';
+
+import Alert from '@/components/Modal/Alert';
+import Confirm from '@/components/Modal/Confirm';
+import Success from '@/components/Modal/Success';
+import CommnetUpdate from '@/components/page/post/detail/Comment/CommnetUpdate';
+import ReplyForm from '@/components/page/post/detail/Comment/ReplyForm';
+import User from '@/components/page/post/detail/Comment/User';
+import { commentOptions } from '@/hooks/useComment';
+import { open } from '@/lib/store/features/modals/modal';
+import { useAppDispatch } from '@/lib/store/hook';
+import { useQuery } from '@tanstack/react-query';
+import moment from 'moment';
+import 'moment/locale/ko';
+import React, { useState } from 'react';
 
 const CommentCompo = ({
   session,
@@ -26,7 +27,7 @@ const CommentCompo = ({
 
   const [commnetShow, setCommnetShow] = useState({
     commentId: 0,
-    type: "edit",
+    type: 'edit',
   });
 
   const onReplyShowHandler = (commentId: number) => {
@@ -34,21 +35,21 @@ const CommentCompo = ({
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "로그인을 해야합니다." },
+          props: { message: '로그인을 해야합니다.' },
         }),
       );
     }
 
-    if (commnetShow.commentId === commentId && commnetShow.type === "reply") {
+    if (commnetShow.commentId === commentId && commnetShow.type === 'reply') {
       return setCommnetShow({
         commentId: 0,
-        type: "reply",
+        type: 'reply',
       });
     }
 
     setCommnetShow({
       commentId,
-      type: "reply",
+      type: 'reply',
     });
   };
 
@@ -59,7 +60,7 @@ const CommentCompo = ({
         dispatch(
           open({
             Component: Success,
-            props: { message: "삭제가 완료 되었습니다." },
+            props: { message: '삭제가 완료 되었습니다.' },
           }),
         );
       } catch (err) {
@@ -70,16 +71,16 @@ const CommentCompo = ({
   };
 
   const onEditShowHandler = (commentId: number) => {
-    if (commnetShow.commentId === commentId && commnetShow.type === "edit") {
+    if (commnetShow.commentId === commentId && commnetShow.type === 'edit') {
       return setCommnetShow({
         commentId: 0,
-        type: "edit",
+        type: 'edit',
       });
     }
 
     setCommnetShow({
       commentId,
-      type: "edit",
+      type: 'edit',
     });
   };
 
@@ -88,7 +89,7 @@ const CommentCompo = ({
       {comment?.comments.map((el, index) => (
         <React.Fragment key={el.commentId}>
           <div
-            className={`flex gap-5 ${index > 0 ? "mt-5" : ""}`}
+            className={`flex gap-5 ${index > 0 ? 'mt-5' : ''}`}
             key={el.commentId}
           >
             <User />
@@ -99,7 +100,7 @@ const CommentCompo = ({
                     {el.author}
                   </dt>
                   <dd className="text-[13px] font-normal text-OnBackgroundGray">
-                    {moment(el.createdDateTime).startOf("second").fromNow()}
+                    {moment(el.createdDateTime).startOf('second').fromNow()}
                   </dd>
                 </dl>
                 <div className="ml-auto flex gap-[10px] md:gap-5">
@@ -129,7 +130,7 @@ const CommentCompo = ({
               </div>
               <div className="mt-[14px] md:mt-4">
                 {commnetShow.commentId === el.commentId &&
-                commnetShow.type === "edit" ? (
+                commnetShow.type === 'edit' ? (
                   <CommnetUpdate
                     setCommnetShow={setCommnetShow}
                     content={el.content}
@@ -145,7 +146,7 @@ const CommentCompo = ({
           </div>
 
           {commnetShow.commentId === el.commentId &&
-            commnetShow.type === "reply" && (
+            commnetShow.type === 'reply' && (
               <ReplyForm
                 session={session}
                 postId={postid}
@@ -170,7 +171,7 @@ const CommentCompo = ({
                         </dt>
                         <dd className="text-[13px] font-normal text-OnBackgroundGray">
                           {moment(reply.createdDateTime)
-                            .startOf("second")
+                            .startOf('second')
                             .fromNow()}
                         </dd>
                       </dl>
@@ -195,7 +196,7 @@ const CommentCompo = ({
                     </div>
                     <div className="mt-[14px] md:mt-4">
                       {commnetShow.commentId === reply.commentId &&
-                      commnetShow.type === "edit" ? (
+                      commnetShow.type === 'edit' ? (
                         <CommnetUpdate
                           setCommnetShow={setCommnetShow}
                           content={reply.content}

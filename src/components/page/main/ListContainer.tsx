@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useState } from "react";
-import Status from "@/components/page/main/Status";
-import Sort from "@/components/page/main/Sort";
-import Location from "@/components/page/main/Location";
-import Gametype from "@/components/page/main/Gametype";
-import SkeletonCard from "@/ui/layout/card/SkeletonCard";
-import get from "@/actions/public/listAction";
-import Card from "@/ui/layout/card/Card";
-import Paging from "@/ui/layout/paging/Paging";
-import { useRouter } from "next/navigation";
-import Search from "@/ui/form/Search";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import get from '@/actions/public/listAction';
+import Gametype from '@/components/page/main/Gametype';
+import Location from '@/components/page/main/Location';
+import Sort from '@/components/page/main/Sort';
+import Status from '@/components/page/main/Status';
+import Search from '@/ui/form/Search';
+import Card from '@/ui/layout/card/Card';
+import SkeletonCard from '@/ui/layout/card/SkeletonCard';
+import Paging from '@/ui/layout/paging/Paging';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 type FormValues = {
   search: string;
@@ -20,11 +20,11 @@ type FormValues = {
 
 const ListContainer = () => {
   const [query, setQuery] = useState({
-    q: "",
-    meetingstatus: "RECRUIT",
-    location: "",
-    gametype: "",
-    sort: "NEW",
+    q: '',
+    meetingstatus: 'RECRUIT',
+    location: '',
+    gametype: '',
+    sort: 'NEW',
     page: 1,
   });
 
@@ -34,7 +34,7 @@ const ListContainer = () => {
     },
     isPending,
   } = useSuspenseQuery({
-    queryKey: ["meeting", query],
+    queryKey: ['meeting', query],
     queryFn: () => get({ query }),
   });
 
@@ -93,7 +93,7 @@ const WriteButton = () => {
   const router = useRouter();
 
   const writeHandler = () => {
-    router.push("/post/write");
+    router.push('/post/write');
   };
 
   return (
@@ -103,7 +103,7 @@ const WriteButton = () => {
     >
       <Image
         className="group-hover:brightness-0 group-hover:invert"
-        src={"/asset/image/icon/write.svg"}
+        src={'/asset/image/icon/write.svg'}
         alt="작성 아이콘"
         width={24}
         height={24}

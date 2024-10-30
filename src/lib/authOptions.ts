@@ -1,14 +1,14 @@
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import KakaoProvider from "next-auth/providers/kakao";
+import { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import KakaoProvider from 'next-auth/providers/kakao';
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        username: { type: "text", placeholder: "이메일을 입력해주세요." },
-        password: { type: "password", placeholder: "비밀번호를 입력해주세요." },
+        username: { type: 'text', placeholder: '이메일을 입력해주세요.' },
+        password: { type: 'password', placeholder: '비밀번호를 입력해주세요.' },
       },
       async authorize(credentials): Promise<any> {
         if (!credentials) return null;
@@ -17,9 +17,9 @@ export const authOptions: NextAuthOptions = {
           const response = await fetch(
             `${process.env.API_URL}/api/v1/emailLogin`,
             {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "content-type": "application/json",
+                'content-type': 'application/json',
               },
               body: JSON.stringify({
                 username: credentials.username,
@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
           if (response.ok) {
             const data = await response.json();
 
-            if (data.status === "success") {
+            if (data.status === 'success') {
               return { token: data.data };
             } else {
               return null;
@@ -47,8 +47,8 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     KakaoProvider({
-      clientId: process.env.KAKAO_RESTAPI || "",
-      clientSecret: process.env.KAKAO_CLIENT || "",
+      clientId: process.env.KAKAO_RESTAPI || '',
+      clientSecret: process.env.KAKAO_CLIENT || '',
     }),
   ],
   jwt: {
@@ -56,11 +56,11 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ user, token, account }: any): Promise<any> {
-      if (account?.type !== "credentials" && user) {
+      if (account?.type !== 'credentials' && user) {
         const response = await fetch(`${process.env.API_URL}/kakao/login`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "content-type": "application/json",
+            'content-type': 'application/json',
           },
           body: JSON.stringify({
             username: user.email,
@@ -72,7 +72,7 @@ export const authOptions: NextAuthOptions = {
 
         const data = await response.json();
 
-        if (data.status !== "fail") {
+        if (data.status !== 'fail') {
           token.accessToken = data.data;
         } else {
           token.username = user.email;
@@ -81,7 +81,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
-      if (account?.type === "credentials" && user) {
+      if (account?.type === 'credentials' && user) {
         token.accessToken = user.token;
       }
 

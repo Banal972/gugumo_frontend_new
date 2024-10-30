@@ -1,11 +1,12 @@
-"use client";
-import Alert from "@/components/Modal/Alert";
-import User from "@/components/page/post/detail/Comment/User";
-import { usePostCommnet } from "@/hooks/useComment";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { useSession } from "next-auth/react";
-import { useForm } from "react-hook-form";
+'use client';
+
+import Alert from '@/components/Modal/Alert';
+import User from '@/components/page/post/detail/Comment/User';
+import { usePostCommnet } from '@/hooks/useComment';
+import { open } from '@/lib/store/features/modals/modal';
+import { useAppDispatch } from '@/lib/store/hook';
+import { useSession } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
 
 export default function CommentFrom({ postid }: { postid: string }) {
   const dispatch = useAppDispatch();
@@ -18,18 +19,18 @@ export default function CommentFrom({ postid }: { postid: string }) {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "로그인을 해야합니다." },
+          props: { message: '로그인을 해야합니다.' },
         }),
       );
     }
 
     const { content } = event;
 
-    if (content === "") {
+    if (content === '') {
       return dispatch(
         open({
           Component: Alert,
-          props: { message: "댓글을 입력해야 합니다." },
+          props: { message: '댓글을 입력해야 합니다.' },
         }),
       );
     }
@@ -39,11 +40,11 @@ export default function CommentFrom({ postid }: { postid: string }) {
         session: session,
         body: { postId: postid, content },
       });
-      setValue("content", "");
+      setValue('content', '');
     } catch (err) {
       console.log(err);
     } finally {
-      setValue("content", "");
+      setValue('content', '');
     }
   };
 
@@ -55,7 +56,7 @@ export default function CommentFrom({ postid }: { postid: string }) {
           <textarea
             className="block h-[68px] w-full resize-none rounded border border-transparent bg-Surface p-3 text-sm font-semibold outline-none placeholder:text-OnBackgroundGray focus:border-primary md:h-[108px] md:rounded-xl md:px-4 md:py-5 md:text-base"
             placeholder="댓글을 입력해주세요."
-            {...register("content")}
+            {...register('content')}
           ></textarea>
           <button
             type="submit"

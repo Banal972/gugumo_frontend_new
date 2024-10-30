@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { Suspense, useRef } from "react";
-import { Autoplay, Navigation } from "swiper/modules";
-import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
-import Bookmark from "@/ui/Button/Bookmark/Bookmark";
-import { GAMETYPE, LOCATION, STATUS } from "@/constant/card/constant";
-import moment from "moment";
-import { useRouter } from "next/navigation";
-import SkeletonCard from "@/ui/layout/card/SkeletonCard";
+import { GAMETYPE, LOCATION, STATUS } from '@/constant/card/constant';
+import Bookmark from '@/ui/Button/Bookmark/Bookmark';
+import SkeletonCard from '@/ui/layout/card/SkeletonCard';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { Suspense, useRef } from 'react';
+import { Autoplay, Navigation } from 'swiper/modules';
+import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
 const Slide = ({ posts }: { posts: Content[] }) => {
   const router = useRouter();
@@ -22,18 +22,18 @@ const Slide = ({ posts }: { posts: Content[] }) => {
       ref={swiperRef}
       modules={[Autoplay, Navigation]}
       navigation={{
-        prevEl: ".slide-prev",
-        nextEl: ".slide-next",
+        prevEl: '.slide-prev',
+        nextEl: '.slide-next',
       }}
       slidesPerView={1.2}
       breakpoints={{
-        "481": {
+        '481': {
           slidesPerView: 1.5,
         },
-        "820": {
+        '820': {
           slidesPerView: 2.5,
         },
-        "1025": {
+        '1025': {
           slidesPerView: 3,
         },
       }}
@@ -78,7 +78,7 @@ const Slide = ({ posts }: { posts: Content[] }) => {
                   <li className="flex text-primary group-hover:text-white">
                     <p className="pr-[9px]">시간</p>
                     <p className="border-l border-primary pl-[9px] group-hover:border-white">
-                      {moment(e.meetingDateTime).format("YYYY-MM-DD")}
+                      {moment(e.meetingDateTime).format('YYYY-MM-DD')}
                     </p>
                   </li>
                 )}

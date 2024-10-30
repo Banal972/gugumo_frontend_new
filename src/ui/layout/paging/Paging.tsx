@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 const Paging = ({ pageable }: { pageable: Pageable }) => {
   const currentGroup = Math.ceil(pageable.number / 5);
@@ -13,7 +13,7 @@ const Paging = ({ pageable }: { pageable: Pageable }) => {
           return (
             <button
               type="button"
-              className={`cursor-pointer ${pageable.number === page ? "text-primary" : ""}`}
+              className={`cursor-pointer ${pageable.number === page ? 'text-primary' : ''}`}
               key={page}
             >
               {page}
