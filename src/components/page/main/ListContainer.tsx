@@ -6,10 +6,10 @@ import Location from '@/components/page/main/Location';
 import Sort from '@/components/page/main/Sort';
 import Status from '@/components/page/main/Status';
 import Search from '@/ui/form/Search';
+import Paging from '@/ui/layout/Paging';
 import Card from '@/ui/layout/card/Card';
 import SkeletonCard from '@/ui/layout/card/SkeletonCard';
-import Paging from '@/ui/layout/paging/Paging';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -28,12 +28,7 @@ const ListContainer = () => {
     page: 1,
   });
 
-  const {
-    data: {
-      data: { content, pageable },
-    },
-    isPending,
-  } = useSuspenseQuery({
+  const { data, isPending } = useQuery({
     queryKey: ['meeting', query],
     queryFn: () => get({ query }),
   });
@@ -70,18 +65,20 @@ const ListContainer = () => {
               <SkeletonCard key={item} />
             ))}
 
-          {!isPending && content.map((el) => <Card key={el.postId} el={el} />)}
+          {!isPending &&
+            data?.data.content.map((el) => <Card key={el.postId} el={el} />)}
         </div>
 
-        {content.length <= 0 && (
-          <p className="text-center">게시물이 존재하지 않습니다.</p>
-        )}
+        {!data ||
+          (data.data.content.length <= 0 && (
+            <p className="text-center">게시물이 존재하지 않습니다.</p>
+          ))}
 
         <div className="mt-[13px] text-right md:mt-7">
           <WriteButton />
         </div>
 
-        {pageable && <Paging pageable={pageable} />}
+        {data?.data.pageable && <Paging pageable={data.data.pageable} />}
       </div>
     </>
   );

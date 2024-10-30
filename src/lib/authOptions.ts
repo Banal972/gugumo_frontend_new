@@ -15,13 +15,10 @@ const authOptions: NextAuthOptions = {
         if (!credentials) return null;
 
         try {
-          const response = await fetch(
+          const response = await baseIntance(
             `${process.env.API_URL}/api/v1/emailLogin`,
             {
               method: 'POST',
-              headers: {
-                'content-type': 'application/json',
-              },
               body: JSON.stringify({
                 username: credentials.username,
                 password: credentials.password,

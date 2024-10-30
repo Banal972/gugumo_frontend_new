@@ -1,6 +1,6 @@
 'use server';
 
-import { baseIntance } from '@/lib/fetchInstance';
+import baseIntance from '@/lib/fetchInstance';
 import { Return } from '@/types/get.type';
 
 interface joinActionBody {

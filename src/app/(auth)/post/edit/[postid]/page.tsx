@@ -1,5 +1,5 @@
 import Form from '@/components/page/post/write/Form';
-import { authOptions } from '@/lib/authOptions';
+import authOptions from '@/lib/authOptions';
 import Wrap from '@/ui/layout/Wrap';
 import { getServerSession } from 'next-auth';
 

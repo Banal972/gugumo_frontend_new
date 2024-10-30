@@ -1,7 +1,7 @@
 'use server';
 
-import { authOptions } from '@/lib/authOptions';
-import { baseIntance } from '@/lib/fetchInstance';
+import authOptions from '@/lib/authOptions';
+import baseIntance from '@/lib/baseInstnace';
 import { Return } from '@/types/get.type';
 import { getServerSession } from 'next-auth';
 

@@ -1,6 +1,6 @@
 'use server';
 
-import { authIntance } from '@/lib/fetchInstance';
+import authIntance from '@/lib/fetchInstance';
 import { GetData, GetProps, Return } from '@/types/get.type';
 
 const getAction = async ({ query }: GetProps): Promise<Return<GetData>> => {

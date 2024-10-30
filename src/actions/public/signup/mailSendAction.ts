@@ -1,6 +1,6 @@
 'use server';
 
-import { baseIntance } from '@/lib/fetchInstance';
+import baseIntance from '@/lib/baseInstnace';
 import { Return } from '@/types/get.type';
 
 const mailSendAction = async (username: string): Promise<Return<string>> => {

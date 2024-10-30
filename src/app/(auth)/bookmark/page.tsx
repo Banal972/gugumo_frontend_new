@@ -4,7 +4,7 @@ import getActions from '@/actions/auth/bookmark/getAction';
 import Wrap from '@/ui/layout/Wrap';
 import SkeletonCard from '@/ui/layout/card/SkeletonCard';
 import List from '@/ui/page/auth/List';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
 type FormValues = {
@@ -17,10 +17,7 @@ const ListPage = () => {
     page: 1,
   });
 
-  const {
-    data: { data },
-    isPending,
-  } = useSuspenseQuery({
+  const { data, isPending } = useQuery({
     queryKey: ['bookmark', query],
     queryFn: () => getActions({ query }),
   });
@@ -36,13 +33,14 @@ const ListPage = () => {
   return (
     <main className="mt-14 pb-[121px] md:pb-[170px]">
       <Wrap>
-        {isPending &&
-          Array.from({ length: 12 }, (_, index) => index).map((item) => (
-            <SkeletonCard key={item} />
-          ))}
+        {!data ||
+          (isPending &&
+            Array.from({ length: 12 }, (_, index) => index).map((item) => (
+              <SkeletonCard key={item} />
+            )))}
 
-        {!isPending && (
-          <List label="북마크" data={data} searchHandler={searchHandler} />
+        {data && !isPending && (
+          <List label="북마크" data={data.data} searchHandler={searchHandler} />
         )}
       </Wrap>
     </main>

@@ -1,6 +1,6 @@
 'use server';
 
-import { authIntance } from '@/lib/fetchInstance';
+import authIntance from '@/lib/fetchInstance';
 import { Return } from '@/types/get.type';
 
 const resetPwdAction = async (email: string): Promise<Return<boolean>> => {

@@ -94,9 +94,11 @@ export default function Gametype({
                     ? '/asset/image/balltype/ball01_active.png'
                     : option.src
                 }
-                width={option.width}
-                height={option.height}
+                width={0}
+                height={0}
+                sizes="100vw"
                 alt={el.name}
+                className="h-auto w-full"
               />
               {el.name}
             </div>

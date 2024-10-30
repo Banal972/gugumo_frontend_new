@@ -133,9 +133,11 @@ const Button = ({ onClick, option, gametype, get, label }: ButtonProps) => {
                 ? '/asset/image/balltype/ball01_active.png'
                 : option.src
             }
-            width={option.width}
-            height={option.height}
+            width={0}
+            height={0}
+            sizes="100vw"
             alt={label}
+            style={{ width: option?.width, height: option?.height }}
           />
         )}
         {label}

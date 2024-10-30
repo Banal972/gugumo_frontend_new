@@ -1,4 +1,4 @@
-import Footer from '@/ui/layout/footer/Footer';
+import Footer from '@/ui/layout/Footer';
 import Header from '@/ui/layout/header/Header';
 import { ReactNode } from 'react';
 

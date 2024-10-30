@@ -1,6 +1,6 @@
 'use server';
 
-import { authIntance } from '@/lib/fetchInstance';
+import authIntance from '@/lib/fetchInstance';
 import { Return } from '@/types/get.type';
 
 const deleteUserAction = async (): Promise<Return<boolean>> => {

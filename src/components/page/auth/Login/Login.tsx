@@ -6,10 +6,14 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-const Login = ({ isOpen, onClose }: LoginProps) => {
+interface LoginProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Login = ({ onClose }: LoginProps) => {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
 
@@ -37,14 +41,6 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
 
     alert('로그인에 실패 하였습니다.');
   };
-
-  useEffect(() => {
-    const html = document.querySelector('html');
-    if (!html) return;
-    if (isOpen) {
-      html.style.overflowY = 'hidden';
-    }
-  }, [isOpen]);
 
   return (
     <motion.div className="fixed left-0 top-0 z-50 h-full w-full">
@@ -132,8 +128,3 @@ const Login = ({ isOpen, onClose }: LoginProps) => {
 };
 
 export default Login;
-
-interface LoginProps {
-  isOpen: boolean;
-  onClose: any;
-}

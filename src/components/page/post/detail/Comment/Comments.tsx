@@ -2,7 +2,7 @@ import CommentCompo from '@/components/page/post/detail/Comment/CommentCompo';
 import CommentFrom from '@/components/page/post/detail/Comment/CommentFrom';
 import CommentLength from '@/components/page/post/detail/Comment/CommentLength';
 import { commentOptions } from '@/hooks/useComment';
-import { authOptions } from '@/lib/authOptions';
+import authOptions from '@/lib/authOptions';
 import {
   dehydrate,
   HydrationBoundary,

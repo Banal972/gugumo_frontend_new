@@ -4,6 +4,7 @@ import '@/lib/firebase';
 import StoreProvider from '@/lib/store/StoreProvider';
 import AuthProvider from '@/provider/AuthProvider';
 import FCMProvider from '@/provider/FCMProvider';
+import ModalProvider from '@/provider/ModalProvider';
 import Providers from '@/provider/Providers';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -78,9 +79,11 @@ const RootLayout = ({ children }: Readonly<RootLayoutProps>) => {
       <body>
         <Providers>
           <AuthProvider>
-            <StoreProvider>
-              <FCMProvider>{children}</FCMProvider>
-            </StoreProvider>
+            <ModalProvider>
+              <StoreProvider>
+                <FCMProvider>{children}</FCMProvider>
+              </StoreProvider>
+            </ModalProvider>
           </AuthProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </Providers>

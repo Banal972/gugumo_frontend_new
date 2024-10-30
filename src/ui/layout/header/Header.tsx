@@ -18,8 +18,10 @@ const Header = () => {
           <Image
             src="/asset/image/logo.svg"
             alt="로고"
-            width={172}
+            width={0}
             height={0}
+            sizes="100vw"
+            className="h-auto w-full"
           />
         </Link>
 

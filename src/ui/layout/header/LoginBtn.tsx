@@ -1,9 +1,13 @@
 'use client';
 
+import Login from '@/components/page/auth/Login/Login';
+import useModal from '@/hooks/useModal';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 const LoginBtn = () => {
+  const { openHandler } = useModal();
+
   const { data: session } = useSession() as any;
   const router = useRouter();
 
@@ -11,6 +15,7 @@ const LoginBtn = () => {
     if (session && !session.accessToken) {
       return router.push('/signup');
     }
+    openHandler(Login, {});
   };
 
   return (

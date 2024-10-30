@@ -1,6 +1,6 @@
 'use server';
 
-import { authIntance } from '@/lib/fetchInstance';
+import authIntance from '@/lib/fetchInstance';
 import { MypageReturn, Return } from '@/types/get.type';
 
 const getAction = async (): Promise<Return<MypageReturn>> => {
