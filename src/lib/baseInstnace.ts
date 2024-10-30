@@ -1,3 +1,5 @@
+'use server';
+
 const baseIntance = async (url: string, options: RequestInit = {}) => {
   const { headers, ...restOptions } = options;
 
