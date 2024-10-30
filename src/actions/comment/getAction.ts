@@ -1,6 +1,7 @@
 'use server';
 
 import authIntance from '@/lib/fetchInstance';
+import { Return } from '@/types/get.type';
 
 interface CommentDataT {
   commentId: number;
@@ -14,8 +15,21 @@ interface CommentDataT {
   authorExpired: boolean;
 }
 
-const getAction = async (postid: string) => {
-  const response = await authIntance(`/back/api/v1/comment/${postid}`);
+interface CmntReturn {
+  length: number;
+  comments: CommentDataT[];
+  replys: CommentDataT[];
+}
+
+const getAction = async (postid: string): Promise<Return<CmntReturn>> => {
+  const response = await authIntance(
+    `${process.env.API_URL}/api/v1/comment/${postid}`,
+    {
+      next: {
+        tags: ['cmnt'],
+      },
+    },
+  );
 
   const data = await response.json();
 
@@ -28,9 +42,11 @@ const getAction = async (postid: string) => {
 
   return {
     status: data.status,
-    length: data.data.length,
-    comments,
-    replys,
+    data: {
+      length: data.data.length,
+      comments,
+      replys,
+    },
     message: data.message,
   };
 };

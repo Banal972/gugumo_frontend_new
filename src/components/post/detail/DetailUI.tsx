@@ -1,5 +1,5 @@
 import ViewSVG from '@/asset/image/view.svg';
-import BtnList from '@/components/page/post/detail/BtnList';
+import BtnList from '@/components/post/detail/BtnList';
 import { GAMETYPE, LOCATION, MEETINGTYPE } from '@/constant/card/constant';
 import { DetailData } from '@/types/detail.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';

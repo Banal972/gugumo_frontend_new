@@ -30,7 +30,7 @@ export interface GetData {
 }
 
 export interface Return<T> {
-  status: string;
+  status: 'success' | 'fail';
   data: T;
   message: any;
 }
