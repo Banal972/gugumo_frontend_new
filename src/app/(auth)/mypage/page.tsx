@@ -1,10 +1,10 @@
 import getAction from '@/actions/auth/mypage/getAction';
-import DeleteUser from '@/components/page/auth/mypage/DeleteUser';
-import Nickname from '@/components/page/auth/mypage/Nickname';
-import Password from '@/components/page/auth/mypage/Password';
-import SkeletonNickname from '@/components/page/auth/mypage/SkeletonUI/SkeletonNickname';
-import SkeletonPassword from '@/components/page/auth/mypage/SkeletonUI/SkeletonPassword';
-import SkeletonUser from '@/components/page/auth/mypage/SkeletonUI/SkeletonUser';
+import DeleteUser from '@/components/auth/mypage/DeleteUser';
+import Nickname from '@/components/auth/mypage/Nickname';
+import Password from '@/components/auth/mypage/Password';
+import SkeletonNickname from '@/components/auth/mypage/SkeletonUI/SkeletonNickname';
+import SkeletonPassword from '@/components/auth/mypage/SkeletonUI/SkeletonPassword';
+import SkeletonUser from '@/components/auth/mypage/SkeletonUI/SkeletonUser';
 import { GAMETYPE } from '@/constant/card/constant';
 import authOptions from '@/lib/authOptions';
 import Wrap from '@/ui/layout/Wrap';

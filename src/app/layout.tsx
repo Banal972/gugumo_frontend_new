@@ -1,7 +1,6 @@
 import '@/app/font.css';
 import '@/app/globals.css';
 import '@/lib/firebase';
-import StoreProvider from '@/lib/store/StoreProvider';
 import AuthProvider from '@/provider/AuthProvider';
 import FCMProvider from '@/provider/FCMProvider';
 import ModalProvider from '@/provider/ModalProvider';
@@ -80,9 +79,7 @@ const RootLayout = ({ children }: Readonly<RootLayoutProps>) => {
         <Providers>
           <AuthProvider>
             <ModalProvider>
-              <StoreProvider>
-                <FCMProvider>{children}</FCMProvider>
-              </StoreProvider>
+              <FCMProvider>{children}</FCMProvider>
             </ModalProvider>
           </AuthProvider>
           <ReactQueryDevtools initialIsOpen={false} />

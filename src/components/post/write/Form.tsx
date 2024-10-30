@@ -1,10 +1,6 @@
 'use client';
 
 import DownIcon from '@/asset/image/down.svg';
-import Alert from '@/components/Modal/Alert';
-import Success from '@/components/Modal/Success';
-import { open } from '@/lib/store/features/modals/modal';
-import { useAppDispatch } from '@/lib/store/hook';
 import Toolbar from '@/ui/page/post/toolbar/Toolbar';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Color } from '@tiptap/extension-color';
@@ -27,7 +23,6 @@ type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export default function Form({ session, edit }: { session: any; edit?: any }) {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const { register, handleSubmit, watch, setValue } = useForm();
   const [isMeetingDate, setIsMeetingDate] = useState(false);
@@ -57,7 +52,7 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
     } else {
       // editorRef.current?.getInstance().setMarkdown("");
     }
-  }, [edit]);
+  }, [edit, setValue]);
 
   const meetingDateHandler = (value: Value) => {
     setMeetingDate(value);

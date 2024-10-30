@@ -4,7 +4,7 @@ import joinAction from '@/actions/public/signup/joinAction';
 import kakaoAction from '@/actions/public/signup/kakaoAction';
 import mailCheckAction from '@/actions/public/signup/mailCheckAction';
 import mailSendAction from '@/actions/public/signup/mailSendAction';
-import Gametype from '@/components/page/auth/signup/Gametype';
+import Gametype from '@/components/auth/signup/Gametype';
 import Wrap from '@/ui/layout/Wrap';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';

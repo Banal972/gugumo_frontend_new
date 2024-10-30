@@ -1,10 +1,10 @@
 'use client';
 
 import get from '@/actions/meeting/listAction';
-import Gametype from '@/components/page/main/Gametype';
-import Location from '@/components/page/main/Location';
-import Sort from '@/components/page/main/Sort';
-import Status from '@/components/page/main/Status';
+import Gametype from '@/components/main/Gametype';
+import Location from '@/components/main/Location';
+import Sort from '@/components/main/Sort';
+import Status from '@/components/main/Status';
 import Search from '@/ui/form/Search';
 import Paging from '@/ui/layout/Paging';
 import Card from '@/ui/layout/card/Card';

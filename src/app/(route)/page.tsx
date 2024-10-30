@@ -1,5 +1,5 @@
-import Banner from '@/components/page/main/Banner';
-import ListContainer from '@/components/page/main/ListContainer';
+import Banner from '@/components/main/Banner';
+import ListContainer from '@/components/main/ListContainer';
 import Wrap from '@/ui/layout/Wrap';
 import Recommends from '@/ui/layout/recommends/Recommends';
 

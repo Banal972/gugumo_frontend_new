@@ -1,6 +1,6 @@
 'use client';
 
-import Kakao from '@/components/page/auth/Login/oauth/Kakao';
+import Kakao from '@/components/auth/Login/oauth/Kakao';
 import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
