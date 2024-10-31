@@ -1,5 +1,6 @@
 import Wrap from '@/ui/layout/Wrap';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -33,7 +34,12 @@ const Footer = () => {
                 <button type="button">이용약관</button>
                 <button type="button">개인정보처리방침</button> 
               */}
-            <button type="button">서비스 소개</button>
+            <Link
+              href="https://sturdy-lunaria-a1f.notion.site/130ab8d5e09280e5ae60faa7394b5ca0?pvs=4"
+              target="_blank"
+            >
+              서비스 소개
+            </Link>
           </div>
         </div>
       </Wrap>
