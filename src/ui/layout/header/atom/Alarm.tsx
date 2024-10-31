@@ -1,35 +1,43 @@
 'use client';
 
-import { useAlarm } from '@/hooks/useAlarm';
+import allReadAction from '@/actions/notification/allReadAction';
+import deleteAction from '@/actions/notification/deleteAction';
+import { AlarmData } from '@/actions/notification/getAction';
+import readAction from '@/actions/notification/readAction';
 import moment from 'moment';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { MouseEvent, useState } from 'react';
 
-export default function Alarm({ session }: { session: any }) {
+const Alarm = ({
+  notification,
+}: {
+  notification: { createDate: string; data: AlarmData[] }[];
+}) => {
   const [isAlarm, setIsAlarm] = useState(false);
 
-  const { getAlarms, readAlarmMutation, deleteAlarmMutation, allReadMutation } =
-    useAlarm(session);
+  const router = useRouter();
 
   const onReadHandler = async (
-    e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,
+    e: MouseEvent,
     notiId: number,
     postId: number,
   ) => {
     e.stopPropagation();
-    readAlarmMutation.mutate({ session, notiId, postId });
+    const res = await readAction(notiId);
+    if (res.status === 'fail') return alert('읽는데 실패하였습니다.');
+    router.push(`/detail/${postId}`);
   };
 
-  const onDeleteHandler = async (
-    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
-    notiId: number,
-  ) => {
+  const onDeleteHandler = async (e: MouseEvent, notiId: number) => {
     e.stopPropagation();
-    deleteAlarmMutation.mutate({ session, notiId });
+    const res = await deleteAction(notiId);
+    if (res.status === 'fail') return alert('삭제하는데 실패하였습니다.');
   };
 
   const onAllReadHandler = async () => {
-    allReadMutation.mutate({ session });
+    const res = await allReadAction();
+    if (res.status === 'fail') return alert('읽는데 실패하였습니다.');
   };
 
   return (
@@ -59,9 +67,9 @@ export default function Alarm({ session }: { session: any }) {
             </button>
           </div>
           <div className="mt-[23px] flex-1 overflow-y-auto">
-            {getAlarms && getAlarms?.length > 0 ? (
+            {notification.length > 0 && (
               <>
-                {getAlarms.map((alarm) => (
+                {notification.map((alarm) => (
                   <div className="mt-4 first:mt-0" key={alarm.createDate}>
                     <p className="ml-[3px] text-[13px] text-OnSurface">
                       {moment(alarm.createDate).format('MM월 DD일')}
@@ -99,7 +107,8 @@ export default function Alarm({ session }: { session: any }) {
                   </div>
                 ))}
               </>
-            ) : (
+            )}
+            {notification.length <= 0 && (
               <p className="text-center text-sm text-OnBackgroundGray">
                 알림이 존재하지 않습니다.
               </p>
@@ -109,4 +118,6 @@ export default function Alarm({ session }: { session: any }) {
       )}
     </div>
   );
-}
+};
+
+export default Alarm;
