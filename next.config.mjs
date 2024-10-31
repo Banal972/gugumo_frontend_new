@@ -19,14 +19,6 @@ const nextConfig = {
     });
     return config;
   },
-  async rewrites() {
-    return [
-      {
-        source: '/back/:path*',
-        destination: `${process.env.API_URL}/:path*`,
-      },
-    ];
-  },
 };
 
 export default pwa(nextConfig);

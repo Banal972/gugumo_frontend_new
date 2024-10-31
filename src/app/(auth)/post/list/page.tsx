@@ -40,7 +40,7 @@ const ListPage = () => {
             )))}
 
         {data && !isPending && (
-          <List label="북마크" data={data.data} searchHandler={searchHandler} />
+          <List label="작성글" data={data.data} searchHandler={searchHandler} />
         )}
       </Wrap>
     </main>
