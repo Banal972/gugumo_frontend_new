@@ -14,7 +14,7 @@ const CalendarSelect = ({ onClick, date, children }: CalendarSelectProps) => {
       <div
         role="none"
         onClick={onClick}
-        className="box-border flex h-11 w-full cursor-pointer items-center rounded-lg bg-Surface px-4 text-sm font-medium md:h-16 md:text-base"
+        className="box-border flex h-11 w-full cursor-pointer items-center rounded-lg bg-Surface px-4 text-sm font-medium md:h-14 md:text-base"
       >
         {moment(date).format('YYYY-MM-DD')}
       </div>

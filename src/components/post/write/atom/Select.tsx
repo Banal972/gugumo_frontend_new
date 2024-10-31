@@ -14,7 +14,7 @@ const Select = ({ id, passive, children, register }: SelectProps) => {
     <div className="relative rounded-lg bg-Surface">
       <select
         id={id}
-        className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-transparent px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${passive && 'text-gray-400'}`}
+        className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-transparent px-4 text-sm font-medium outline-none focus:border-primary md:h-14 md:text-base ${passive && 'text-gray-400'}`}
         {...register}
       >
         {children}

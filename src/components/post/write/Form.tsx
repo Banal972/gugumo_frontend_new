@@ -3,14 +3,14 @@
 import patchAction from '@/actions/auth/post/patchAction';
 import postAction from '@/actions/auth/post/postAction';
 import CalendarSelect from '@/components/post/write/atom/CalendarSelect';
-import Editor from '@/components/post/write/atom/Editor';
+import EditorLayout from '@/components/post/write/atom/EditorLayout';
 import Headings from '@/components/post/write/atom/Headings';
 import Input from '@/components/post/write/atom/Input';
 import Label from '@/components/post/write/atom/Label';
 import Select from '@/components/post/write/atom/Select';
 import SubmitBtn from '@/components/post/write/atom/SubmitBtn';
 import { GAMETYPE, LOCATION } from '@/constant/card/constant';
-import { PostidType } from '@/types/cmnt.type';
+import useEditorHook from '@/hooks/useEditorHook';
 import { DetailData } from '@/types/detail.type';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
 type FormValue = {
   meetingType: string;
   gameType: string;
-  meetingMemberNum: number;
+  meetingMemberNum: string;
   meetingDate: string;
   meetingDays: string;
   meetingTime: number;
@@ -51,6 +51,8 @@ const Form = ({ edit }: FormProps) => {
   );
   const [selectDays, setSelectDays] = useState<string[]>([]);
   const meetingTypeWatch = watch('meetingType', 'SHORT');
+
+  const editor = useEditorHook();
 
   useEffect(() => {
     if (edit) {
@@ -99,10 +101,10 @@ const Form = ({ edit }: FormProps) => {
     postId,
   }: {
     body: any;
-    postId: PostidType;
+    postId: number;
   }) => {
     const res = await patchAction({ body, postId });
-    if (res.status !== 'fail') return alert('수정에 실패 했습니다.');
+    if (res.status === 'fail') return alert('수정에 실패 했습니다.');
     alert('수정이 완료 되었습니다.');
     router.push(`/detail/${postId}`);
   };
@@ -118,7 +120,8 @@ const Form = ({ edit }: FormProps) => {
       openKakao,
       title,
     } = data;
-    // const content = editorRef.current?.getInstance().getHTML();
+
+    const content = editor.getHTML();
 
     const body: { [key: string]: string | number } = {
       meetingType,
@@ -130,7 +133,7 @@ const Form = ({ edit }: FormProps) => {
       meetingDeadline: moment(meetingDeadline as Date).format('YYYY-MM-DD'),
       openKakao,
       title,
-      // content,
+      content,
       location,
     };
 
@@ -138,15 +141,6 @@ const Form = ({ edit }: FormProps) => {
       if (!meetingTime) return alert('시간대을 선택해주세요.');
       if (selectDays.length <= 0) return alert('요일을 선택해주세요.');
     }
-
-    /* if (content === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "내용을 입력해주세요." },
-        }),
-      );
-    } */
 
     if (!edit) return createMutation(body);
     body[meetingStatus] = meetingStatus;
@@ -221,13 +215,13 @@ const Form = ({ edit }: FormProps) => {
               required: { value: true, message: '모집인원을 선택해주세요.' },
             })}
           >
-            <option value="0">모집인원을 선택해주세요.</option>
+            <option value="">모집인원을 선택해주세요.</option>
             {[
-              { value: 1, label: '1명' },
-              { value: 2, label: '2명' },
-              { value: 3, label: '3명' },
-              { value: 4, label: '4명' },
-              { value: 5, label: '5명이상' },
+              { value: '1', label: '1명' },
+              { value: '2', label: '2명' },
+              { value: '3', label: '3명' },
+              { value: '4', label: '4명' },
+              { value: '5', label: '5명이상' },
             ].map(({ value, label }) => (
               <option key={value} value={value} className="text-black">
                 {label}
@@ -310,40 +304,40 @@ const Form = ({ edit }: FormProps) => {
 
         <div className="flex min-w-0 flex-col gap-[10px]">
           <Label htmlFor="openKakao">오픈카톡 주소</Label>
-          <div className="relative">
-            <Input
-              id="openKakao"
-              type="text"
-              placeholder="오픈카톡 주소를 입력해주세요."
-              register={register('openKakao', {
-                required: {
-                  value: true,
-                  message: '오픈카톡 주소를 입력해주세요.',
-                },
-              })}
-            />
-          </div>
+          <Input
+            id="openKakao"
+            type="text"
+            placeholder="오픈카톡 주소를 입력해주세요."
+            register={register('openKakao', {
+              required: {
+                value: true,
+                message: '오픈카톡 주소를 입력해주세요.',
+              },
+            })}
+          />
         </div>
       </div>
 
       <div className="mt-14 md:mt-[87px]">
         <Headings order="2" label="모임에 대해 소개해주세요" />
 
-        <div className="mt-8">
+        <div className="mt-5 md:mt-8">
           <Label htmlFor="title">제목</Label>
-          <Input
-            type="text"
-            placeholder="제목을 입력해주세요."
-            register={register('title', {
-              required: { value: true, message: '제목을 입력해주세요.' },
-            })}
-          />
+          <div className="mt-3">
+            <Input
+              type="text"
+              placeholder="제목을 입력해주세요."
+              register={register('title', {
+                required: { value: true, message: '제목을 입력해주세요.' },
+              })}
+            />
+          </div>
         </div>
 
         <div className="mt-7">
           <Label htmlFor="">내용</Label>
-          <div className="mt-3 rounded-xl border p-5">
-            <Editor />
+          <div className="mt-3 border">
+            <EditorLayout editor={editor} />
           </div>
         </div>
       </div>

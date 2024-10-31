@@ -14,7 +14,7 @@ const Input = ({ id, type, placeholder, register }: InputProps) => {
       id={id}
       type={type}
       placeholder={placeholder}
-      className="mt-3 h-11 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-14 md:text-base"
+      className="h-11 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-14 md:text-base"
       {...register}
     />
   );

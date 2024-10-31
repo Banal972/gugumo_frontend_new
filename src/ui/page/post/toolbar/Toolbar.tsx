@@ -14,7 +14,7 @@ const Toolbar = ({ editor, type }: ToolbarProps) => {
 
   return (
     <div
-      className={`mb-5 flex items-center gap-1 bg-white py-2 ${type === 'bubble' ? 'overflow-x-auto rounded-full border px-4' : 'flex-wrap border-b'}`}
+      className={`sticky top-0 z-10 flex items-center gap-1 overflow-x-auto bg-white py-2 ${type === 'bubble' ? 'rounded-full border px-4' : 'border-b'}`}
     >
       <HeadingToolbar editor={editor} />
       <AlignToolbar editor={editor} />

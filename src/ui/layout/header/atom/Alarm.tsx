@@ -9,11 +9,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { MouseEvent, useState } from 'react';
 
-const Alarm = ({
-  notification,
-}: {
+interface AlarmProps {
   notification: { createDate: string; data: AlarmData[] }[];
-}) => {
+}
+
+const Alarm = ({ notification }: AlarmProps) => {
   const [isAlarm, setIsAlarm] = useState(false);
 
   const router = useRouter();
@@ -44,7 +44,7 @@ const Alarm = ({
     <div className="relative">
       <button
         type="button"
-        className="w-6 cursor-pointer md:w-auto"
+        className="w-6 cursor-pointer align-middle md:w-auto"
         onClick={() => setIsAlarm(!isAlarm)}
       >
         <Image
@@ -79,9 +79,7 @@ const Alarm = ({
                         <li
                           role="none"
                           key={elm.id}
-                          className={`flex gap-2 whitespace-nowrap ${
-                            !elm.read ? 'bg-Surface' : 'bg-gray-300'
-                          } mt-2 cursor-pointer items-center justify-between rounded px-3 py-[14px] first:mt-0`}
+                          className={`mt-2 flex cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded px-3 py-[14px] first:mt-0 ${!elm.read ? 'bg-Surface' : 'bg-gray-300'}`}
                           onClick={(e) => onReadHandler(e, elm.id, elm.postId)}
                         >
                           <p className="truncate text-[13px]">

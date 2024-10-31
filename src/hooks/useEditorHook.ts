@@ -1,30 +1,27 @@
-'use client';
-
-import Toolbar from '@/ui/page/post/toolbar/Toolbar';
 import { Color } from '@tiptap/extension-color';
-import Heading from '@tiptap/extension-heading';
 import Highlight from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
-import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react';
+import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-const Editor = () => {
-  const editor = useEditor({
+const useEditorHook = () => {
+  return useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
       Placeholder.configure({
         placeholder: '내용을 입력해주세요...',
         emptyEditorClass:
           'before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]',
         emptyNodeClass:
           'before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]',
-      }),
-      Heading.configure({
-        levels: [1, 2, 3],
       }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
@@ -45,17 +42,9 @@ const Editor = () => {
           'w-full prose prose-sm sm:prose-base p-5 focus:outline-none max-w-none box-border',
       },
     },
+    immediatelyRender: true,
+    shouldRerenderOnTransaction: false,
   });
-
-  return (
-    <>
-      <Toolbar editor={editor} />
-      <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-        <Toolbar editor={editor} type="bubble" />
-      </BubbleMenu>
-      <EditorContent editor={editor} />
-    </>
-  );
 };
 
-export default Editor;
+export default useEditorHook;

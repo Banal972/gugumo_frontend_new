@@ -19,6 +19,7 @@ const Header = async () => {
             height={0}
             sizes="100vw"
             className="h-auto w-full"
+            priority
           />
         </Link>
 

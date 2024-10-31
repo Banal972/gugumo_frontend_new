@@ -1,12 +1,11 @@
 'use server';
 
 import authIntance from '@/lib/fetchInstance';
-import { PostidType } from '@/types/cmnt.type';
 import { Return } from '@/types/get.type';
 
 interface PatchActionProps {
   body: any;
-  postId: PostidType;
+  postId: number;
 }
 
 const patchAction = async ({

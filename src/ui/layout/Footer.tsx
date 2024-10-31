@@ -35,6 +35,7 @@ const Footer = () => {
                 <button type="button">개인정보처리방침</button> 
               */}
             <Link
+              className="transition-colors hover:text-[#696969]"
               href="https://sturdy-lunaria-a1f.notion.site/130ab8d5e09280e5ae60faa7394b5ca0?pvs=4"
               target="_blank"
             >

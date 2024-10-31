@@ -9,7 +9,7 @@ const Headings = ({ order, label }: HeadingsProps) => {
       <p className="flex size-[23px] flex-none items-center justify-center rounded-full bg-primary text-lg font-semibold text-white md:size-[34px] md:text-2xl">
         {order}
       </p>
-      <h3 className="text-lg font-medium md:text-2xl">{label}</h3>
+      <h3 className="break-keep text-lg font-medium md:text-2xl">{label}</h3>
     </div>
   );
 };
