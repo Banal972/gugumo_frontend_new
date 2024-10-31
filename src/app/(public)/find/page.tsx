@@ -1,7 +1,7 @@
 'use client';
 
 import resetPwdAction from '@/actions/public/find/resetPwdAction';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 type FormValues = {
   email: string;
@@ -10,19 +10,14 @@ type FormValues = {
 const FindPage = () => {
   const { handleSubmit, register, setValue } = useForm<FormValues>();
 
-  const onSubmitHandler: SubmitHandler<FormValues> = async (data) => {
+  const onSubmitHandler = handleSubmit(async (data) => {
     const { email } = data;
-
     if (email === '') return alert('이메일을 입력해주세요.');
-
     const res = await resetPwdAction(email);
-
     setValue('email', '');
-
     if (!res.data) return window.alert('패스워드 이메일을 실패했습니다.');
-
     window.alert('패스워드 이메일을 보냈습니다.');
-  };
+  });
 
   return (
     <div className="py-[158px]">
@@ -35,10 +30,7 @@ const FindPage = () => {
             <span className="font-bold">10분 간</span> 유효합니다.
           </dd>
         </dl>
-        <form
-          onSubmit={handleSubmit(onSubmitHandler)}
-          className="mt-12 md:mt-8"
-        >
+        <form onSubmit={onSubmitHandler} className="mt-12 md:mt-8">
           <input
             className="h-12 w-full rounded-lg border border-Outline px-3 text-base font-medium placeholder:text-OnBackgroundGray"
             type="text"

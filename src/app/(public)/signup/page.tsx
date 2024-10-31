@@ -4,11 +4,12 @@ import joinAction from '@/actions/public/signup/joinAction';
 import kakaoAction from '@/actions/public/signup/kakaoAction';
 import mailCheckAction from '@/actions/public/signup/mailCheckAction';
 import mailSendAction from '@/actions/public/signup/mailSendAction';
+import AgreeService from '@/components/auth/signup/AgreeService';
 import Gametype from '@/components/auth/signup/Gametype';
 import Wrap from '@/ui/layout/Wrap';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { IoCheckmarkOutline } from 'react-icons/io5';
 
@@ -19,11 +20,26 @@ interface IsServiceT {
   isAgreeMarketing: boolean;
 }
 
+const AGREE_SERVICE = [
+  {
+    id: 'isAgreeTermsUse',
+    label: '서비스 이용약관 동의 (필수)',
+  },
+  {
+    id: 'isAgreeCollectingUsingPersonalInformation',
+    label: '개인정보 수집 및 이용 동의 (필수)',
+  },
+  {
+    id: 'isAgreeMarketing',
+    label: '마케팅 수신 동의 (선택)',
+  },
+];
+
 const SignupPage = () => {
   const { data: session } = useSession() as any;
 
   const router = useRouter();
-  const { register, handleSubmit, getValues, setValue } = useForm();
+  const { register, handleSubmit, getValues } = useForm();
   const [isSend, setIsSend] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
   const [isService, setIsService] = useState<IsServiceT>({
@@ -62,20 +78,20 @@ const SignupPage = () => {
 
   const allCheckHandler = () => {
     if (Object.values(isService).every((value) => value)) {
-      setIsService((prev) => ({
+      return setIsService((prev) => ({
         ...prev,
         isAgreeTermsUse: false,
         isAgreeCollectingUsingPersonalInformation: false,
         isAgreeMarketing: false,
       }));
-    } else {
-      setIsService((prev) => ({
-        ...prev,
-        isAgreeTermsUse: true,
-        isAgreeCollectingUsingPersonalInformation: true,
-        isAgreeMarketing: true,
-      }));
     }
+
+    setIsService((prev) => ({
+      ...prev,
+      isAgreeTermsUse: true,
+      isAgreeCollectingUsingPersonalInformation: true,
+      isAgreeMarketing: true,
+    }));
   };
 
   const isServiceHandler = (key: string, value: boolean) => {
@@ -88,10 +104,6 @@ const SignupPage = () => {
   const onSubmitHandler = async (event: any) => {
     const { nickname, username, emailAuthNum, password, confirmPW } = event;
 
-    if (!nickname) {
-      return alert('닉네임을 입력해주세요');
-    }
-
     if (!isService.isAgreeTermsUse) {
       return alert('서비스 이용약관에 동의해주세요.');
     }
@@ -102,22 +114,6 @@ const SignupPage = () => {
 
     if (!session) {
       // 기본 회원가입
-
-      if (!username) {
-        return alert('이메일을 입력해주세요');
-      }
-
-      if (!isCheck) {
-        return alert('이메일 인증이 필요합니다.');
-      }
-
-      if (!emailAuthNum) {
-        return alert('인증번호를 입력해주세요');
-      }
-
-      if (!password) {
-        return alert('비밀번호를 입력해주세요');
-      }
 
       if (password !== confirmPW) {
         return alert('비밀번호가 서로 다릅니다.');
@@ -165,11 +161,6 @@ const SignupPage = () => {
     }
   };
 
-  useEffect(() => {
-    setValue('nickname', session?.nickname);
-    setValue('username', session?.username);
-  }, [session]);
-
   return (
     <Wrap className="pb-[90px] pt-12 md:py-[150px]">
       <div className="mx-auto box-border max-w-[790px] rounded-xl md:bg-Surface md:px-32 md:py-14">
@@ -186,7 +177,10 @@ const SignupPage = () => {
                 type="text"
                 placeholder="닉네임"
                 className="sign-input"
-                {...register('nickname')}
+                {...register('nickname', {
+                  value: session?.nickname,
+                  required: { value: true, message: '닉네임을 입력해주세요' },
+                })}
               />
               <div className="relative">
                 <input
@@ -194,7 +188,9 @@ const SignupPage = () => {
                   placeholder="이메일을 입력하세요."
                   className="sign-input"
                   {...register('username', {
+                    value: session?.username,
                     disabled: session,
+                    required: { value: true, message: '이메일을 입력해주세요' },
                   })}
                 />
                 {!session && (
@@ -213,7 +209,12 @@ const SignupPage = () => {
                     type="text"
                     placeholder="인증번호를 입력하세요"
                     className="sign-input"
-                    {...register('emailAuthNum')}
+                    {...register('emailAuthNum', {
+                      required: {
+                        value: true,
+                        message: '인증번호를 입력해주세요',
+                      },
+                    })}
                   />
                   <button
                     type="button"
@@ -230,13 +231,23 @@ const SignupPage = () => {
                     type="password"
                     placeholder="비밀번호"
                     className="sign-input"
-                    {...register('password')}
+                    {...register('password', {
+                      required: {
+                        value: true,
+                        message: '비밀번호를 입력해주세요',
+                      },
+                    })}
                   />
                   <input
                     type="password"
                     placeholder="비밀번호 확인"
                     className="sign-input"
-                    {...register('confirmPW')}
+                    {...register('confirmPW', {
+                      required: {
+                        value: true,
+                        message: '비밀번호를 입력해주세요',
+                      },
+                    })}
                   />
                 </>
               )}
@@ -277,45 +288,15 @@ const SignupPage = () => {
                 </div>
 
                 <div className="mt-4 border-t border-t-white px-5 pt-6 md:mt-6 md:px-6">
-                  {[
-                    {
-                      id: 'isAgreeTermsUse',
-                      label: '서비스 이용약관 동의 (필수)',
-                    },
-                    {
-                      id: 'isAgreeCollectingUsingPersonalInformation',
-                      label: '개인정보 수집 및 이용 동의 (필수)',
-                    },
-                    {
-                      id: 'isAgreeMarketing',
-                      label: '마케팅 수신 동의 (선택)',
-                    },
-                  ].map(({ id, label }, index) => (
-                    <div
+                  {AGREE_SERVICE.map(({ id, label }) => (
+                    <AgreeService
+                      isService={isService}
+                      id={id}
                       key={id}
-                      className={`flex items-center ${index !== 0 ? 'mt-4' : ''}`}
-                    >
-                      <div
-                        role="none"
-                        className="flex cursor-pointer gap-3"
-                        onClick={() => isServiceHandler(id, !isService[id])}
-                      >
-                        <div className="relative size-5 flex-none rounded bg-white">
-                          {isService[id] && (
-                            <IoCheckmarkOutline className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs" />
-                          )}
-                        </div>
-                        <p className="text-base font-medium text-OnPrimary">
-                          {label}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        className="ml-auto text-xs text-white underline underline-offset-4"
-                      >
-                        내용보기
-                      </button>
-                    </div>
+                      label={label}
+                      onClick={() => isServiceHandler(id, !isService[id])}
+                      className="first:mt-0"
+                    />
                   ))}
                 </div>
               </div>

@@ -1,39 +1,56 @@
 'use client';
 
-import DownIcon from '@/asset/image/down.svg';
-import Toolbar from '@/ui/page/post/toolbar/Toolbar';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Color } from '@tiptap/extension-color';
-import Heading from '@tiptap/extension-heading';
-import Highlight from '@tiptap/extension-highlight';
-import Link from '@tiptap/extension-link';
-import Placeholder from '@tiptap/extension-placeholder';
-import TextAlign from '@tiptap/extension-text-align';
-import TextStyle from '@tiptap/extension-text-style';
-import Underline from '@tiptap/extension-underline';
-import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import patchAction from '@/actions/auth/post/patchAction';
+import postAction from '@/actions/auth/post/postAction';
+import CalendarSelect from '@/components/post/write/atom/CalendarSelect';
+import Editor from '@/components/post/write/atom/Editor';
+import Headings from '@/components/post/write/atom/Headings';
+import Input from '@/components/post/write/atom/Input';
+import Label from '@/components/post/write/atom/Label';
+import Select from '@/components/post/write/atom/Select';
+import SubmitBtn from '@/components/post/write/atom/SubmitBtn';
+import { GAMETYPE, LOCATION } from '@/constant/card/constant';
+import { PostidType } from '@/types/cmnt.type';
+import { DetailData } from '@/types/detail.type';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import { useForm } from 'react-hook-form';
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-export default function Form({ session, edit }: { session: any; edit?: any }) {
+type FormValue = {
+  meetingType: string;
+  gameType: string;
+  meetingMemberNum: number;
+  meetingDate: string;
+  meetingDays: string;
+  meetingTime: number;
+  meetingDeadline: string;
+  openKakao: string;
+  title: string;
+  content: string;
+  location: string;
+  meetingStatus: string;
+};
+
+interface FormProps {
+  edit?: DetailData;
+}
+
+const Form = ({ edit }: FormProps) => {
   const router = useRouter();
-  const { register, handleSubmit, watch, setValue } = useForm();
-  const [isMeetingDate, setIsMeetingDate] = useState(false);
-  const [isMeetingDeadline, setIsMeetingDeadline] = useState(false);
+  const { register, handleSubmit, watch, setValue } = useForm<FormValue>();
+  const [isMeetingDate, setIsMeetingDate] = useState<boolean>(false);
+  const [isMeetingDeadline, setIsMeetingDeadline] = useState<boolean>(false);
   const [meetingDate, setMeetingDate] = useState<Value>(new Date());
   const [meetingDeadline, setMeetingDeadline] = useState<Value>(
     new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
   );
   const [selectDays, setSelectDays] = useState<string[]>([]);
   const meetingTypeWatch = watch('meetingType', 'SHORT');
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (edit) {
@@ -49,8 +66,6 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
           setValue(key, edit[key]);
         }
       });
-    } else {
-      // editorRef.current?.getInstance().setMarkdown("");
     }
   }, [edit, setValue]);
 
@@ -72,115 +87,27 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
     }
   };
 
-  const createMutation = useMutation({
-    mutationFn: async (body: any) => {
-      try {
-        const response = await fetch('/back/api/v1/meeting/new', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: session.accessToken,
-          },
-          body: JSON.stringify(body),
-        });
-        if (response.ok) {
-          const data = await response.json();
+  const createMutation = async (body: any) => {
+    const res = await postAction(body);
+    if (res.status === 'fail') return alert('등록에 실패 했습니다.');
+    alert('등록이 완료 되었습니다.');
+    router.push('/');
+  };
 
-          if (data.status === 'success') {
-            dispatch(
-              open({
-                Component: Success,
-                props: {
-                  message: '등록이 완료 되었습니다.',
-                  onClick: () => {
-                    router.push('/');
-                  },
-                },
-              }),
-            );
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: '등록에 실패 했습니다.' },
-              }),
-            );
-          }
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: '오류가 발생 했습니다.' },
-          }),
-        );
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['meeting'],
-      });
-    },
-  });
+  const editMutataion = async ({
+    body,
+    postId,
+  }: {
+    body: any;
+    postId: PostidType;
+  }) => {
+    const res = await patchAction({ body, postId });
+    if (res.status !== 'fail') return alert('수정에 실패 했습니다.');
+    alert('수정이 완료 되었습니다.');
+    router.push(`/detail/${postId}`);
+  };
 
-  const editMutataion = useMutation({
-    mutationFn: async (body: any) => {
-      try {
-        const response = await fetch(`/back/api/v1/meeting/${edit.postId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: session.accessToken,
-          },
-          body: JSON.stringify(body),
-        });
-        if (response.ok) {
-          const data = await response.json();
-
-          if (data.status === 'success') {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: '수정이 완료 되었습니다.' },
-              }),
-            );
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: '수정에 실패 했습니다.' },
-              }),
-            );
-          }
-        } else {
-          console.log(response);
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: '수정에 실패 했습니다.' },
-            }),
-          );
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: '오류가 발생 했습니다.' },
-          }),
-        );
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['meeting'],
-      });
-      router.push('/');
-    },
-  });
-
-  const onSubmitHandler = async (event: any) => {
+  const onSubmitHandler = handleSubmit(async (data) => {
     const {
       meetingStatus,
       meetingType,
@@ -190,71 +117,26 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       meetingTime,
       openKakao,
       title,
-    } = event;
+    } = data;
     // const content = editorRef.current?.getInstance().getHTML();
 
-    if (gameType === '') {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '구기종목을 선택해주세요.' },
-        }),
-      );
-    }
-
-    if (location === '') {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '지역 선택을 해야합니다.' },
-        }),
-      );
-    }
+    const body: { [key: string]: string | number } = {
+      meetingType,
+      gameType,
+      meetingMemberNum,
+      meetingDate: moment(meetingDate as Date).format('YYYY-MM-DD'),
+      meetingDays: selectDays.join(';'),
+      meetingTime,
+      meetingDeadline: moment(meetingDeadline as Date).format('YYYY-MM-DD'),
+      openKakao,
+      title,
+      // content,
+      location,
+    };
 
     if (meetingType === 'LONG') {
-      if (meetingTime === '') {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: '시간대을 선택해주세요.' },
-          }),
-        );
-      }
-      if (selectDays.length <= 0) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: '요일을 선택해주세요.' },
-          }),
-        );
-      }
-    }
-
-    if (meetingMemberNum === '') {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '모집인원을 선택해주세요.' },
-        }),
-      );
-    }
-
-    if (openKakao === '') {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '오픈카톡을 입력해주세요..' },
-        }),
-      );
-    }
-
-    if (title === '') {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: '제목을 입력해주세요.' },
-        }),
-      );
+      if (!meetingTime) return alert('시간대을 선택해주세요.');
+      if (selectDays.length <= 0) return alert('요일을 선택해주세요.');
     }
 
     /* if (content === "") {
@@ -266,279 +148,101 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
       );
     } */
 
-    if (!edit) {
-      const body = {
-        meetingType,
-        gameType,
-        meetingMemberNum,
-        meetingDate: moment(meetingDate as Date).format('YYYY-MM-DD'),
-        meetingDays: selectDays.join(';'),
-        meetingTime,
-        meetingDeadline: moment(meetingDeadline as Date).format('YYYY-MM-DD'),
-        openKakao,
-        title,
-        // content,
-        location,
-      };
-      createMutation.mutate(body);
-    } else {
-      const body = {
-        meetingType,
-        gameType,
-        meetingMemberNum,
-        meetingDate: moment(meetingDate as Date).format('YYYY-MM-DD'),
-        meetingDays: selectDays.join(';'),
-        meetingTime,
-        meetingDeadline: moment(meetingDeadline as Date).format('YYYY-MM-DD'),
-        openKakao,
-        title,
-        // content,
-        location,
-        meetingStatus,
-      };
-
-      editMutataion.mutate(body);
-    }
-  };
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Placeholder.configure({
-        placeholder: '내용을 입력해주세요...',
-        emptyEditorClass:
-          'before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]',
-        emptyNodeClass:
-          'before:h-0 before:pointer-events-none before:float-left before:text-[#adb5bd] before:content-[attr(data-placeholder)]',
-      }),
-      Heading.configure({
-        levels: [1, 2, 3],
-      }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      Underline,
-      TextStyle,
-      Color,
-      Highlight.configure({ multicolor: true }),
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-        defaultProtocol: 'https',
-      }),
-    ],
-    editorProps: {
-      attributes: {
-        class:
-          'prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none',
-      },
-    },
+    if (!edit) return createMutation(body);
+    body[meetingStatus] = meetingStatus;
+    editMutataion({ body, postId: edit.postId });
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmitHandler)}>
-      <div className="flex items-center gap-2 md:gap-3">
-        <p className="flex size-[23px] flex-none items-center justify-center rounded-full bg-primary text-lg font-semibold text-white md:size-[34px] md:text-2xl">
-          1
-        </p>
-        <h3 className="text-lg font-medium md:text-2xl">
-          모임 정보를 입력해주세요
-        </h3>
-      </div>
+    <form onSubmit={onSubmitHandler}>
+      <Headings order="1" label="모임 정보를 입력해주세요" />
 
       <div className="mt-5 grid grid-cols-1 gap-3 md:mt-8 md:grid-cols-2 md:gap-7">
         {edit && (
           <div className="flex min-w-0 flex-col gap-[10px]">
-            <label
-              htmlFor="meetingStatus"
-              className="px-2 text-sm font-medium md:text-base"
-            >
-              모집상태
-            </label>
-            <div className="relative">
-              <select
-                id="meetingStatus"
-                className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-                {...register('meetingStatus')}
-              >
-                <option value="RECRUIT">모집중</option>
-                <option value="END">모집완료</option>
-              </select>
-              <DownIcon
-                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                stroke="#878787"
-              />
-            </div>
+            <Label htmlFor="meetingStatus">모집상태</Label>
+            <Select id="meetingStatus" register={register('meetingStatus')}>
+              <option value="RECRUIT">모집중</option>
+              <option value="END">모집완료</option>
+            </Select>
           </div>
         )}
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label
-            htmlFor="meetingType"
-            className="px-2 text-sm font-medium md:text-base"
-          >
-            모집형식
-          </label>
-          <div className="relative">
-            <select
-              id="meetingType"
-              className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-              {...register('meetingType')}
-            >
-              <option value="SHORT">단기모집</option>
-              <option value="LONG">장기모집</option>
-            </select>
-            <DownIcon
-              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              stroke="#878787"
-            />
-          </div>
+          <Label htmlFor="meetingType">모집형식</Label>
+          <Select id="meetingType" register={register('meetingType')}>
+            <option value="SHORT">단기모집</option>
+            <option value="LONG">장기모집</option>
+          </Select>
         </div>
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label
-            htmlFor="location"
-            className="px-2 text-sm font-medium md:text-base"
+          <Label htmlFor="location">지역 선택</Label>
+          <Select
+            id="location"
+            passive={!watch('location')}
+            register={register('location', {
+              required: { value: true, message: '지역 선택을 해야합니다.' },
+            })}
           >
-            지역 선택
-          </label>
-          <div className="relative">
-            <select
-              id="location"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch('location') ? 'text-gray-400' : ''}`}
-              {...register('location')}
-            >
-              <option value="">지역 선택을 선택해주세요.</option>
-              <option value="SEOUL" className="text-black">
-                서울
+            <option value="">지역 선택을 선택해주세요.</option>
+            {Object.entries(LOCATION).map(([key, value]) => (
+              <option key={key} value={key} className="text-black">
+                {value}
               </option>
-              <option value="INCHEON" className="text-black">
-                인천
-              </option>
-              <option value="GYEONGGI" className="text-black">
-                경기
-              </option>
-              <option value="DAEGU" className="text-black">
-                대구
-              </option>
-              <option value="BUSAN" className="text-black">
-                부산
-              </option>
-              <option value="GYEONGNAM" className="text-black">
-                경남
-              </option>
-              <option value="GYEONGBUK" className="text-black">
-                경북
-              </option>
-              <option value="GANGWON" className="text-black">
-                경원
-              </option>
-              <option value="JEONNAM" className="text-black">
-                전남
-              </option>
-              <option value="JEONBUK" className="text-black">
-                전북
-              </option>
-              <option value="OTHER" className="text-black">
-                그외
-              </option>
-            </select>
-            <DownIcon
-              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              stroke="#878787"
-            />
-          </div>
+            ))}
+          </Select>
         </div>
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label
-            htmlFor="gameType"
-            className="px-2 text-sm font-medium md:text-base"
+          <Label htmlFor="gameType">구기종목</Label>
+          <Select
+            id="gameType"
+            passive={!watch('gameType')}
+            register={register('gameType', {
+              required: { value: true, message: '구기종목을 선택해주세요.' },
+            })}
           >
-            구기종목
-          </label>
-          <div className="relative">
-            <select
-              id="gameType"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch('gameType') ? 'text-gray-400' : ''}`}
-              {...register('gameType')}
-            >
-              <option value="">구기종목을 선택해주세요.</option>
-              <option value="BADMINTON" className="text-black">
-                배드민턴
+            <option value="">구기종목을 선택해주세요.</option>
+            {Object.entries(GAMETYPE).map(([key, value]) => (
+              <option key={key} value={key} className="text-black">
+                {value}
               </option>
-              <option value="BASKETBALL" className="text-black">
-                농구
-              </option>
-              <option value="FUTSAL" className="text-black">
-                풋살
-              </option>
-              <option value="TENNIS" className="text-black">
-                테니스
-              </option>
-              <option value="TABLETENNIS" className="text-black">
-                탁구
-              </option>
-              <option value="BASEBALL" className="text-black">
-                야구
-              </option>
-            </select>
-            <DownIcon
-              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              stroke="#878787"
-            />
-          </div>
+            ))}
+          </Select>
         </div>
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label
-            htmlFor="meetingMemberNum"
-            className="px-2 text-sm font-medium md:text-base"
+          <Label htmlFor="meetingMemberNum">모집 인원</Label>
+          <Select
+            id="meetingMemberNum"
+            passive={!watch('meetingMemberNum')}
+            register={register('meetingMemberNum', {
+              required: { value: true, message: '모집인원을 선택해주세요.' },
+            })}
           >
-            모집 인원
-          </label>
-          <div className="relative">
-            <select
-              id="meetingMemberNum"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch('meetingMemberNum') ? 'text-gray-400' : ''}`}
-              {...register('meetingMemberNum')}
-            >
-              <option value="">모집인원을 선택해주세요.</option>
-              <option value="1" className="text-black">
-                1명
+            <option value="0">모집인원을 선택해주세요.</option>
+            {[
+              { value: 1, label: '1명' },
+              { value: 2, label: '2명' },
+              { value: 3, label: '3명' },
+              { value: 4, label: '4명' },
+              { value: 5, label: '5명이상' },
+            ].map(({ value, label }) => (
+              <option key={value} value={value} className="text-black">
+                {label}
               </option>
-              <option value="2" className="text-black">
-                2명
-              </option>
-              <option value="3" className="text-black">
-                3명
-              </option>
-              <option value="4" className="text-black">
-                4명
-              </option>
-              <option value="5" className="text-black">
-                5명 이상
-              </option>
-            </select>
-            <DownIcon
-              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              stroke="#878787"
-            />
-          </div>
+            ))}
+          </Select>
         </div>
 
         {meetingTypeWatch === 'SHORT' && (
           <div className="flex min-w-0 flex-col gap-[10px]">
-            <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
-              모임 날짜
-            </label>
-            <div className="relative">
-              <div
-                onClick={() => setIsMeetingDate(!isMeetingDate)}
-                className="box-border flex h-11 w-full cursor-pointer items-center rounded-lg bg-Surface px-4 text-sm font-medium md:h-16 md:text-base"
-              >
-                {moment(meetingDate as Date).format('YYYY-MM-DD')}
-              </div>
+            <Label>모임 날짜</Label>
+            <CalendarSelect
+              onClick={() => setIsMeetingDate(!isMeetingDate)}
+              date={meetingDate}
+            >
               {isMeetingDate && (
                 <Calendar
                   value={meetingDate}
@@ -547,51 +251,35 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
                   className="absolute top-full z-10"
                 />
               )}
-              <DownIcon
-                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                stroke="#878787"
-              />
-            </div>
+            </CalendarSelect>
           </div>
         )}
 
         {meetingTypeWatch === 'LONG' && (
           <div className="flex min-w-0 flex-col gap-[10px]">
-            <label
-              htmlFor="meetingTime"
-              className="px-2 text-sm font-medium md:text-base"
+            <Label htmlFor="meetingTime">시간대</Label>
+            <Select
+              id="meetingTime"
+              passive={!watch('meetingTime')}
+              register={register('meetingTime')}
             >
-              시간대
-            </label>
-            <div className="relative">
-              <select
-                id="meetingTime"
-                className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch('meetingTime') ? 'text-gray-400' : ''}`}
-                {...register('meetingTime')}
-              >
-                <option value="">시간대을 선택해주세요.</option>
-                {Array.from({ length: 24 }, (_, i) => (
-                  <option key={i} value={i + 1} className="text-black">
-                    {i + 1}시
-                  </option>
-                ))}
-              </select>
-              <DownIcon
-                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                stroke="#878787"
-              />
-            </div>
+              <option value="">시간대을 선택해주세요.</option>
+              {Array.from({ length: 24 }, (_, i) => (
+                <option key={i} value={i + 1} className="text-black">
+                  {i + 1}시
+                </option>
+              ))}
+            </Select>
           </div>
         )}
 
         {meetingTypeWatch === 'LONG' && (
           <div className="flex min-w-0 flex-col gap-[10px]">
-            <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
-              모임 요일
-            </label>
+            <Label>모임 요일</Label>
             <div className="flex min-w-0 flex-wrap justify-start gap-[10px]">
               {['월', '화', '수', '목', '금', '토', '일'].map((el) => (
                 <div
+                  role="none"
                   onClick={() => selectDayHandler(el)}
                   key={el}
                   className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${selectDays.includes(el) ? 'bg-primary text-white' : 'bg-Surface text-OnSurface'}`}
@@ -604,16 +292,11 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
         )}
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
-            모집 마감
-          </label>
-          <div className="relative">
-            <div
-              onClick={() => setIsMeetingDeadline(!isMeetingDeadline)}
-              className="box-border flex h-11 w-full cursor-pointer items-center rounded-lg bg-Surface px-4 text-sm font-medium md:h-16 md:text-base"
-            >
-              {moment(meetingDeadline as Date).format('YYYY-MM-DD')}
-            </div>
+          <Label htmlFor="">모집 마감</Label>
+          <CalendarSelect
+            onClick={() => setIsMeetingDeadline(!isMeetingDeadline)}
+            date={meetingDeadline}
+          >
             {isMeetingDeadline && (
               <Calendar
                 value={meetingDeadline}
@@ -622,79 +305,54 @@ export default function Form({ session, edit }: { session: any; edit?: any }) {
                 className="absolute top-full z-10"
               />
             )}
-            <DownIcon
-              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              stroke="#878787"
-            />
-          </div>
+          </CalendarSelect>
         </div>
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
-            오픈카톡 주소
-          </label>
+          <Label htmlFor="openKakao">오픈카톡 주소</Label>
           <div className="relative">
-            <input
+            <Input
+              id="openKakao"
               type="text"
               placeholder="오픈카톡 주소를 입력해주세요."
-              className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-              {...register('openKakao')}
+              register={register('openKakao', {
+                required: {
+                  value: true,
+                  message: '오픈카톡 주소를 입력해주세요.',
+                },
+              })}
             />
           </div>
         </div>
       </div>
 
       <div className="mt-14 md:mt-[87px]">
-        <div className="flex items-center gap-2 md:gap-3">
-          <p className="flex size-[23px] flex-none items-center justify-center rounded-full bg-primary text-lg font-semibold text-white md:size-[34px] md:text-2xl">
-            2
-          </p>
-          <h3 className="text-lg font-medium md:text-2xl">
-            모임에 대해 소개해주세요
-          </h3>
-        </div>
+        <Headings order="2" label="모임에 대해 소개해주세요" />
 
         <div className="mt-8">
-          <label
-            className="px-[6px] text-sm font-medium md:text-lg"
-            htmlFor="title"
-          >
-            제목
-          </label>
-          <input
+          <Label htmlFor="title">제목</Label>
+          <Input
             type="text"
-            placeholder="제목을 입력해주세요"
-            className="mt-3 h-11 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-14 md:text-base"
-            {...register('title')}
+            placeholder="제목을 입력해주세요."
+            register={register('title', {
+              required: { value: true, message: '제목을 입력해주세요.' },
+            })}
           />
         </div>
 
         <div className="mt-7">
-          <p className="px-[6px] text-sm font-medium md:text-lg">내용</p>
+          <Label htmlFor="">내용</Label>
           <div className="mt-3 rounded-xl border p-5">
-            <Toolbar editor={editor} />
-            <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-              <Toolbar editor={editor} type="bubble" />
-            </BubbleMenu>
-            <EditorContent editor={editor} />
+            <Editor />
           </div>
         </div>
       </div>
 
       <div className="mt-10 text-center">
-        <SubmitButton>{!edit ? '새글 작성' : '수정 하기'}</SubmitButton>
+        <SubmitBtn>{!edit ? '새글 작성' : '수정 하기'}</SubmitBtn>
       </div>
     </form>
   );
-}
-
-const SubmitButton = ({ children }: { children: ReactNode }) => {
-  return (
-    <button
-      type="submit"
-      className="inline-flex cursor-pointer items-center justify-center rounded border border-[#4FAAFF] bg-OnPrimary px-4 py-[9.5px] text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base"
-    >
-      {children}
-    </button>
-  );
 };
+
+export default Form;
