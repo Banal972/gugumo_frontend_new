@@ -1,9 +1,13 @@
 import {
   ModalContext,
   ModalDispatchContext,
-  ModalDispatchContextState,
-} from '@/provider/ModalProvider';
+} from '@/provider/ModalProvider/ModalContext';
 import { useContext } from 'react';
+
+interface ModalDispatchContextState {
+  openHandler: (Component: any, props: any) => void;
+  closeHandler: (Component: any) => void;
+}
 
 const useModal = () => {
   const openedModals = useContext(ModalContext);
