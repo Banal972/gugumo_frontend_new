@@ -27,7 +27,7 @@ type FormValue = {
   meetingMemberNum: string;
   meetingDate: string;
   meetingDays: string;
-  meetingTime: number;
+  meetingTime: string;
   meetingDeadline: string;
   openKakao: string;
   title: string;
@@ -42,34 +42,17 @@ interface FormProps {
 
 const Form = ({ edit }: FormProps) => {
   const router = useRouter();
-  const { register, handleSubmit, watch, setValue } = useForm<FormValue>();
+  const { register, handleSubmit, watch } = useForm<FormValue>();
   const [isMeetingDate, setIsMeetingDate] = useState<boolean>(false);
   const [isMeetingDeadline, setIsMeetingDeadline] = useState<boolean>(false);
   const [meetingDate, setMeetingDate] = useState<Value>(new Date());
   const [meetingDeadline, setMeetingDeadline] = useState<Value>(
-    new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+    new Date(edit?.meetingDeadline || Date.now() + 1 * 24 * 60 * 60 * 1000),
   );
   const [selectDays, setSelectDays] = useState<string[]>([]);
   const meetingTypeWatch = watch('meetingType', 'SHORT');
 
-  const editor = useEditorHook();
-
-  useEffect(() => {
-    if (edit) {
-      // editorRef.current?.getInstance().setMarkdown(edit.content);
-      Object.keys(edit).forEach((key) => {
-        // 가져온 데이터의 각 키와 값을 반복하여 setValue로 설정합니다.
-        if (key === 'meetingTime') {
-          setValue(key, edit[key].split(':')[0]);
-        } else if (key === 'meetingDays') {
-          const array: string[] = edit[key].split(';');
-          setSelectDays([...array]);
-        } else {
-          setValue(key, edit[key]);
-        }
-      });
-    }
-  }, [edit, setValue]);
+  const editor = useEditorHook(edit?.content);
 
   const meetingDateHandler = (value: Value) => {
     setMeetingDate(value);
@@ -143,9 +126,15 @@ const Form = ({ edit }: FormProps) => {
     }
 
     if (!edit) return createMutation(body);
-    body[meetingStatus] = meetingStatus;
+    body.meetingStatus = meetingStatus;
     editMutataion({ body, postId: edit.postId });
   });
+
+  useEffect(() => {
+    if (!edit || !edit.meetingDays) return;
+    const array: string[] = edit.meetingDays.split(';');
+    setSelectDays([...array]);
+  }, [edit, setSelectDays]);
 
   return (
     <form onSubmit={onSubmitHandler}>
@@ -155,7 +144,12 @@ const Form = ({ edit }: FormProps) => {
         {edit && (
           <div className="flex min-w-0 flex-col gap-[10px]">
             <Label htmlFor="meetingStatus">모집상태</Label>
-            <Select id="meetingStatus" register={register('meetingStatus')}>
+            <Select
+              id="meetingStatus"
+              register={register('meetingStatus', {
+                value: edit.meetingStatus,
+              })}
+            >
               <option value="RECRUIT">모집중</option>
               <option value="END">모집완료</option>
             </Select>
@@ -164,7 +158,12 @@ const Form = ({ edit }: FormProps) => {
 
         <div className="flex min-w-0 flex-col gap-[10px]">
           <Label htmlFor="meetingType">모집형식</Label>
-          <Select id="meetingType" register={register('meetingType')}>
+          <Select
+            id="meetingType"
+            register={register('meetingType', {
+              value: edit?.meetingType,
+            })}
+          >
             <option value="SHORT">단기모집</option>
             <option value="LONG">장기모집</option>
           </Select>
@@ -176,6 +175,7 @@ const Form = ({ edit }: FormProps) => {
             id="location"
             passive={!watch('location')}
             register={register('location', {
+              value: edit?.location,
               required: { value: true, message: '지역 선택을 해야합니다.' },
             })}
           >
@@ -194,6 +194,7 @@ const Form = ({ edit }: FormProps) => {
             id="gameType"
             passive={!watch('gameType')}
             register={register('gameType', {
+              value: edit?.gameType,
               required: { value: true, message: '구기종목을 선택해주세요.' },
             })}
           >
@@ -212,6 +213,7 @@ const Form = ({ edit }: FormProps) => {
             id="meetingMemberNum"
             passive={!watch('meetingMemberNum')}
             register={register('meetingMemberNum', {
+              value: String(edit?.meetingMemberNum) || '',
               required: { value: true, message: '모집인원을 선택해주세요.' },
             })}
           >
@@ -255,7 +257,9 @@ const Form = ({ edit }: FormProps) => {
             <Select
               id="meetingTime"
               passive={!watch('meetingTime')}
-              register={register('meetingTime')}
+              register={register('meetingTime', {
+                value: edit ? String(edit?.meetingTime).split(':')[0] : '',
+              })}
             >
               <option value="">시간대을 선택해주세요.</option>
               {Array.from({ length: 24 }, (_, i) => (
@@ -309,6 +313,7 @@ const Form = ({ edit }: FormProps) => {
             type="text"
             placeholder="오픈카톡 주소를 입력해주세요."
             register={register('openKakao', {
+              value: edit?.openKakao,
               required: {
                 value: true,
                 message: '오픈카톡 주소를 입력해주세요.',
@@ -328,6 +333,7 @@ const Form = ({ edit }: FormProps) => {
               type="text"
               placeholder="제목을 입력해주세요."
               register={register('title', {
+                value: edit?.title,
                 required: { value: true, message: '제목을 입력해주세요.' },
               })}
             />

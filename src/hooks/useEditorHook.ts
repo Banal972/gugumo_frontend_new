@@ -8,8 +8,9 @@ import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-const useEditorHook = () => {
+const useEditorHook = (content?: string) => {
   return useEditor({
+    content,
     extensions: [
       StarterKit.configure({
         heading: {
