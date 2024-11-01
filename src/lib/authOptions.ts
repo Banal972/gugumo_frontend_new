@@ -1,26 +1,24 @@
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import KakaoProvider from "next-auth/providers/kakao";
+import baseIntance from '@/lib/baseInstnace';
+import { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import KakaoProvider from 'next-auth/providers/kakao';
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        username: { type: "text", placeholder: "이메일을 입력해주세요." },
-        password: { type: "password", placeholder: "비밀번호를 입력해주세요." },
+        username: { type: 'text', placeholder: '이메일을 입력해주세요.' },
+        password: { type: 'password', placeholder: '비밀번호를 입력해주세요.' },
       },
       async authorize(credentials): Promise<any> {
         if (!credentials) return null;
 
         try {
-          const response = await fetch(
+          const response = await baseIntance(
             `${process.env.API_URL}/api/v1/emailLogin`,
             {
-              method: "POST",
-              headers: {
-                "content-type": "application/json",
-              },
+              method: 'POST',
               body: JSON.stringify({
                 username: credentials.username,
                 password: credentials.password,
@@ -31,24 +29,22 @@ export const authOptions: NextAuthOptions = {
           if (response.ok) {
             const data = await response.json();
 
-            if (data.status === "success") {
+            if (data.status === 'success') {
               return { token: data.data };
-            } else {
-              return null;
             }
-          } else {
-            console.log(response);
             return null;
           }
+          // console.log(response);
+          return null;
         } catch (err) {
-          console.log(err);
+          // console.log(err);
           return null;
         }
       },
     }),
     KakaoProvider({
-      clientId: process.env.KAKAO_RESTAPI || "",
-      clientSecret: process.env.KAKAO_CLIENT || "",
+      clientId: process.env.KAKAO_RESTAPI || '',
+      clientSecret: process.env.KAKAO_CLIENT || '',
     }),
   ],
   jwt: {
@@ -56,40 +52,42 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ user, token, account }: any): Promise<any> {
-      if (account?.type !== "credentials" && user) {
-        const response = await fetch(`${process.env.API_URL}/kakao/login`, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
+      const currentToken = token;
+
+      if (account?.type !== 'credentials' && user) {
+        const response = await baseIntance(
+          `${process.env.API_URL}/kakao/login`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              username: user.email,
+              nickname: user.name,
+              kakaoId: user.id,
+              profilePath: user.image,
+            }),
           },
-          body: JSON.stringify({
-            username: user.email,
-            nickname: user.name,
-            kakaoId: user.id,
-            profilePath: user.image,
-          }),
-        });
+        );
 
         const data = await response.json();
 
-        if (data.status !== "fail") {
-          token.accessToken = data.data;
+        if (data.status !== 'fail') {
+          currentToken.accessToken = data.data;
         } else {
-          token.username = user.email;
-          token.nickname = user.name;
-          token.kakaoId = user.id;
+          currentToken.username = user.email;
+          currentToken.nickname = user.name;
+          currentToken.kakaoId = user.id;
         }
       }
 
-      if (account?.type === "credentials" && user) {
-        token.accessToken = user.token;
+      if (account?.type === 'credentials' && user) {
+        currentToken.accessToken = user.token;
       }
 
       if (account) {
-        token.type = account.type;
+        currentToken.type = account.type;
       }
 
-      return token;
+      return currentToken;
     },
     async session({ token }: any): Promise<any> {
       const session = {} as any;
@@ -109,3 +107,5 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+export default authOptions;

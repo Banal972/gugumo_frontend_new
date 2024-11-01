@@ -1,38 +1,40 @@
-"use client";
+import getActions from '@/actions/auth/bookmark/getAction';
+import Wrap from '@/ui/layout/Wrap';
+import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
+import List from '@/ui/page/auth/List';
+import { Suspense } from 'react';
 
-import getActions from "@/actions/auth/bookmark/getAction";
-import List from "@/ui/page/auth/List";
-import { useEffect, useState } from "react";
-import Wrap from "@/components/Common/Wrap";
+const ListPage = async ({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    q?: string;
+    page?: number;
+  }>;
+}) => {
+  const params = await searchParams;
+  const q = params?.q || '';
+  const page = params?.page || 1;
 
-const ListPage = () => {
-  const [query, setQuery] = useState<{ q: string; page: number }>({
-    q: "",
-    page: 1,
+  const res = await getActions({
+    query: {
+      q,
+      page,
+    },
   });
-
-  const [contents, setContent] = useState<Content[]>([]);
-  const [pageable, setPageable] = useState<Pageable>();
-
-  useEffect(() => {
-    const fetchBookamrk = async () => {
-      const res = await getActions({ query });
-      const { content, pageable } = res.data;
-      setPageable(pageable);
-      setContent(content);
-    };
-    fetchBookamrk();
-  }, [query]);
 
   return (
     <main className="mt-14 pb-[121px] md:pb-[170px]">
       <Wrap>
-        <List
-          label="북마크"
-          setQuery={setQuery}
-          contents={contents}
-          pageable={pageable}
-        />
+        <Suspense
+          fallback={Array.from({ length: 12 }, (_, index) => index).map(
+            (item) => (
+              <SkeletonCard key={item} />
+            ),
+          )}
+        >
+          <List label="북마크" data={res.data} />
+        </Suspense>
       </Wrap>
     </main>
   );

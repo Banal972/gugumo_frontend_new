@@ -1,37 +1,20 @@
-"use server";
+'use server';
 
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import authIntance from '@/lib/fetchInstance';
+import { GetData, GetProps, Return } from '@/types/get.type';
 
-const getActions = async ({ query }: getProps) => {
-  const session = (await getServerSession(authOptions)) as any;
-
+const getActions = async ({ query }: GetProps): Promise<Return<GetData>> => {
   const { q, page } = query;
-
-  try {
-    const res = await fetch(
-      `${process.env.API_URL}/api/v1/meeting/my?q=${q}&page=${page}`,
-      {
-        headers: {
-          Authorization: session?.accessToken,
-        },
+  const res = await authIntance(
+    `${process.env.API_URL}/api/v1/meeting/my?q=${q}&page=${page}`,
+    {
+      cache: 'no-store',
+      next: {
+        tags: ['detail'],
       },
-    );
-
-    if (!res.ok) {
-      throw new Error("불러오는데 실패 하였습니다.");
-    }
-    return res.json();
-  } catch (err) {
-    throw new Error(err as string);
-  }
+    },
+  );
+  return res.json();
 };
 
 export default getActions;
-
-interface getProps {
-  query: {
-    q: string;
-    page: number;
-  };
-}

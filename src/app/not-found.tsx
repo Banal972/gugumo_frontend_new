@@ -1,13 +1,20 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { MouseEventHandler, ReactNode } from "react";
+'use client';
+
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { MouseEventHandler, ReactNode } from 'react';
+
+interface ButtonProps {
+  onClick: MouseEventHandler;
+  children: ReactNode;
+}
 
 const NotFound = () => {
   const router = useRouter();
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center text-center">
-      <img src="/asset/image/notfound.png" alt="에러로고" />
+      <Image src="/asset/image/notfound.png" alt="에러로고" />
       <h1 className="mt-7 text-5xl font-medium text-primary">404 ERROR</h1>
       <dl className="mt-10 w-[442px]">
         <dt className="text-2xl font-medium">
@@ -20,7 +27,7 @@ const NotFound = () => {
       </dl>
       <div className="mt-[100px] flex gap-[18px]">
         <Button onClick={() => router.back()}>이전으로</Button>
-        <Button onClick={() => router.push("/")}>메인으로</Button>
+        <Button onClick={() => router.push('/')}>메인으로</Button>
       </div>
     </div>
   );
@@ -28,9 +35,10 @@ const NotFound = () => {
 
 export default NotFound;
 
-const Button = ({ onClick, children }: Button) => {
+const Button = ({ onClick, children }: ButtonProps) => {
   return (
     <button
+      type="button"
       className="h-12 w-[88px] cursor-pointer rounded border border-primary text-base font-semibold text-primary transition-all hover:bg-primary hover:text-background"
       onClick={onClick}
     >
@@ -38,8 +46,3 @@ const Button = ({ onClick, children }: Button) => {
     </button>
   );
 };
-
-interface Button {
-  onClick: MouseEventHandler;
-  children: ReactNode;
-}

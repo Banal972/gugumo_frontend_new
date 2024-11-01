@@ -1,43 +1,23 @@
-"use client";
-import Success from "@/components/Modal/Success";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { useForm } from "react-hook-form";
+'use client';
+
+import resetPwdAction from '@/actions/public/find/resetPwdAction';
+import { useForm } from 'react-hook-form';
+
+type FormValues = {
+  email: string;
+};
 
 const FindPage = () => {
-  const dispatch = useAppDispatch();
+  const { handleSubmit, register, setValue } = useForm<FormValues>();
 
-  const { handleSubmit, register, setValue } = useForm();
-
-  const onSubmitHandler = async (event: any) => {
-    const { email } = event;
-
-    if (email === "") {
-      return alert("이메일을 입력해주세요.");
-    }
-
-    try {
-      const res = await fetch("/back/api/v1/resetPassword", {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-      if (res.ok) {
-        return dispatch(
-          open({
-            Component: Success,
-            props: { message: "입력된 이메일로 임시 비밀번호를 보냈습닙다." },
-          }),
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setValue("email", "");
-    }
-  };
+  const onSubmitHandler = handleSubmit(async (data) => {
+    const { email } = data;
+    if (email === '') return alert('이메일을 입력해주세요.');
+    const res = await resetPwdAction(email);
+    setValue('email', '');
+    if (!res.data) return window.alert('패스워드 이메일을 실패했습니다.');
+    window.alert('패스워드 이메일을 보냈습니다.');
+  });
 
   return (
     <div className="py-[158px]">
@@ -46,19 +26,16 @@ const FindPage = () => {
           <dt className="text-xl font-semibold md:text-2xl">비밀번호 찾기</dt>
           <dd className="mt-6 break-keep text-sm leading-6">
             비밀번호를 재설정할 수 있는 이메일을 보내드립니다. <br />
-            발송된 이메일의 비밀번호 재설정은{" "}
+            발송된 이메일의 비밀번호 재설정은{' '}
             <span className="font-bold">10분 간</span> 유효합니다.
           </dd>
         </dl>
-        <form
-          onSubmit={handleSubmit(onSubmitHandler)}
-          className="mt-12 md:mt-8"
-        >
+        <form onSubmit={onSubmitHandler} className="mt-12 md:mt-8">
           <input
             className="h-12 w-full rounded-lg border border-Outline px-3 text-base font-medium placeholder:text-OnBackgroundGray"
             type="text"
             placeholder="가입하신 이메일 주소를 입력해주세요."
-            {...register("email")}
+            {...register('email')}
           />
           <button
             className="mx-auto mt-5 block h-12 w-[138px] cursor-pointer rounded-lg bg-primary text-base text-OnPrimary"

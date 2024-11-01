@@ -1,144 +1,97 @@
-"use client";
-import Wrap from "@/components/Common/Wrap";
-import Alert from "@/components/Modal/Alert";
-import Success from "@/components/Modal/Success";
-import Gametype from "@/components/page/auth/signup/Gametype";
-import { open } from "@/lib/store/features/modals/modal";
-import { useAppDispatch } from "@/lib/store/hook";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCheckmarkOutline } from "react-icons/io5";
+'use client';
 
-const Signup = () => {
+import joinAction from '@/actions/public/signup/joinAction';
+import kakaoAction from '@/actions/public/signup/kakaoAction';
+import mailCheckAction from '@/actions/public/signup/mailCheckAction';
+import mailSendAction from '@/actions/public/signup/mailSendAction';
+import AgreeService from '@/components/auth/signup/AgreeService';
+import Gametype from '@/components/auth/signup/Gametype';
+import Wrap from '@/ui/layout/Wrap';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCheckmarkOutline } from 'react-icons/io5';
+
+interface IsServiceT {
+  [key: string]: boolean;
+  isAgreeTermsUse: boolean;
+  isAgreeCollectingUsingPersonalInformation: boolean;
+  isAgreeMarketing: boolean;
+}
+
+const AGREE_SERVICE = [
+  {
+    id: 'isAgreeTermsUse',
+    label: '서비스 이용약관 동의 (필수)',
+  },
+  {
+    id: 'isAgreeCollectingUsingPersonalInformation',
+    label: '개인정보 수집 및 이용 동의 (필수)',
+  },
+  {
+    id: 'isAgreeMarketing',
+    label: '마케팅 수신 동의 (선택)',
+  },
+];
+
+const SignupPage = () => {
   const { data: session } = useSession() as any;
 
   const router = useRouter();
-  const { register, handleSubmit, getValues, setValue } = useForm();
+  const { register, handleSubmit, getValues } = useForm();
   const [isSend, setIsSend] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
-  const [isService, setIsService] = useState<isServiceT>({
+  const [isService, setIsService] = useState<IsServiceT>({
     isAgreeTermsUse: false,
     isAgreeCollectingUsingPersonalInformation: false,
     isAgreeMarketing: false,
   });
   const [likeGame, setLikeGame] = useState<string[]>([]);
 
-  const dispatch = useAppDispatch();
-
   const mailSendHandler = async () => {
     if (isSend) return;
-
     const { username } = getValues();
-
-    try {
-      const res = await fetch("/back/api/v1/mailSend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-        },
-        body: JSON.stringify({ email: username }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-
-        if (data.status === "success") {
-          setIsSend(true);
-          return dispatch(
-            open({
-              Component: Success,
-              props: { message: data.data },
-            }),
-          );
-        } else {
-          setIsSend(false);
-        }
-      } else {
-        setIsSend(false);
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "인증요청에 에러가 발생했습니다." },
-          }),
-        );
-      }
-    } catch (err) {
-      console.log(err);
-      setIsSend(false);
+    if (!username) return window.alert('메일을 입력해주세요.');
+    const res = await mailSendAction(username);
+    const { status } = res;
+    if (status === 'success') {
+      window.alert('인증번호 메일을 보냈습니다.');
+      setIsSend(true);
     }
   };
 
   const mailAuthCheckHanlder = async () => {
-    if (isCheck) return;
-
+    if (isCheck) return window.alert('이미 인증처리가 완료 되어있습니다.');
     const { username, emailAuthNum } = getValues();
+    if (!emailAuthNum) return window.alert('인증번호를 입력해주세요.');
 
-    try {
-      const res = await fetch("/back/api/v1/mailAuthCheck", {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-        },
-        body: JSON.stringify({ email: username, emailAuthNum }),
-      });
+    const res = await mailCheckAction({ username, emailAuthNum });
 
-      if (res.ok) {
-        const data = await res.json();
+    const { status } = res;
 
-        if (data.status === "success") {
-          setIsCheck(true);
-          return dispatch(
-            open({
-              Component: Success,
-              props: { message: "인증이 완료 되었습니다." },
-            }),
-          );
-        } else {
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "인증에 실패 하였습니다." },
-            }),
-          );
-        }
-      } else {
-        setIsCheck(false);
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "인증에 실패 하였습니다." },
-          }),
-        );
-      }
-    } catch (err) {
-      setIsCheck(false);
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "오류가 발생했습니다." },
-        }),
-      );
+    if (status === 'success') {
+      setIsCheck(true);
+      return window.alert('인증이 완료 되었습니다.');
     }
   };
 
   const allCheckHandler = () => {
     if (Object.values(isService).every((value) => value)) {
-      setIsService((prev) => ({
+      return setIsService((prev) => ({
         ...prev,
         isAgreeTermsUse: false,
         isAgreeCollectingUsingPersonalInformation: false,
         isAgreeMarketing: false,
       }));
-    } else {
-      setIsService((prev) => ({
-        ...prev,
-        isAgreeTermsUse: true,
-        isAgreeCollectingUsingPersonalInformation: true,
-        isAgreeMarketing: true,
-      }));
     }
+
+    setIsService((prev) => ({
+      ...prev,
+      isAgreeTermsUse: true,
+      isAgreeCollectingUsingPersonalInformation: true,
+      isAgreeMarketing: true,
+    }));
   };
 
   const isServiceHandler = (key: string, value: boolean) => {
@@ -151,214 +104,62 @@ const Signup = () => {
   const onSubmitHandler = async (event: any) => {
     const { nickname, username, emailAuthNum, password, confirmPW } = event;
 
-    if (!nickname) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "닉네임을 입력해주세요" },
-        }),
-      );
-    }
-
     if (!isService.isAgreeTermsUse) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "서비스 이용약관에 동의해주세요." },
-        }),
-      );
+      return alert('서비스 이용약관에 동의해주세요.');
     }
 
     if (!isService.isAgreeCollectingUsingPersonalInformation) {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "개인정보 수집 및 이용에 동의해주세요" },
-        }),
-      );
+      return alert('개인정보 수집 및 이용에 동의해주세요');
     }
 
     if (!session) {
       // 기본 회원가입
 
-      if (!username) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "이메일을 입력해주세요" },
-          }),
-        );
-      }
-
-      if (!isCheck) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "이메일 인증이 필요합니다." },
-          }),
-        );
-      }
-
-      if (!emailAuthNum) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "인증번호를 입력해주세요" },
-          }),
-        );
-      }
-
-      if (!password) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "비밀번호를 입력해주세요" },
-          }),
-        );
-      }
-
       if (password !== confirmPW) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "비밀번호가 서로 다릅니다." },
-          }),
-        );
+        return alert('비밀번호가 서로 다릅니다.');
       }
 
-      try {
-        const res = await fetch("/back/api/v2/member", {
-          method: "POST",
-          headers: {
-            "Content-Type": "Application/json",
-          },
-          body: JSON.stringify({
-            username,
-            nickname,
-            password,
-            favoriteSports: likeGame.join(","),
-            isAgreeTermsUse: isService.isAgreeTermsUse,
-            isAgreeCollectingUsingPersonalInformation:
-              isService.isAgreeCollectingUsingPersonalInformation,
-            isAgreeMarketing: isService.isAgreeMarketing,
-            emailAuthNum,
-          }),
-        });
+      const res = await joinAction({
+        username,
+        nickname,
+        password,
+        favoriteSports: likeGame.join(','),
+        isAgreeTermsUse: isService.isAgreeTermsUse,
+        isAgreeCollectingUsingPersonalInformation:
+          isService.isAgreeCollectingUsingPersonalInformation,
+        isAgreeMarketing: isService.isAgreeMarketing,
+        emailAuthNum,
+      });
 
-        if (res.ok) {
-          const data = await res.json();
+      const { data, message } = res;
 
-          if (data.status === "success") {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: "회원가입이 완료 되었습니다." },
-              }),
-            );
-            return router.push("/");
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: data.message },
-              }),
-            );
-          }
-        } else {
-          if (res.status === 409) {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: "이미 존재하는 회원입니다." },
-              }),
-            );
-          }
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "서버와 통신이 원할하지 않습니다." },
-            }),
-          );
-        }
-      } catch (err) {
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생했습니다." },
-          }),
-        );
-      }
-    } else {
-      try {
-        const res = await fetch("/back/api/v1/kakao/member", {
-          method: "POST",
-          headers: {
-            "Content-Type": "Application/json",
-          },
-          body: JSON.stringify({
-            username: session?.username,
-            nickname,
-            favoriteSports: likeGame.join(","),
-            kakaoId: session?.id,
-            isAgreeTermsUse: isService.isAgreeTermsUse,
-            isAgreeCollectingUsingPersonalInformation:
-              isService.isAgreeCollectingUsingPersonalInformation,
-            isAgreeMarketing: isService.isAgreeMarketing,
-          }),
-        });
+      if (!data) return window.alert(message);
 
-        if (res.ok) {
-          const data = await res.json();
+      window.alert('회원가입에 성공하였습니다.');
+      return router.push('/');
+    }
 
-          if (data.status === "success") {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: "회원가입이 완료 되었습니다." },
-              }),
-            );
-            signIn("kakao", {
-              callbackUrl: "/",
-            });
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: data.message },
-              }),
-            );
-          }
-        } else {
-          if (res.status === 409) {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: "이미 존재하는 회원입니다." },
-              }),
-            );
-          }
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "서버와 통신이 원할하지 않습니다." },
-            }),
-          );
-        }
-      } catch (err) {
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생했습니다." },
-          }),
-        );
-      }
+    if (session) {
+      const res = await kakaoAction({
+        nickname,
+        favoriteSports: likeGame.join(','),
+        isAgreeTermsUse: isService.isAgreeTermsUse,
+        isAgreeCollectingUsingPersonalInformation:
+          isService.isAgreeCollectingUsingPersonalInformation,
+        isAgreeMarketing: isService.isAgreeMarketing,
+      });
+
+      const { data, message } = res;
+
+      if (!data) return window.alert(message);
+
+      window.alert('회원가입에 성공하였습니다.');
+
+      signIn('kakao', {
+        callbackUrl: '/',
+      });
     }
   };
-
-  useEffect(() => {
-    setValue("nickname", session?.nickname);
-    setValue("username", session?.username);
-  }, [session]);
 
   return (
     <Wrap className="pb-[90px] pt-12 md:py-[150px]">
@@ -376,24 +177,29 @@ const Signup = () => {
                 type="text"
                 placeholder="닉네임"
                 className="sign-input"
-                {...register("nickname")}
+                {...register('nickname', {
+                  value: session?.nickname,
+                  required: { value: true, message: '닉네임을 입력해주세요' },
+                })}
               />
               <div className="relative">
                 <input
                   type="text"
                   placeholder="이메일을 입력하세요."
                   className="sign-input"
-                  {...register("username", {
-                    disabled: session ? true : false,
+                  {...register('username', {
+                    value: session?.username,
+                    disabled: session,
+                    required: { value: true, message: '이메일을 입력해주세요' },
                   })}
                 />
                 {!session && (
                   <button
                     type="button"
                     onClick={mailSendHandler}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md border border-primary px-2 py-1 text-[13px] font-normal ${!isSend ? "bg-OnPrimary text-primary" : "bg-primary text-OnPrimary"}`}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md border border-primary px-2 py-1 text-[13px] font-normal ${!isSend ? 'bg-OnPrimary text-primary' : 'bg-primary text-OnPrimary'}`}
                   >
-                    {!isSend ? "인증요청" : "인증요청됨"}
+                    {!isSend ? '인증요청' : '인증요청됨'}
                   </button>
                 )}
               </div>
@@ -403,30 +209,45 @@ const Signup = () => {
                     type="text"
                     placeholder="인증번호를 입력하세요"
                     className="sign-input"
-                    {...register("emailAuthNum")}
+                    {...register('emailAuthNum', {
+                      required: {
+                        value: true,
+                        message: '인증번호를 입력해주세요',
+                      },
+                    })}
                   />
                   <button
                     type="button"
                     onClick={mailAuthCheckHanlder}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md border border-primary px-2 py-1 text-[13px] font-normal ${!isCheck ? "bg-OnPrimary text-primary" : "bg-primary text-OnPrimary"}`}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md border border-primary px-2 py-1 text-[13px] font-normal ${!isCheck ? 'bg-OnPrimary text-primary' : 'bg-primary text-OnPrimary'}`}
                   >
-                    {!isCheck ? "확인" : "확인됨"}
+                    {!isCheck ? '확인' : '확인됨'}
                   </button>
                 </div>
               )}
-              {(!session || session.type !== "oauth") && (
+              {(!session || session.type !== 'oauth') && (
                 <>
                   <input
                     type="password"
                     placeholder="비밀번호"
                     className="sign-input"
-                    {...register("password")}
+                    {...register('password', {
+                      required: {
+                        value: true,
+                        message: '비밀번호를 입력해주세요',
+                      },
+                    })}
                   />
                   <input
                     type="password"
                     placeholder="비밀번호 확인"
                     className="sign-input"
-                    {...register("confirmPW")}
+                    {...register('confirmPW', {
+                      required: {
+                        value: true,
+                        message: '비밀번호를 입력해주세요',
+                      },
+                    })}
                   />
                 </>
               )}
@@ -448,6 +269,7 @@ const Signup = () => {
               <div className="pb-5 pt-4 md:py-5">
                 <div className="flex justify-between gap-1 px-5 md:px-6">
                   <div
+                    role="none"
                     className="flex cursor-pointer items-center gap-3"
                     onClick={allCheckHandler}
                   >
@@ -466,44 +288,15 @@ const Signup = () => {
                 </div>
 
                 <div className="mt-4 border-t border-t-white px-5 pt-6 md:mt-6 md:px-6">
-                  {[
-                    {
-                      id: "isAgreeTermsUse",
-                      label: "서비스 이용약관 동의 (필수)",
-                    },
-                    {
-                      id: "isAgreeCollectingUsingPersonalInformation",
-                      label: "개인정보 수집 및 이용 동의 (필수)",
-                    },
-                    {
-                      id: "isAgreeMarketing",
-                      label: "마케팅 수신 동의 (선택)",
-                    },
-                  ].map(({ id, label }, index) => (
-                    <div
-                      key={index}
-                      className={`flex items-center ${index !== 0 ? "mt-4" : ""}`}
-                    >
-                      <div
-                        className="flex cursor-pointer gap-3"
-                        onClick={() => isServiceHandler(id, !isService[id])}
-                      >
-                        <div className="relative size-5 flex-none rounded bg-white">
-                          {isService[id] && (
-                            <IoCheckmarkOutline className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs" />
-                          )}
-                        </div>
-                        <p className="text-base font-medium text-OnPrimary">
-                          {label}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        className="ml-auto text-xs text-white underline underline-offset-4"
-                      >
-                        내용보기
-                      </button>
-                    </div>
+                  {AGREE_SERVICE.map(({ id, label }) => (
+                    <AgreeService
+                      isService={isService}
+                      id={id}
+                      key={id}
+                      label={label}
+                      onClick={() => isServiceHandler(id, !isService[id])}
+                      className="first:mt-0"
+                    />
                   ))}
                 </div>
               </div>
@@ -524,11 +317,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
-
-interface isServiceT {
-  [key: string]: boolean;
-  isAgreeTermsUse: boolean;
-  isAgreeCollectingUsingPersonalInformation: boolean;
-  isAgreeMarketing: boolean;
-}
+export default SignupPage;

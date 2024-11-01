@@ -1,29 +1,18 @@
-"use server";
+'use server';
 
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import authIntance from '@/lib/fetchInstance';
+import { Return } from '@/types/get.type';
+import { revalidateTag } from 'next/cache';
 
-const deleteAction = async (postId: number) => {
-  const session = (await getServerSession(authOptions)) as any;
-
-  try {
-    const res = await fetch(
-      `${process.env.API_URL}/api/v1/bookmark/${postId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: session.accessToken,
-        },
-      },
-    );
-    if (!res.ok) {
-      throw new Error("삭제에 실패 하였습니다.");
-    }
-    return res.json();
-  } catch (err) {
-    throw new Error(err as string);
-  }
+const deleteAction = async (postId: number): Promise<Return<string>> => {
+  const res = await authIntance(
+    `${process.env.API_URL}/api/v1/bookmark/${postId}`,
+    {
+      method: 'DELETE',
+    },
+  );
+  revalidateTag('detail');
+  return res.json();
 };
 
 export default deleteAction;

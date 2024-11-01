@@ -7,18 +7,8 @@ interface Content {
   meetingMemberNum: number;
   meetingDeadline: string;
   meetingDateTime: string;
+  meetingDays?: string;
   bookmarked: boolean;
-}
-
-interface GetData {
-  content: Content[];
-  pageable: Pageable;
-}
-
-interface GetReturn {
-  status: string;
-  data: GetData;
-  message: any;
 }
 
 interface Pageable {
@@ -32,4 +22,28 @@ interface Pageable {
   totalElements: number;
   numberOfElements: number;
   empty: boolean;
+}
+
+export interface GetData {
+  content: Content[];
+  pageable: Pageable;
+}
+
+export interface Return<T> {
+  status: 'success' | 'fail';
+  data: T;
+  message: any;
+}
+
+export interface MypageReturn {
+  username: string;
+  nickname: string;
+  favoriteSports: string;
+}
+
+export interface GetProps {
+  query: {
+    q?: string;
+    page?: number;
+  };
 }
