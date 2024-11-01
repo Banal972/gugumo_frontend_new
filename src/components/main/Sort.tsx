@@ -2,21 +2,12 @@
 
 import { SORT } from '@/constant/card/constant';
 import { motion } from 'framer-motion';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { IoChevronDown } from 'react-icons/io5';
 
 interface SortProps {
   sort: string;
-  setQuery: Dispatch<
-    SetStateAction<{
-      q: string;
-      meetingstatus: string;
-      location: string;
-      gametype: string;
-      sort: string;
-      page: number;
-    }>
-  >;
 }
 
 const variants = {
@@ -24,16 +15,23 @@ const variants = {
   closed: { opacity: 0 },
 };
 
-const Sort = ({ sort, setQuery }: SortProps) => {
+const Sort = ({ sort }: SortProps) => {
   const dropMenuRef = useRef<HTMLUListElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
-  const liClickHanlder = (type: string) => {
-    setIsOpen(false);
-    setQuery((prev) => ({
-      ...prev,
-      sort: type,
-    }));
+  const handleSort = (key: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (key) {
+      params.set('sort', key);
+      params.delete('page');
+    } else {
+      params.delete('sort');
+      params.delete('page');
+    }
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   useEffect(() => {
@@ -67,7 +65,7 @@ const Sort = ({ sort, setQuery }: SortProps) => {
             <li
               role="none"
               key={sorts[0]}
-              onClick={() => liClickHanlder(sorts[0])}
+              onClick={() => handleSort(sorts[0])}
               className="cursor-pointer"
             >
               {sorts[1]}

@@ -1,5 +1,3 @@
-import { Color } from '@tiptap/extension-color';
-import Highlight from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
@@ -29,8 +27,8 @@ const useEditorHook = (content?: string) => {
       }),
       Underline,
       TextStyle,
-      Color,
-      Highlight.configure({ multicolor: true }),
+      // Color,
+      // Highlight.configure({ multicolor: true }),
       Link.configure({
         openOnClick: false,
         autolink: true,

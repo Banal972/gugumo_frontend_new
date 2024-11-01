@@ -2,25 +2,28 @@
 
 import { GAMETYPE } from '@/constant/card/constant';
 import Image from 'next/image';
-import { Dispatch, MouseEventHandler, SetStateAction } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { MouseEventHandler } from 'react';
 
 interface GametypeProps {
   gametype: string;
-  setQuery: Dispatch<
-    SetStateAction<{
-      q: string;
-      meetingstatus: string;
-      location: string;
-      gametype: string;
-      sort: string;
-      page: number;
-    }>
-  >;
 }
 
-const Gametype = ({ gametype, setQuery }: GametypeProps) => {
-  const onClickHandler = (type: string) => {
-    setQuery((prev) => ({ ...prev, gametype: type }));
+const Gametype = ({ gametype }: GametypeProps) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const gametypeHanlder = (key: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (key) {
+      params.set('gametype', key);
+      params.delete('page');
+    } else {
+      params.delete('gametype');
+      params.delete('page');
+    }
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -29,7 +32,7 @@ const Gametype = ({ gametype, setQuery }: GametypeProps) => {
       <div className="mt-[11px] flex gap-[4px] overflow-x-auto pb-1 md:flex-wrap md:gap-[14px]">
         <Button
           gametype={gametype}
-          onClick={() => onClickHandler('')}
+          onClick={() => gametypeHanlder('')}
           get=""
           label="전체"
         />
@@ -90,7 +93,7 @@ const Gametype = ({ gametype, setQuery }: GametypeProps) => {
               key={game[0]}
               option={option}
               gametype={gametype}
-              onClick={() => onClickHandler(game[0])}
+              onClick={() => gametypeHanlder(game[0])}
               get={game[0]}
               label={game[1]}
             />

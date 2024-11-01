@@ -1,7 +1,8 @@
 'use client';
 
 import { LOCATION } from '@/constant/card/constant';
-import { Dispatch, MouseEventHandler, ReactNode, SetStateAction } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { MouseEventHandler, ReactNode } from 'react';
 
 interface ButtonProps {
   onClick: MouseEventHandler;
@@ -11,33 +12,36 @@ interface ButtonProps {
 
 interface LocationProps {
   location: string;
-  setQuery: Dispatch<
-    SetStateAction<{
-      q: string;
-      meetingstatus: string;
-      location: string;
-      gametype: string;
-      sort: string;
-      page: number;
-    }>
-  >;
 }
 
-const Location = ({ location, setQuery }: LocationProps) => {
+const Location = ({ location }: LocationProps) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const handleLocation = (key: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (key) {
+      params.set('location', key);
+      params.delete('page');
+    } else {
+      params.delete('location');
+      params.delete('page');
+    }
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   return (
     <>
       <p className="text-base font-semibold text-OnSurface md:text-lg">지역</p>
       <div className="mt-[11px] flex gap-[4px] overflow-x-auto pb-1 md:flex-wrap md:gap-[14px]">
-        <Button
-          onClick={() => setQuery((prev) => ({ ...prev, location: '' }))}
-          active={location === ''}
-        >
+        <Button onClick={() => handleLocation('')} active={location === ''}>
           전체
         </Button>
         {Object.entries(LOCATION).map((el) => (
           <Button
             key={el[0]}
-            onClick={() => setQuery((prev) => ({ ...prev, location: el[0] }))}
+            onClick={() => handleLocation(el[0])}
             active={location === el[0]}
           >
             {el[1]}

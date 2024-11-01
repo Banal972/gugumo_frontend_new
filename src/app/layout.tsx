@@ -3,10 +3,8 @@ import '@/app/globals.css';
 import '@/lib/firebase';
 import AuthProvider from '@/provider/AuthProvider';
 import FCMProvider from '@/provider/FCMProvider';
-import ModalProvider from '@/provider/ModalProvider';
-import Providers from '@/provider/Providers';
+import ModalProvider from '@/provider/ModalProvider/ModalProvider';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
 import 'react-calendar/dist/Calendar.css';
 import 'swiper/css';
@@ -76,14 +74,11 @@ const RootLayout = ({ children }: Readonly<RootLayoutProps>) => {
   return (
     <html lang="ko">
       <body>
-        <Providers>
-          <AuthProvider>
-            <ModalProvider>
-              <FCMProvider>{children}</FCMProvider>
-            </ModalProvider>
-          </AuthProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </Providers>
+        <AuthProvider>
+          <ModalProvider>
+            <FCMProvider>{children}</FCMProvider>
+          </ModalProvider>
+        </AuthProvider>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
       </body>
     </html>

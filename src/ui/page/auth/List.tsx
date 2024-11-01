@@ -9,15 +9,14 @@ interface ListProps {
     content: Content[];
     pageable: Pageable;
   };
-  searchHandler: any;
 }
 
-const List = ({ label, data, searchHandler }: ListProps) => {
+const List = ({ label, data }: ListProps) => {
   return (
     <>
       <div className="flex flex-col items-start justify-start gap-6 text-lg font-medium md:flex-row md:items-center md:justify-between md:gap-5 md:text-2xl">
         <h4>{label}</h4>
-        <Search searchHandler={searchHandler} />
+        <Search />
       </div>
 
       <div className="mt-5 rounded-xl md:mt-[46px] md:bg-Surface md:p-[70px] md:px-[5%]">

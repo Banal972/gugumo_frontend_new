@@ -1,16 +1,31 @@
 'use client';
 
 import Image from 'next/image';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 type FormValues = {
   search: string;
 };
 
-const Search = ({ searchHandler }: { searchHandler?: any }) => {
+const Search = () => {
   const { register, handleSubmit } = useForm<FormValues>();
 
-  const onSubmitHandler = handleSubmit(searchHandler);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const onSubmitHandler = handleSubmit((data) => {
+    const params = new URLSearchParams(searchParams);
+    if (data) {
+      params.set('q', data.search);
+      params.delete('page');
+    } else {
+      params.delete('status');
+      params.delete('page');
+    }
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
+  });
 
   return (
     <form

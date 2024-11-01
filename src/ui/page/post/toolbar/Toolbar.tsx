@@ -1,7 +1,6 @@
 import AlignToolbar from '@/ui/page/post/toolbar/AlignToolbar';
 import HeadingToolbar from '@/ui/page/post/toolbar/HeadingToolbar';
 import StyleFontToolbar from '@/ui/page/post/toolbar/StyleFontToolbar';
-import StyleToolbar from '@/ui/page/post/toolbar/StyleToolbar';
 import { Editor } from '@tiptap/react';
 
 interface ToolbarProps {
@@ -19,7 +18,11 @@ const Toolbar = ({ editor, type }: ToolbarProps) => {
       <HeadingToolbar editor={editor} />
       <AlignToolbar editor={editor} />
       <StyleFontToolbar editor={editor} />
-      <StyleToolbar editor={editor} />
+      {/* 
+        @Todo
+        에디터 색상, 배경색 색상
+        <StyleToolbar editor={editor} /> 
+      */}
     </div>
   );
 };
