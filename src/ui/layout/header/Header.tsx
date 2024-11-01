@@ -1,13 +1,13 @@
-import getAction from '@/actions/notification/getAction';
+import authOptions from '@/lib/authOptions';
 import Wrap from '@/ui/layout/Wrap';
+import LoginBtn from '@/ui/layout/header/atom/LoginBtn';
 import VerifyLayout from '@/ui/layout/header/atom/VerifyLayout';
+import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const Header = async () => {
-  const res = await getAction();
-  const { data: notification } = res;
-
+  const session = (await getServerSession(authOptions)) as any;
   return (
     <header className="relative z-20 mt-6 w-full md:mt-10">
       <Wrap className="flex items-center justify-between">
@@ -22,8 +22,8 @@ const Header = async () => {
             priority
           />
         </Link>
-
-        <VerifyLayout notification={notification} />
+        {!session?.accessToken && <LoginBtn />}
+        {session?.accessToken && <VerifyLayout />}
       </Wrap>
     </header>
   );

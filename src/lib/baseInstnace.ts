@@ -14,7 +14,8 @@ const baseIntance = async (url: string, options: RequestInit = {}) => {
 
     const res = await fetch(url, defaultOptions);
     if (!res.ok) {
-      throw new Error('서버 에러가 발생했습니다.');
+      const json = await res.json();
+      throw new Error(json.message);
     }
     return res;
   } catch (err) {
