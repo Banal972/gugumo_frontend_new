@@ -2,6 +2,7 @@
 
 import authIntance from '@/lib/fetchInstance';
 import { Return } from '@/types/get.type';
+import { revalidateTag } from 'next/cache';
 
 interface PatchActionProps {
   body: any;
@@ -19,7 +20,7 @@ const patchAction = async ({
       body: JSON.stringify(body),
     },
   );
-
+  revalidateTag('detail');
   return res.json();
 };
 

@@ -10,7 +10,6 @@ const deleteAction = async (postid: string): Promise<Return<string>> => {
       method: 'DELETE',
     },
   );
-
   return res.json();
 };
 

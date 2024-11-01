@@ -213,7 +213,9 @@ const Form = ({ edit }: FormProps) => {
             id="meetingMemberNum"
             passive={!watch('meetingMemberNum')}
             register={register('meetingMemberNum', {
-              value: String(edit?.meetingMemberNum) || '',
+              value: edit?.meetingMemberNum
+                ? edit.meetingMemberNum.toString()
+                : '',
               required: { value: true, message: '모집인원을 선택해주세요.' },
             })}
           >
