@@ -12,6 +12,7 @@ import SubmitBtn from '@/components/post/write/atom/SubmitBtn';
 import { GAMETYPE, LOCATION } from '@/constant/card/constant';
 import useEditorHook from '@/hooks/useEditorHook';
 import { DetailData } from '@/types/detail.type';
+import { PatchActionProps } from '@/types/post.type';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -79,13 +80,7 @@ const Form = ({ edit }: FormProps) => {
     router.push('/');
   };
 
-  const editMutataion = async ({
-    body,
-    postId,
-  }: {
-    body: any;
-    postId: number;
-  }) => {
+  const editMutataion = async ({ body, postId }: PatchActionProps) => {
     const res = await patchAction({ body, postId });
     if (res.status === 'fail') return alert('수정에 실패 했습니다.');
     alert('수정이 완료 되었습니다.');

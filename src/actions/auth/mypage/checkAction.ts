@@ -3,9 +3,9 @@
 import baseIntance from '@/lib/baseInstnace';
 import { Return } from '@/types/get.type';
 
-interface CheckActionProps {
+type CheckActionProps = {
   nickname: string;
-}
+};
 
 /* 
   @data 타입

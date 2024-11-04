@@ -44,6 +44,10 @@ export interface MypageReturn {
 export interface GetProps {
   query: {
     q?: string;
+    meetingstatus?: string;
+    location?: string;
+    gametype?: string;
+    sort?: string;
     page?: number;
   };
 }
