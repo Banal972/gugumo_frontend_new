@@ -1,6 +1,11 @@
 import Image from 'next/image';
 import { Dispatch, SetStateAction } from 'react';
 
+interface GametypeProps {
+  likeGame: string[];
+  setLikeGame: Dispatch<SetStateAction<string[]>>;
+}
+
 const GAMETYPE = [
   { get: 'BADMINTON', name: '배드민턴' },
   { get: 'FUTSAL', name: '풋살' },
@@ -10,13 +15,7 @@ const GAMETYPE = [
   { get: 'BASEBALL', name: '야구' },
 ];
 
-export default function Gametype({
-  likeGame,
-  setLikeGame,
-}: {
-  likeGame: string[];
-  setLikeGame: Dispatch<SetStateAction<string[]>>;
-}) {
+const Gametype = ({ likeGame, setLikeGame }: GametypeProps) => {
   const gameTypeClickHanlder = (type: string) => {
     if (likeGame.includes(type)) {
       setLikeGame(likeGame.filter((el) => el !== type));
@@ -107,4 +106,6 @@ export default function Gametype({
       })}
     </>
   );
-}
+};
+
+export default Gametype;

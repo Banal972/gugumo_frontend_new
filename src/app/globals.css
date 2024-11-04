@@ -2,18 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {}
-
-@media (prefers-color-scheme: dark) {
-  :root {}
-} */
-
-/* @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-} */
-
 body {
   font-family: 'Pretendard';
 }

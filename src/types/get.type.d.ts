@@ -51,3 +51,14 @@ export interface GetProps {
     page?: number;
   };
 }
+
+export interface DefaultSearchParams {
+  searchParams?: Promise<{
+    q?: string;
+    page?: number;
+    status?: string;
+    location?: string;
+    sort?: string;
+    gametype?: string;
+  }>;
+}

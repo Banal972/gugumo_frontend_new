@@ -3,6 +3,7 @@ import Gametype from '@/components/main/Gametype';
 import Location from '@/components/main/Location';
 import Sort from '@/components/main/Sort';
 import Status from '@/components/main/Status';
+import { DefaultSearchParams } from '@/types/get.type';
 import WriteButton from '@/ui/Button/WriteButton';
 import Search from '@/ui/form/Search';
 import Paging from '@/ui/layout/Paging';
@@ -10,18 +11,7 @@ import Card from '@/ui/layout/card/Card';
 import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
 import { Suspense } from 'react';
 
-const ListContainer = async ({
-  searchParams,
-}: {
-  searchParams?: Promise<{
-    q?: string;
-    page?: number;
-    status?: string;
-    location?: string;
-    sort?: string;
-    gametype?: string;
-  }>;
-}) => {
+const ListContainer = async ({ searchParams }: DefaultSearchParams) => {
   const params = await searchParams;
   const q = params?.q || '';
   const page = params?.page || 1;
