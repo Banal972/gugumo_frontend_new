@@ -2,15 +2,15 @@
 
 import allReadAction from '@/actions/notification/allReadAction';
 import deleteAction from '@/actions/notification/deleteAction';
-import { AlarmData } from '@/actions/notification/getAction';
 import readAction from '@/actions/notification/readAction';
+import { GetNotification } from '@/types/notification.type';
 import moment from 'moment';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { MouseEvent, useState } from 'react';
 
 interface AlarmProps {
-  notification: { createDate: string; data: AlarmData[] }[];
+  notification: { createDate: string; data: GetNotification[] }[];
 }
 
 const Alarm = ({ notification }: AlarmProps) => {
