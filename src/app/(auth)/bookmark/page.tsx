@@ -1,17 +1,11 @@
 import getActions from '@/actions/auth/bookmark/getAction';
+import { DefaultSearchParams } from '@/types/get.type';
 import Wrap from '@/ui/layout/Wrap';
 import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
 import List from '@/ui/page/auth/List';
 import { Suspense } from 'react';
 
-const ListPage = async ({
-  searchParams,
-}: {
-  searchParams?: Promise<{
-    q?: string;
-    page?: number;
-  }>;
-}) => {
+const ListPage = async ({ searchParams }: DefaultSearchParams) => {
   const params = await searchParams;
   const q = params?.q || '';
   const page = params?.page || 1;

@@ -2,16 +2,12 @@
 
 import authIntance from '@/lib/fetchInstance';
 import { Return } from '@/types/get.type';
-
-interface mailCheckActionProps {
-  username: string;
-  emailAuthNum: string;
-}
+import { MailCheckActionProps } from '@/types/user.type';
 
 const mailCheckAction = async ({
   username,
   emailAuthNum,
-}: mailCheckActionProps): Promise<Return<string>> => {
+}: MailCheckActionProps): Promise<Return<string>> => {
   const res = await authIntance(`${process.env.API_URL}/api/v1/mailAuthCheck`, {
     method: 'POST',
     body: JSON.stringify({ email: username, emailAuthNum }),

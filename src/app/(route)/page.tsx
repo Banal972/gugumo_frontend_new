@@ -1,17 +1,10 @@
 import Banner from '@/components/main/Banner';
 import ListContainer from '@/components/main/ListContainer';
+import { DefaultSearchParams } from '@/types/get.type';
 import Wrap from '@/ui/layout/Wrap';
 import Recommends from '@/ui/layout/recommends/Recommends';
 
-const Home = async ({
-  searchParams,
-}: {
-  searchParams?: Promise<{
-    q?: string;
-    page?: number;
-    status?: string;
-  }>;
-}) => {
+const HomePage = async ({ searchParams }: DefaultSearchParams) => {
   return (
     <main className="pb-[121px] pt-6 md:pb-[170px] md:pt-[50px]">
       <Banner />
@@ -25,4 +18,4 @@ const Home = async ({
   );
 };
 
-export default Home;
+export default HomePage;

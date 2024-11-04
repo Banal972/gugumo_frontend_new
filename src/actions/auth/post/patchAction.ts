@@ -2,12 +2,8 @@
 
 import authIntance from '@/lib/fetchInstance';
 import { Return } from '@/types/get.type';
+import { PatchActionProps } from '@/types/post.type';
 import { revalidateTag } from 'next/cache';
-
-interface PatchActionProps {
-  body: any;
-  postId: number;
-}
 
 const patchAction = async ({
   body,

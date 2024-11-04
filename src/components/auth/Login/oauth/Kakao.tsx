@@ -2,7 +2,7 @@
 
 import { signIn } from 'next-auth/react';
 
-export default function Kakao() {
+const Kakao = () => {
   const onSignInHandler = async () => {
     await signIn('kakao', { callbackUrl: '/oauth-callback' });
   };
@@ -14,4 +14,6 @@ export default function Kakao() {
       className="size-[34px] cursor-pointer rounded-full bg-[url(/asset/image/modal/kakao.png)] bg-cover bg-center"
     />
   );
-}
+};
+
+export default Kakao;
