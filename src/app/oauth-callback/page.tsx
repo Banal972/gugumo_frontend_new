@@ -4,9 +4,7 @@ import { redirect } from 'next/navigation';
 
 const oauthCallback = async () => {
   const session = (await getServerSession(authOptions)) as any;
-  if (session && !session.accessToken) {
-    return redirect('/signup');
-  }
+  if (session && !session.accessToken) return redirect('/signup');
   return redirect('/');
 };
 

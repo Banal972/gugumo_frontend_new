@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-export default function Banner() {
+const Banner = () => {
   return (
     <Swiper
       slidesPerView={1.2}
@@ -55,4 +55,6 @@ export default function Banner() {
       ))}
     </Swiper>
   );
-}
+};
+
+export default Banner;

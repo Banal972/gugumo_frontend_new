@@ -2,7 +2,11 @@ import get from '@/actions/meeting/detailActions';
 import Form from '@/components/post/write/Form';
 import Wrap from '@/ui/layout/Wrap';
 
-export default async function Edit({ params }: { params: { postid: string } }) {
+interface EditProps {
+  params: { postid: string };
+}
+
+export default async function Edit({ params }: EditProps) {
   const { data: detail } = await get(params.postid);
 
   return (

@@ -12,6 +12,7 @@ import SubmitBtn from '@/components/post/write/atom/SubmitBtn';
 import { GAMETYPE, LOCATION } from '@/constant/card/constant';
 import useEditorHook from '@/hooks/useEditorHook';
 import { DetailData } from '@/types/detail.type';
+import { PatchActionProps, PatchBody } from '@/types/post.type';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -79,13 +80,7 @@ const Form = ({ edit }: FormProps) => {
     router.push('/');
   };
 
-  const editMutataion = async ({
-    body,
-    postId,
-  }: {
-    body: any;
-    postId: number;
-  }) => {
+  const editMutataion = async ({ body, postId }: PatchActionProps) => {
     const res = await patchAction({ body, postId });
     if (res.status === 'fail') return alert('수정에 실패 했습니다.');
     alert('수정이 완료 되었습니다.');
@@ -106,7 +101,7 @@ const Form = ({ edit }: FormProps) => {
 
     const content = editor.getHTML();
 
-    const body: { [key: string]: string | number } = {
+    const body: Partial<PatchBody> = {
       meetingType,
       gameType,
       meetingMemberNum,
@@ -127,7 +122,7 @@ const Form = ({ edit }: FormProps) => {
 
     if (!edit) return createMutation(body);
     body.meetingStatus = meetingStatus;
-    editMutataion({ body, postId: edit.postId });
+    editMutataion({ body: body as PatchBody, postId: edit.postId });
   });
 
   useEffect(() => {

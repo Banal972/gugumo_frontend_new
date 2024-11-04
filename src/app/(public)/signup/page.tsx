@@ -6,6 +6,7 @@ import mailCheckAction from '@/actions/public/signup/mailCheckAction';
 import mailSendAction from '@/actions/public/signup/mailSendAction';
 import AgreeService from '@/components/auth/signup/AgreeService';
 import Gametype from '@/components/auth/signup/Gametype';
+import { IsAgreeType } from '@/types/user.type';
 import Wrap from '@/ui/layout/Wrap';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -13,11 +14,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { IoCheckmarkOutline } from 'react-icons/io5';
 
-interface IsServiceT {
+interface IsServiceState extends IsAgreeType {
   [key: string]: boolean;
-  isAgreeTermsUse: boolean;
-  isAgreeCollectingUsingPersonalInformation: boolean;
-  isAgreeMarketing: boolean;
 }
 
 const AGREE_SERVICE = [
@@ -42,7 +40,7 @@ const SignupPage = () => {
   const { register, handleSubmit, getValues } = useForm();
   const [isSend, setIsSend] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
-  const [isService, setIsService] = useState<IsServiceT>({
+  const [isService, setIsService] = useState<IsServiceState>({
     isAgreeTermsUse: false,
     isAgreeCollectingUsingPersonalInformation: false,
     isAgreeMarketing: false,
