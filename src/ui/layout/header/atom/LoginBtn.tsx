@@ -1,7 +1,7 @@
 'use client';
 
 import LoginModal from '@/components/auth/Login/LoginModal';
-import ModalPortal from '@/components/modal/ModalPortal';
+import Portal from '@/ui/Portal';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -32,9 +32,9 @@ const LoginBtn = () => {
       >
         로그인
       </button>
-      <ModalPortal>
+      <Portal>
         <LoginModal isOpen={isOpenModal} onClose={modalCloseHandler} />
-      </ModalPortal>
+      </Portal>
     </>
   );
 };
