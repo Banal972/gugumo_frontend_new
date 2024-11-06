@@ -14,7 +14,12 @@ const NotFound = () => {
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center text-center">
-      <Image src="/asset/image/notfound.png" alt="에러로고" />
+      <Image
+        src="/asset/image/notfound.png"
+        alt="에러로고"
+        width={80}
+        height={80}
+      />
       <h1 className="mt-7 text-5xl font-medium text-primary">404 ERROR</h1>
       <dl className="mt-10 w-[442px]">
         <dt className="text-2xl font-medium">

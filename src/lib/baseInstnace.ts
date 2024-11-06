@@ -11,12 +11,7 @@ const baseIntance = async (url: string, options: RequestInit = {}) => {
       },
       ...restOptions,
     };
-
     const res = await fetch(url, defaultOptions);
-    if (!res.ok) {
-      const json = await res.json();
-      throw new Error(json.message);
-    }
     return res;
   } catch (err) {
     throw new Error(err as string);

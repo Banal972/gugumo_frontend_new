@@ -34,10 +34,8 @@ const authOptions: NextAuthOptions = {
             }
             return null;
           }
-          // console.log(response);
           return null;
         } catch (err) {
-          // console.log(err);
           return null;
         }
       },
@@ -55,27 +53,27 @@ const authOptions: NextAuthOptions = {
       const currentToken = token;
 
       if (account?.type !== 'credentials' && user) {
-        const response = await baseIntance(
-          `${process.env.API_URL}/kakao/login`,
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              username: user.email,
-              nickname: user.name,
-              kakaoId: user.id,
-              profilePath: user.image,
-            }),
+        const response = await fetch(`${process.env.API_URL}/kakao/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'Application/json',
           },
-        );
+          body: JSON.stringify({
+            username: user.email,
+            nickname: user.name,
+            kakaoId: user.id,
+            profilePath: user.image,
+          }),
+        });
 
         const data = await response.json();
 
-        if (data.status !== 'fail') {
-          currentToken.accessToken = data.data;
-        } else {
+        if (data.status === 'fail') {
           currentToken.username = user.email;
           currentToken.nickname = user.name;
           currentToken.kakaoId = user.id;
+        } else if (data.status === 'success') {
+          currentToken.accessToken = data.data;
         }
       }
 

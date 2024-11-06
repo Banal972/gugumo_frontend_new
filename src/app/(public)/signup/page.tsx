@@ -37,10 +37,7 @@ const schema = z
       })
       .optional(),
     nickname: z.string().min(1, { message: '닉네임을 입력해야합니다.' }),
-    password: z
-      .string()
-      .min(8, { message: '8자 이상으로 입력해주세요' })
-      .optional(),
+    password: z.string().optional(),
     confirmPW: z.string().optional(),
     favoriteSports: z.string().optional(),
     isAgreeTermsUseisAgreeTermsUse: z.boolean(),
@@ -71,6 +68,13 @@ const schema = z
           code: z.ZodIssueCode.custom,
         });
       }
+      if (!data.password || data.password.length < 8) {
+        ctx.addIssue({
+          path: ['password'],
+          message: '비밀번호는 8자 이상이어야 합니다.',
+          code: z.ZodIssueCode.custom,
+        });
+      }
       if (data.password !== data.confirmPW) {
         ctx.addIssue({
           path: ['password'],
@@ -80,10 +84,6 @@ const schema = z
       }
     }
   });
-
-// interface IsServiceState extends IsAgreeType {
-//   [key: string]: boolean;
-// }
 
 type FieldType = z.infer<typeof schema>;
 
@@ -366,19 +366,6 @@ const SignupPage = () => {
             </button>
           </div>
         </form>
-
-        <div>
-          {Object.keys(errors).length > 0 && (
-            <div>
-              <h4>폼에 에러가 있습니다:</h4>
-              {Object.entries(errors).map(([key, value]) => (
-                <p key={key}>
-                  {key}: {value.message}
-                </p>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </Wrap>
   );

@@ -8,19 +8,18 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-interface LoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
 const schema = z.object({
   username: z.string().min(1, { message: '이메일을 입력해주세요' }),
   password: z.string().min(1, { message: '비밀번호를 입력해주세요' }),
 });
+
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 type FieldType = z.infer<typeof schema>;
 
@@ -33,20 +32,15 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   } = useForm<FieldType>({
     resolver: zodResolver(schema),
   });
-  const router = useRouter();
 
   const onSubmit = handleSubmit(async (data) => {
     const res = await signIn('credentials', {
       ...data,
-      redirect: false,
+      callbackUrl: '/',
     });
 
-    if (res?.ok) {
-      onClose();
-      return router.push('/');
-    }
-
-    showToast('error', '로그인에 실패 하였습니다.');
+    if (res?.error) return showToast('error', '로그인에 실패 하였습니다.');
+    onClose();
   });
 
   return (
