@@ -41,16 +41,18 @@ const Mypage = async () => {
                   {res.data.nickname}
                 </p>
               </div>
-              <div className="flex gap-[7px]">
-                {res.data.favoriteSports.split(',').map((el) => (
-                  <p
-                    key={el}
-                    className="rounded-full border border-OnSurface px-2 py-1 text-[13px] font-medium leading-none text-OnSurface"
-                  >
-                    {GAMETYPE[el]}
-                  </p>
-                ))}
-              </div>
+              {res.data.favoriteSports && (
+                <div className="flex gap-[7px]">
+                  {res.data.favoriteSports.split(',').map((el) => (
+                    <p
+                      key={el}
+                      className="rounded-full border border-OnSurface px-2 py-1 text-[13px] font-medium leading-none text-OnSurface"
+                    >
+                      {GAMETYPE[el]}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
           </Suspense>
         </div>
