@@ -1,5 +1,5 @@
 import get from '@/actions/meeting/detailActions';
-import Form from '@/components/post/write/Form';
+import Form from '@/components/page/post/write/Form';
 import Wrap from '@/ui/layout/Wrap';
 
 interface EditProps {

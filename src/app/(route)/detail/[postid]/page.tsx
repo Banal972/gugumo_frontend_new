@@ -1,7 +1,7 @@
 import get from '@/actions/meeting/detailActions';
-import Comments from '@/components/post/detail/Comment/Comments';
-import Detail from '@/components/post/detail/Detail/Detail';
-import Skeleton from '@/components/post/detail/SkeletonUI/Skeleton';
+import Comments from '@/components/page/post/detail/Comment/Comments';
+import Detail from '@/components/page/post/detail/Detail/Detail';
+import Skeleton from '@/components/page/post/detail/SkeletonUI/Skeleton';
 import { PostidType } from '@/types/cmnt.type';
 import Wrap from '@/ui/layout/Wrap';
 import Recommends from '@/ui/layout/recommends/Recommends';

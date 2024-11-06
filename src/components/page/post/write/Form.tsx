@@ -2,13 +2,13 @@
 
 import patchAction from '@/actions/auth/post/patchAction';
 import postAction from '@/actions/auth/post/postAction';
-import CalendarSelect from '@/components/post/write/atom/CalendarSelect';
-import EditorLayout from '@/components/post/write/atom/EditorLayout';
-import Headings from '@/components/post/write/atom/Headings';
-import Input from '@/components/post/write/atom/Input';
-import Label from '@/components/post/write/atom/Label';
-import Select from '@/components/post/write/atom/Select';
-import SubmitBtn from '@/components/post/write/atom/SubmitBtn';
+import CalendarSelect from '@/components/page/post/write/atom/CalendarSelect';
+import EditorLayout from '@/components/page/post/write/atom/EditorLayout';
+import Headings from '@/components/page/post/write/atom/Headings';
+import Input from '@/components/page/post/write/atom/Input';
+import Label from '@/components/page/post/write/atom/Label';
+import Select from '@/components/page/post/write/atom/Select';
+import SubmitBtn from '@/components/page/post/write/atom/SubmitBtn';
 import { GAMETYPE, LOCATION } from '@/constant/card/constant';
 import useEditorHook from '@/hooks/useEditorHook';
 import { DetailData } from '@/types/detail.type';

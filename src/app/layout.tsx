@@ -3,7 +3,6 @@ import '@/app/globals.css';
 import '@/lib/firebase';
 import AuthProvider from '@/provider/AuthProvider';
 import FCMProvider from '@/provider/FCMProvider';
-import ModalProvider from '@/provider/ModalProvider/ModalProvider';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import type { Metadata, Viewport } from 'next';
 import 'react-calendar/dist/Calendar.css';
@@ -75,9 +74,7 @@ const RootLayout = ({ children }: Readonly<RootLayoutProps>) => {
     <html lang="ko">
       <body>
         <AuthProvider>
-          <ModalProvider>
-            <FCMProvider>{children}</FCMProvider>
-          </ModalProvider>
+          <FCMProvider>{children}</FCMProvider>
         </AuthProvider>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
       </body>

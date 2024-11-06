@@ -1,4 +1,4 @@
-import Form from '@/components/post/write/Form';
+import Form from '@/components/page/post/write/Form';
 import Wrap from '@/ui/layout/Wrap';
 
 const Write = () => {
