@@ -1,7 +1,7 @@
 'use client';
 
-import CmntList from '@/components/post/detail/Comment/atom/CmntList';
-import Reply from '@/components/post/detail/Comment/atom/Reply';
+import CmntList from '@/components/page/post/detail/Comment/atom/CmntList';
+import Reply from '@/components/page/post/detail/Comment/atom/Reply';
 import { CmntReturn, CommnetShowState, PostidType } from '@/types/cmnt.type';
 import { Fragment, useState } from 'react';
 

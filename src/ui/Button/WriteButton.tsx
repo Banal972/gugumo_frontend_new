@@ -1,12 +1,18 @@
 'use client';
 
+import { useToast } from '@/provider/ToastProvider';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 const WriteButton = () => {
+  const { showToast } = useToast();
+  const { data: session } = useSession() as any;
   const router = useRouter();
 
   const writeHandler = () => {
+    if (!session || !session.accessToken)
+      return showToast('error', '로그인을 해야합니다.');
     router.push('/post/write');
   };
 

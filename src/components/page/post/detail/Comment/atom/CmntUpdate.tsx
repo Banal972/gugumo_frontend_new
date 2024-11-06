@@ -1,8 +1,8 @@
 'use client';
 
 import patchAction from '@/actions/comment/patchAction';
-import EditBtn from '@/components/post/detail/Button/EditBtn';
-import ReplyForm from '@/components/post/detail/Comment/form/ReplyForm';
+import EditBtn from '@/components/page/post/detail/Button/EditBtn';
+import ReplyForm from '@/components/page/post/detail/Comment/form/ReplyForm';
 import { CmntFormValue, SetCommnetShowType } from '@/types/cmnt.type';
 import { useForm } from 'react-hook-form';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import deleteAction from '@/actions/auth/post/deleteAction';
+import { useToast } from '@/provider/ToastProvider';
 import { useRouter } from 'next/navigation';
 
 interface BtnListProps {
@@ -9,12 +10,14 @@ interface BtnListProps {
 }
 
 const BtnList = ({ postid, yours }: BtnListProps) => {
+  const { showToast } = useToast();
   const router = useRouter();
 
   const removeMutation = async () => {
     const res = await deleteAction(postid);
-    if (res.status === 'fail') return alert('삭제하는데 실패하였습니다.');
-    alert('삭제 하였습니다.');
+    if (res.status === 'fail')
+      return showToast('error', '삭제하는데 실패하였습니다.');
+    showToast('success', '삭제 하였습니다.');
     router.push('/');
   };
 

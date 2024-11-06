@@ -1,6 +1,7 @@
 'use client';
 
 import resetPwdAction from '@/actions/public/find/resetPwdAction';
+import { useToast } from '@/provider/ToastProvider';
 import { useForm } from 'react-hook-form';
 
 type FormValues = {
@@ -8,15 +9,16 @@ type FormValues = {
 };
 
 const FindPage = () => {
+  const { showToast } = useToast();
   const { handleSubmit, register, setValue } = useForm<FormValues>();
 
   const onSubmitHandler = handleSubmit(async (data) => {
     const { email } = data;
-    if (email === '') return alert('이메일을 입력해주세요.');
+    if (email === '') return showToast('error', '이메일을 입력해주세요.');
     const res = await resetPwdAction(email);
     setValue('email', '');
-    if (!res.data) return window.alert('패스워드 이메일을 실패했습니다.');
-    window.alert('패스워드 이메일을 보냈습니다.');
+    if (!res.data) return showToast('error', '패스워드 이메일을 실패했습니다.');
+    showToast('success', '패스워드 이메일을 보냈습니다.');
   });
 
   return (

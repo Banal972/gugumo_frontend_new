@@ -1,14 +1,17 @@
 'use client';
 
 import deleteUserAction from '@/actions/auth/mypage/deleteAction';
+import { useToast } from '@/provider/ToastProvider';
 import { signOut } from 'next-auth/react';
 
 const DeleteUser = () => {
+  const { showToast } = useToast();
+
   const delUserHandler = async () => {
     if (window.confirm('정말 탈퇴하시겠습니까?')) {
       const res = await deleteUserAction();
       if (res.data) {
-        window.alert('회원탈퇴 완료');
+        showToast('success', '회원탈퇴 완료');
         signOut({
           redirect: true,
           callbackUrl: '/',

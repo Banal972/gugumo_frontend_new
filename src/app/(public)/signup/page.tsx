@@ -6,6 +6,7 @@ import mailCheckAction from '@/actions/public/signup/mailCheckAction';
 import mailSendAction from '@/actions/public/signup/mailSendAction';
 import AgreeService from '@/components/auth/signup/AgreeService';
 import Gametype from '@/components/auth/signup/Gametype';
+import { useToast } from '@/provider/ToastProvider';
 import { IsAgreeType } from '@/types/user.type';
 import Wrap from '@/ui/layout/Wrap';
 import { signIn, useSession } from 'next-auth/react';
@@ -35,6 +36,7 @@ const AGREE_SERVICE = [
 
 const SignupPage = () => {
   const { data: session } = useSession() as any;
+  const { showToast } = useToast();
 
   const router = useRouter();
   const { register, handleSubmit, getValues } = useForm();
@@ -50,19 +52,20 @@ const SignupPage = () => {
   const mailSendHandler = async () => {
     if (isSend) return;
     const { username } = getValues();
-    if (!username) return window.alert('메일을 입력해주세요.');
+    if (!username) return showToast('error', '메일을 입력해주세요.');
     const res = await mailSendAction(username);
     const { status } = res;
     if (status === 'success') {
-      window.alert('인증번호 메일을 보냈습니다.');
+      showToast('success', '인증번호 메일을 보냈습니다.');
       setIsSend(true);
     }
   };
 
   const mailAuthCheckHanlder = async () => {
-    if (isCheck) return window.alert('이미 인증처리가 완료 되어있습니다.');
+    if (isCheck)
+      return showToast('error', '이미 인증처리가 완료 되어있습니다.');
     const { username, emailAuthNum } = getValues();
-    if (!emailAuthNum) return window.alert('인증번호를 입력해주세요.');
+    if (!emailAuthNum) return showToast('error', '인증번호를 입력해주세요.');
 
     const res = await mailCheckAction({ username, emailAuthNum });
 
@@ -70,7 +73,7 @@ const SignupPage = () => {
 
     if (status === 'success') {
       setIsCheck(true);
-      return window.alert('인증이 완료 되었습니다.');
+      return showToast('success', '인증이 완료 되었습니다.');
     }
   };
 
@@ -103,18 +106,18 @@ const SignupPage = () => {
     const { nickname, username, emailAuthNum, password, confirmPW } = event;
 
     if (!isService.isAgreeTermsUse) {
-      return alert('서비스 이용약관에 동의해주세요.');
+      return showToast('error', '서비스 이용약관에 동의해주세요.');
     }
 
     if (!isService.isAgreeCollectingUsingPersonalInformation) {
-      return alert('개인정보 수집 및 이용에 동의해주세요');
+      return showToast('error', '개인정보 수집 및 이용에 동의해주세요');
     }
 
     if (!session) {
       // 기본 회원가입
 
       if (password !== confirmPW) {
-        return alert('비밀번호가 서로 다릅니다.');
+        return showToast('error', '비밀번호가 서로 다릅니다.');
       }
 
       const res = await joinAction({
@@ -131,9 +134,9 @@ const SignupPage = () => {
 
       const { data, message } = res;
 
-      if (!data) return window.alert(message);
+      if (!data) return showToast('error', message);
 
-      window.alert('회원가입에 성공하였습니다.');
+      showToast('success', '회원가입에 성공하였습니다.');
       return router.push('/');
     }
 
@@ -149,9 +152,9 @@ const SignupPage = () => {
 
       const { data, message } = res;
 
-      if (!data) return window.alert(message);
+      if (!data) return showToast('error', message);
 
-      window.alert('회원가입에 성공하였습니다.');
+      showToast('success', '회원가입에 성공하였습니다.');
 
       signIn('kakao', {
         callbackUrl: '/',

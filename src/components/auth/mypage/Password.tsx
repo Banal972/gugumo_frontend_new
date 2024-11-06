@@ -1,6 +1,7 @@
 'use client';
 
 import updatePasswordAction from '@/actions/auth/mypage/updatePasswordAction';
+import { useToast } from '@/provider/ToastProvider';
 import { HTMLInputTypeAttribute } from 'react';
 import { SubmitHandler, useForm, UseFormRegisterReturn } from 'react-hook-form';
 
@@ -16,24 +17,22 @@ interface InputProps {
 }
 
 export default function Password() {
+  const { showToast } = useToast();
   const { register, handleSubmit, setValue } = useForm<FormValues>();
 
   const onSubmitHanlder: SubmitHandler<FormValues> = async (data) => {
     const { password, pwConfirm } = data;
 
     if (password === '' || pwConfirm === '')
-      return window.alert('비밀번호를 입력하지 않았습니다.');
+      return showToast('error', '비밀번호를 입력하지 않았습니다.');
     if (password !== pwConfirm)
-      return window.alert('비밀번호가 동일하지 않습니다.');
+      return showToast('error', '비밀번호가 동일하지 않습니다.');
 
     const res = await updatePasswordAction(password);
 
-    if (!res.data) {
-      window.alert('비밀번호 변경에 실패하였습니다.');
-      return;
-    }
+    if (!res.data) return showToast('error', '비밀번호 변경에 실패하였습니다.');
 
-    window.alert('비밀번호가 변경 되었습니다.');
+    showToast('success', '비밀번호가 변경 되었습니다.');
     setValue('password', '');
     setValue('pwConfirm', '');
   };
