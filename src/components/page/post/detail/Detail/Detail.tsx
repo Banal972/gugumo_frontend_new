@@ -1,8 +1,8 @@
 import ViewSVG from '@/asset/image/view.svg';
-import BtnList from '@/components/post/detail/BtnList';
-import View from '@/components/post/detail/Detail/View';
-import Grid from '@/components/post/detail/Detail/atom/Grid';
-import GridText from '@/components/post/detail/Detail/atom/GridText';
+import BtnList from '@/components/page/post/detail/BtnList';
+import View from '@/components/page/post/detail/Detail/View';
+import Grid from '@/components/page/post/detail/Detail/atom/Grid';
+import GridText from '@/components/page/post/detail/Detail/atom/GridText';
 import { GAMETYPE, LOCATION, MEETINGTYPE } from '@/constant/card/constant';
 import { DetailData } from '@/types/detail.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';

@@ -1,9 +1,10 @@
 'use client';
 
 import deleteAction from '@/actions/comment/deleteAction';
-import BaseBtn from '@/components/post/detail/Button/BaseBtn';
-import CmntUpdate from '@/components/post/detail/Comment/atom/CmntUpdate';
-import User from '@/components/post/detail/Comment/atom/User';
+import BaseBtn from '@/components/page/post/detail/Button/BaseBtn';
+import CmntUpdate from '@/components/page/post/detail/Comment/atom/CmntUpdate';
+import User from '@/components/page/post/detail/Comment/atom/User';
+import { useToast } from '@/provider/ToastProvider';
 import { CommentDataType, CommnetShowState } from '@/types/cmnt.type';
 import moment from 'moment';
 import 'moment/locale/ko';
@@ -23,10 +24,12 @@ const CmntList = ({
   comment,
   isReply,
 }: CmntListProps) => {
+  const { showToast } = useToast();
   const { data: session } = useSession() as any;
 
   const onReplyShowHandler = (commentId: number) => {
-    if (!session || !session.accessToken) return alert('로그인을 해야합니다.');
+    if (!session || !session.accessToken)
+      return showToast('error', '로그인을 해야합니다.');
 
     if (commnetShow.commentId === commentId && commnetShow.type === 'reply') {
       return setCommnetShow({
@@ -45,7 +48,7 @@ const CmntList = ({
     if (window.confirm('정말 삭제하시겠습니까?')) {
       const res = await deleteAction(commentId);
       if (res.status === 'success') {
-        alert('삭제가 완료 되었습니다.');
+        showToast('success', '삭제가 완료 되었습니다.');
       }
     }
   };

@@ -1,6 +1,7 @@
 'use client';
 
 import resetPwdAction from '@/actions/public/find/resetPwdAction';
+import { useToast } from '@/provider/ToastProvider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -9,13 +10,16 @@ const schema = z.object({
   email: z.string().min(1, { message: '이메일을 입력 해주세요' }),
 });
 
+type FieldType = z.infer<typeof schema>;
+
 const FindPage = () => {
+  const { showToast } = useToast();
   const {
     handleSubmit,
     register,
     setValue,
     formState: { errors },
-  } = useForm({
+  } = useForm<FieldType>({
     resolver: zodResolver(schema),
     defaultValues: {
       email: '',
@@ -26,8 +30,8 @@ const FindPage = () => {
     const { email } = data;
     const res = await resetPwdAction(email);
     setValue('email', '');
-    if (!res.data) return window.alert('패스워드 이메일을 실패했습니다.');
-    window.alert('패스워드 이메일을 보냈습니다.');
+    if (!res.data) return showToast('error', '패스워드 이메일을 실패했습니다.');
+    showToast('success', '패스워드 이메일을 보냈습니다.');
   });
 
   return (

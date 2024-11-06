@@ -1,6 +1,7 @@
 'use client';
 
 import updatePasswordAction from '@/actions/auth/mypage/updatePasswordAction';
+import { useToast } from '@/provider/ToastProvider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HTMLInputTypeAttribute } from 'react';
 import { useForm, UseFormRegisterReturn } from 'react-hook-form';
@@ -25,6 +26,7 @@ const schema = z
   });
 
 const Password = () => {
+  const { showToast } = useToast();
   const {
     register,
     handleSubmit,
@@ -41,8 +43,10 @@ const Password = () => {
   const onSubmitHanlder = handleSubmit(async (data) => {
     const { password } = data;
     const res = await updatePasswordAction(password);
-    if (!res.data) return window.alert('비밀번호 변경에 실패하였습니다.');
-    window.alert('비밀번호가 변경 되었습니다.');
+
+    if (!res.data) return showToast('error', '비밀번호 변경에 실패하였습니다.');
+
+    showToast('success', '비밀번호가 변경 되었습니다.');
     reset();
   });
 

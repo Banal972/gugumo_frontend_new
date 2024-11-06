@@ -1,6 +1,6 @@
 import getAction from '@/actions/comment/getAction';
-import CmntForm from '@/components/post/detail/Comment/CmntForm';
-import Cmnt from '@/components/post/detail/Comment/atom/Cmnt';
+import CmntForm from '@/components/page/post/detail/Comment/CmntForm';
+import Cmnt from '@/components/page/post/detail/Comment/atom/Cmnt';
 import { PostidType } from '@/types/cmnt.type';
 
 interface CommentsProps {
