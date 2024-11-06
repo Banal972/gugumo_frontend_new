@@ -1,18 +1,18 @@
 interface IsAgreeType {
-  isAgreeTermsUse: boolean;
+  isAgreeTermsUseisAgreeTermsUse: boolean;
   isAgreeCollectingUsingPersonalInformation: boolean;
   isAgreeMarketing: boolean;
 }
 
 export interface DefaultUser {
   nickname: string;
-  favoriteSports: string;
+  favoriteSports?: string;
 }
 
 export interface JoinActionBody extends IsAgreeType, DefaultUser {
-  username: string;
-  password: string;
-  emailAuthNum: number;
+  username?: string;
+  password?: string;
+  emailAuthNum?: string;
 }
 
 export interface KakaoActionBody extends IsAgreeType, DefaultUser {}

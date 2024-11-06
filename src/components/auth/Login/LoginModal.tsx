@@ -2,47 +2,52 @@
 
 import Kakao from '@/components/auth/Login/oauth/Kakao';
 import { useToast } from '@/provider/ToastProvider';
+import ErrorMessage from '@/ui/form/ErrorMessage';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const schema = z.object({
+  username: z.string().min(1, { message: '이메일을 입력해주세요' }),
+  password: z.string().min(1, { message: '비밀번호를 입력해주세요' }),
+});
+
+type FieldType = z.infer<typeof schema>;
+
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const { showToast } = useToast();
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FieldType>({
+    resolver: zodResolver(schema),
+  });
   const router = useRouter();
 
-  const onSubmit = async (event: any) => {
-    const { username, password } = event;
-
-    if (username === '') {
-      return showToast('error', '이메일을 입력해주세요.');
-    }
-
-    if (password === '') {
-      return showToast('error', '비밀번호을 입력해주세요.');
-    }
-
+  const onSubmit = handleSubmit(async (data) => {
     const res = await signIn('credentials', {
-      username,
-      password,
+      ...data,
       redirect: false,
     });
 
     if (res?.ok) {
-      router.push('/');
-      return onClose();
+      onClose();
+      return router.push('/');
     }
 
     showToast('error', '로그인에 실패 하였습니다.');
-  };
+  });
 
   return (
     <AnimatePresence>
@@ -100,19 +105,25 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             <h5 className="mt-10 text-center text-lg font-semibold text-primary">
               로그인
             </h5>
-            <form className="mt-5" onSubmit={handleSubmit(onSubmit)}>
+            <form className="mt-5" onSubmit={onSubmit}>
               <input
                 type="text"
                 placeholder="이메일을 입력해주세요."
                 className="h-9 w-full rounded-lg border border-Outline px-3 text-sm font-medium outline-none focus:border-primary md:h-11 md:text-base"
                 {...register('username')}
               />
+              {errors.username?.message && (
+                <ErrorMessage>{errors.username.message}</ErrorMessage>
+              )}
               <input
                 type="password"
                 placeholder="비밀번호를 입력하세요."
                 className="mt-2 h-9 w-full rounded-lg border border-Outline px-3 text-sm font-medium outline-none focus:border-primary md:h-11 md:text-base"
                 {...register('password')}
               />
+              {errors.password?.message && (
+                <ErrorMessage>{errors.password.message}</ErrorMessage>
+              )}
               <div className="mt-5 text-center">
                 <button
                   type="submit"

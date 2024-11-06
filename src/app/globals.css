@@ -15,7 +15,3 @@ body {
   background-color: #4faaff;
   border-radius: 10px;
 }
-
-.sign-input {
-  @apply h-11 w-full rounded-lg border border-Outline px-3 text-base font-medium outline-none placeholder:text-OnBackgroundGray focus:border-primary;
-}

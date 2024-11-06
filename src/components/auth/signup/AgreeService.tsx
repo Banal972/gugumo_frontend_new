@@ -1,26 +1,32 @@
+'use client';
+
+import { useToast } from '@/provider/ToastProvider';
 import { MouseEventHandler } from 'react';
 import { IoCheckmarkOutline } from 'react-icons/io5';
 
 interface AgreeServiceProps {
-  isService: any;
   label: any;
   onClick: MouseEventHandler;
-  id: string;
+  active: boolean;
   className: string;
 }
 
 const AgreeService = ({
-  isService,
   label,
   onClick,
-  id,
+  active,
   className,
 }: AgreeServiceProps) => {
+  const { showToast } = useToast();
+  const clickHandler = () => {
+    showToast('error', '준비중 입니다.');
+  };
+
   return (
     <div className={`mt-4 flex items-center ${className}`}>
       <div role="none" className="flex cursor-pointer gap-3" onClick={onClick}>
         <div className="relative size-5 flex-none rounded bg-white">
-          {isService[id] && (
+          {active && (
             <IoCheckmarkOutline className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs" />
           )}
         </div>
@@ -28,6 +34,7 @@ const AgreeService = ({
       </div>
       <button
         type="button"
+        onClick={clickHandler}
         className="ml-auto text-xs text-white underline underline-offset-4"
       >
         내용보기
