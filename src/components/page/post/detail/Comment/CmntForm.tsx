@@ -4,12 +4,14 @@ import postAction from '@/actions/comment/postAction';
 import EditBtn from '@/components/page/post/detail/Button/EditBtn';
 import User from '@/components/page/post/detail/Comment/atom/User';
 import ReplyForm from '@/components/page/post/detail/Comment/form/ReplyForm';
+import { useToast } from '@/provider/ToastProvider';
 import { CmntFormValue, PostidType } from '@/types/cmnt.type';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
 const CmntForm = ({ postId }: { postId: PostidType }) => {
+  const { showToast } = useToast();
   const { data: session } = useSession() as any;
 
   const {
@@ -22,7 +24,8 @@ const CmntForm = ({ postId }: { postId: PostidType }) => {
   const onSubmitHandler = handleSubmit(async (data) => {
     const { content } = data;
 
-    if (!session || !session.accessToken) return alert('로그인을 해야합니다.');
+    if (!session || !session.accessToken)
+      return showToast('error', '로그인을 해야합니다.');
 
     const res = await postAction({
       postId,

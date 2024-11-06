@@ -11,6 +11,7 @@ import Select from '@/components/page/post/write/atom/Select';
 import SubmitBtn from '@/components/page/post/write/atom/SubmitBtn';
 import { GAMETYPE, LOCATION } from '@/constant/card/constant';
 import useEditorHook from '@/hooks/useEditorHook';
+import { useToast } from '@/provider/ToastProvider';
 import { DetailData } from '@/types/detail.type';
 import { PatchActionProps, PatchBody } from '@/types/post.type';
 import moment from 'moment';
@@ -42,6 +43,7 @@ interface FormProps {
 }
 
 const Form = ({ edit }: FormProps) => {
+  const { showToast } = useToast();
   const router = useRouter();
   const { register, handleSubmit, watch } = useForm<FormValue>();
   const [isMeetingDate, setIsMeetingDate] = useState<boolean>(false);
@@ -75,15 +77,17 @@ const Form = ({ edit }: FormProps) => {
 
   const createMutation = async (body: any) => {
     const res = await postAction(body);
-    if (res.status === 'fail') return alert('등록에 실패 했습니다.');
-    alert('등록이 완료 되었습니다.');
+    if (res.status === 'fail')
+      return showToast('error', '등록에 실패 했습니다.');
+    showToast('success', '등록이 완료 되었습니다.');
     router.push('/');
   };
 
   const editMutataion = async ({ body, postId }: PatchActionProps) => {
     const res = await patchAction({ body, postId });
-    if (res.status === 'fail') return alert('수정에 실패 했습니다.');
-    alert('수정이 완료 되었습니다.');
+    if (res.status === 'fail')
+      return showToast('error', '수정에 실패 했습니다.');
+    showToast('success', '수정이 완료 되었습니다.');
     router.push(`/detail/${postId}`);
   };
 
@@ -116,8 +120,9 @@ const Form = ({ edit }: FormProps) => {
     };
 
     if (meetingType === 'LONG') {
-      if (!meetingTime) return alert('시간대을 선택해주세요.');
-      if (selectDays.length <= 0) return alert('요일을 선택해주세요.');
+      if (!meetingTime) return showToast('error', '시간대을 선택해주세요.');
+      if (selectDays.length <= 0)
+        return showToast('error', '요일을 선택해주세요.');
     }
 
     if (!edit) return createMutation(body);

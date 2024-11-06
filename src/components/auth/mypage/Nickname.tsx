@@ -2,10 +2,12 @@
 
 import checkAction from '@/actions/auth/mypage/checkAction';
 import updateAction from '@/actions/auth/mypage/updateAction';
+import { useToast } from '@/provider/ToastProvider';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const Nickname = () => {
+  const { showToast } = useToast();
   const { register, handleSubmit, setValue, getValues } = useForm();
 
   const [isCheck, setIsCheck] = useState(false);
@@ -14,22 +16,22 @@ const Nickname = () => {
     const { nickname } = getValues();
     const res = await checkAction(nickname);
     const { data } = res;
-    if (data) return window.alert('중복 입니다.');
+    if (data) return showToast('error', '중복된 닉네임이 있습니다.');
     if (!data) {
       setIsCheck(true);
-      return window.alert('사용할 수 있는 닉네임 입니다.');
+      return showToast('success', '사용할 수 있는 닉네임 입니다.');
     }
   };
 
   const onSubmitHanlder = async (event: any) => {
-    if (!isCheck) return window.alert('중복 체크를 해야합니다.');
+    if (!isCheck) return showToast('error', '중복 체크를 해야합니다.');
     const { nickname } = event;
     const res = await updateAction(nickname);
     const { status } = res;
     if (status === 'success') {
       setValue('nickname', '');
       setIsCheck(false);
-      window.alert('변경 완료');
+      showToast('success', '닉네임이 변경 되었습니다.');
     }
   };
 

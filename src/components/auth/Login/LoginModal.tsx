@@ -1,6 +1,7 @@
 'use client';
 
 import Kakao from '@/components/auth/Login/oauth/Kakao';
+import { useToast } from '@/provider/ToastProvider';
 import { AnimatePresence, motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
@@ -14,6 +15,7 @@ interface LoginModalProps {
 }
 
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
+  const { showToast } = useToast();
   const { register, handleSubmit } = useForm();
   const router = useRouter();
 
@@ -21,11 +23,11 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     const { username, password } = event;
 
     if (username === '') {
-      return alert('이메일을 입력해주세요.');
+      return showToast('error', '이메일을 입력해주세요.');
     }
 
     if (password === '') {
-      return alert('비밀번호을 입력해주세요.');
+      return showToast('error', '비밀번호을 입력해주세요.');
     }
 
     const res = await signIn('credentials', {
@@ -39,7 +41,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       return onClose();
     }
 
-    alert('로그인에 실패 하였습니다.');
+    showToast('error', '로그인에 실패 하였습니다.');
   };
 
   return (
