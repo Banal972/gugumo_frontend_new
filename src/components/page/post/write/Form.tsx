@@ -11,15 +11,16 @@ import Select from '@/components/page/post/write/atom/Select';
 import SubmitBtn from '@/components/page/post/write/atom/SubmitBtn';
 import { DAYS, GAMETYPE, LOCATION } from '@/constant/card/constant';
 import useEditorHook from '@/hooks/useEditorHook';
+import { FieldType, schema } from '@/lib/schema/post.schema';
 import { useToast } from '@/provider/ToastProvider';
 import { DetailData } from '@/types/detail.type';
+import ErrorMessage from '@/ui/form/ErrorMessage';
 import { zodResolver } from '@hookform/resolvers/zod';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 const MEETINGMEMBER = [
   { value: '1', label: '1명' },
@@ -28,53 +29,6 @@ const MEETINGMEMBER = [
   { value: '4', label: '4명' },
   { value: '5', label: '5명이상' },
 ];
-
-const schema = z
-  .object({
-    meetingStatus: z.enum(['RECRUIT', 'END']).optional(),
-    meetingType: z.enum(['LONG', 'SHORT']),
-    location: z.string().min(1, '지역을 선택해야 합니다.'),
-    gameType: z.string().min(1, '구기종목을 선택해야 합니다.'),
-    meetingMemberNum: z.string().min(1, '모집인원을 선택해야 합니다.'),
-    meetingDays: z.string().optional(),
-    meetingTime: z.string().optional(),
-    meetingDate: z.string().optional(),
-    meetingDeadline: z.string(),
-    openKakao: z.string(),
-    title: z.string().min(1, '제목을 입력해야 합니다.'),
-    content: z.string().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.meetingType === 'LONG') {
-      if (!data.meetingTime || data.meetingTime.trim() === '') {
-        ctx.addIssue({
-          path: ['meetingTime'],
-          message: '시간대를 선택해야 합니다.',
-          code: z.ZodIssueCode.custom,
-        });
-      }
-      if (!data.meetingDays || data.meetingDays.trim() === '') {
-        ctx.addIssue({
-          path: ['meetingDays'],
-          message: '모임 요일을 선택해야 합니다.',
-          code: z.ZodIssueCode.custom,
-        });
-      }
-    }
-
-    if (
-      data.meetingType === 'SHORT' &&
-      (!data.meetingDate || data.meetingDate.trim() === '')
-    ) {
-      ctx.addIssue({
-        path: ['meetingDate'],
-        message: '모임 날짜를 선택해야 합니다.',
-        code: z.ZodIssueCode.custom,
-      });
-    }
-  });
-
-export type FormData = z.infer<typeof schema>;
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -93,7 +47,7 @@ const Form = ({ edit }: FormProps) => {
     getValues,
     setValue,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<FieldType>({
     resolver: zodResolver(schema),
     defaultValues: {
       meetingType: 'SHORT',
@@ -143,7 +97,7 @@ const Form = ({ edit }: FormProps) => {
     setValue('meetingDays', updatedSelectDays.join(';'));
   };
 
-  const createMutation = async (body: FormData) => {
+  const createMutation = async (body: FieldType) => {
     const res = await postAction(body);
     if (res.status === 'fail')
       return showToast('error', '등록에 실패 했습니다.');
@@ -155,7 +109,7 @@ const Form = ({ edit }: FormProps) => {
     body,
     postId,
   }: {
-    body: FormData;
+    body: FieldType;
     postId: number;
   }) => {
     const res = await patchAction({ body, postId });
@@ -166,10 +120,11 @@ const Form = ({ edit }: FormProps) => {
   };
 
   const onSubmitHandler = handleSubmit(async (data) => {
-    setValue('content', editor.getHTML());
-    console.log(data);
-    // if (!edit) return createMutation(data);
-    // editMutataion({ body: data, postId: edit.postId });
+    if (!edit) return createMutation({ ...data, content: editor.getHTML() });
+    editMutataion({
+      body: { ...data, content: editor.getHTML() },
+      postId: edit.postId,
+    });
   });
 
   useEffect(() => {
@@ -177,10 +132,6 @@ const Form = ({ edit }: FormProps) => {
     const array: string[] = edit.meetingDays.split(';');
     setValue('meetingDays', [...array].join(';'));
   }, [edit, setValue]);
-
-  useEffect(() => {
-    if (meetingTypeWatch === 'LONG') return setValue('meetingDate', '');
-  }, [meetingTypeWatch, setValue]);
 
   return (
     <form onSubmit={onSubmitHandler}>
@@ -235,9 +186,7 @@ const Form = ({ edit }: FormProps) => {
             </Select>
           </div>
           {errors?.location && (
-            <p className="mt-2 text-sm text-red-500">
-              {errors.location?.message}
-            </p>
+            <ErrorMessage>{errors.location?.message}</ErrorMessage>
           )}
         </div>
 
@@ -261,9 +210,7 @@ const Form = ({ edit }: FormProps) => {
             </Select>
           </div>
           {errors?.gameType && (
-            <p className="mt-2 text-sm text-red-500">
-              {errors.gameType?.message}
-            </p>
+            <ErrorMessage>{errors.gameType?.message}</ErrorMessage>
           )}
         </div>
 
@@ -289,9 +236,7 @@ const Form = ({ edit }: FormProps) => {
             </Select>
           </div>
           {errors?.meetingMemberNum && (
-            <p className="mt-2 text-sm text-red-500">
-              {errors.meetingMemberNum?.message}
-            </p>
+            <ErrorMessage>{errors.meetingMemberNum?.message}</ErrorMessage>
           )}
         </div>
 
@@ -335,9 +280,7 @@ const Form = ({ edit }: FormProps) => {
                 </Select>
               </div>
               {errors?.meetingTime && (
-                <p className="mt-2 text-sm text-red-500">
-                  {errors.meetingTime?.message}
-                </p>
+                <ErrorMessage>{errors.meetingTime?.message}</ErrorMessage>
               )}
             </div>
             <div className="min-w-0">
@@ -357,9 +300,7 @@ const Form = ({ edit }: FormProps) => {
                 </div>
               </div>
               {errors?.meetingDays && (
-                <p className="mt-2 text-sm text-red-500">
-                  {errors.meetingDays?.message}
-                </p>
+                <ErrorMessage>{errors.meetingDays?.message}</ErrorMessage>
               )}
             </div>
           </>
@@ -392,6 +333,9 @@ const Form = ({ edit }: FormProps) => {
               value: edit?.openKakao,
             })}
           />
+          {errors?.openKakao && (
+            <ErrorMessage>{errors.openKakao?.message}</ErrorMessage>
+          )}
         </div>
       </div>
 
@@ -410,7 +354,7 @@ const Form = ({ edit }: FormProps) => {
             />
           </div>
           {errors?.title && (
-            <p className="mt-2 text-sm text-red-500">{errors.title?.message}</p>
+            <ErrorMessage>{errors.title?.message}</ErrorMessage>
           )}
         </div>
 
@@ -424,18 +368,6 @@ const Form = ({ edit }: FormProps) => {
 
       <div className="mt-10 text-center">
         <SubmitBtn>{!edit ? '새글 작성' : '수정 하기'}</SubmitBtn>
-        <div>
-          {Object.keys(errors).length > 0 && (
-            <div>
-              <h4>폼에 에러가 있습니다:</h4>
-              {Object.entries(errors).map(([key, value]) => (
-                <p key={key}>
-                  {key}: {value.message}
-                </p>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </form>
   );

@@ -48,6 +48,9 @@ const authOptions: NextAuthOptions = {
   jwt: {
     maxAge: 60 * 60,
   },
+  session: {
+    strategy: 'jwt',
+  },
   callbacks: {
     async jwt({ user, token, account }: any): Promise<any> {
       const currentToken = token;
