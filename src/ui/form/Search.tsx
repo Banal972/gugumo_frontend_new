@@ -1,15 +1,19 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-type FormValues = {
-  search: string;
-};
+const schema = z.object({
+  search: z.string(),
+});
 
 const Search = () => {
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit } = useForm({
+    resolver: zodResolver(schema),
+  });
 
   const searchParams = useSearchParams();
   const pathname = usePathname();

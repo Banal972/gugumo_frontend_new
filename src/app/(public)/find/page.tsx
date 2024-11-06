@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const schema = z.object({
-  email: z.string().min(1, { message: 'Required' }),
+  email: z.string().min(1, { message: '이메일을 입력 해주세요' }),
 });
 
 const FindPage = () => {
@@ -17,6 +17,9 @@ const FindPage = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+    },
   });
 
   const onSubmitHandler = handleSubmit(async (data) => {
@@ -45,7 +48,9 @@ const FindPage = () => {
             placeholder="가입하신 이메일 주소를 입력해주세요."
             {...register('email')}
           />
-          {errors.email?.message && <p>{errors.email?.message}</p>}
+          {errors.email?.message && (
+            <p className="mt-2 text-sm text-red-500">{errors.email?.message}</p>
+          )}
           <button
             className="mx-auto mt-5 block h-12 w-[138px] cursor-pointer rounded-lg bg-primary text-base text-OnPrimary"
             type="submit"

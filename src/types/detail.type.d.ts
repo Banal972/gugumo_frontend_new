@@ -1,7 +1,7 @@
 export interface DetailData {
   postId: number;
   author: string;
-  meetingType: string;
+  meetingType: 'LONG' | 'SHORT';
   gameType: string;
   meetingMemberNum: number;
   meetingDeadline: string;
@@ -10,7 +10,7 @@ export interface DetailData {
   title: string;
   content: string;
   createdDateTime: string;
-  meetingStatus: string;
+  meetingStatus: 'RECRUIT' | 'END';
   viewCount: number;
   bookmarkCount: number;
   meetingDateTime: string;

@@ -9,33 +9,74 @@ import Input from '@/components/post/write/atom/Input';
 import Label from '@/components/post/write/atom/Label';
 import Select from '@/components/post/write/atom/Select';
 import SubmitBtn from '@/components/post/write/atom/SubmitBtn';
-import { GAMETYPE, LOCATION } from '@/constant/card/constant';
+import { DAYS, GAMETYPE, LOCATION } from '@/constant/card/constant';
 import useEditorHook from '@/hooks/useEditorHook';
 import { DetailData } from '@/types/detail.type';
-import { PatchActionProps, PatchBody } from '@/types/post.type';
+import { zodResolver } from '@hookform/resolvers/zod';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+const MEETINGMEMBER = [
+  { value: '1', label: '1명' },
+  { value: '2', label: '2명' },
+  { value: '3', label: '3명' },
+  { value: '4', label: '4명' },
+  { value: '5', label: '5명이상' },
+];
+
+const schema = z
+  .object({
+    meetingStatus: z.enum(['RECRUIT', 'END']).optional(),
+    meetingType: z.enum(['LONG', 'SHORT']),
+    location: z.string().min(1, '지역을 선택해야 합니다.'),
+    gameType: z.string().min(1, '구기종목을 선택해야 합니다.'),
+    meetingMemberNum: z.string().min(1, '모집인원을 선택해야 합니다.'),
+    meetingDays: z.string().optional(),
+    meetingTime: z.string().optional(),
+    meetingDate: z.string().optional(),
+    meetingDeadline: z.string(),
+    openKakao: z.string(),
+    title: z.string().min(1, '제목을 입력해야 합니다.'),
+    content: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.meetingType === 'LONG') {
+      if (!data.meetingTime || data.meetingTime.trim() === '') {
+        ctx.addIssue({
+          path: ['meetingTime'],
+          message: '시간대를 선택해야 합니다.',
+          code: z.ZodIssueCode.custom,
+        });
+      }
+      if (!data.meetingDays || data.meetingDays.trim() === '') {
+        ctx.addIssue({
+          path: ['meetingDays'],
+          message: '모임 요일을 선택해야 합니다.',
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    }
+
+    if (
+      data.meetingType === 'SHORT' &&
+      (!data.meetingDate || data.meetingDate.trim() === '')
+    ) {
+      ctx.addIssue({
+        path: ['meetingDate'],
+        message: '모임 날짜를 선택해야 합니다.',
+        code: z.ZodIssueCode.custom,
+      });
+    }
+  });
+
+export type FormData = z.infer<typeof schema>;
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
-
-type FormValue = {
-  meetingType: string;
-  gameType: string;
-  meetingMemberNum: string;
-  meetingDate: string;
-  meetingDays: string;
-  meetingTime: string;
-  meetingDeadline: string;
-  openKakao: string;
-  title: string;
-  content: string;
-  location: string;
-  meetingStatus: string;
-};
 
 interface FormProps {
   edit?: DetailData;
@@ -43,44 +84,77 @@ interface FormProps {
 
 const Form = ({ edit }: FormProps) => {
   const router = useRouter();
-  const { register, handleSubmit, watch } = useForm<FormValue>();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      meetingType: 'SHORT',
+      meetingDate: moment(new Date() as Date).format('YYYY-MM-DD'),
+      meetingDeadline: edit
+        ? moment(new Date(edit.meetingDeadline) as Date).format('YYYY-MM-DD')
+        : moment(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000) as Date).format(
+            'YYYY-MM-DD',
+          ),
+    },
+  });
   const [isMeetingDate, setIsMeetingDate] = useState<boolean>(false);
   const [isMeetingDeadline, setIsMeetingDeadline] = useState<boolean>(false);
   const [meetingDate, setMeetingDate] = useState<Value>(new Date());
   const [meetingDeadline, setMeetingDeadline] = useState<Value>(
     new Date(edit?.meetingDeadline || Date.now() + 1 * 24 * 60 * 60 * 1000),
   );
-  const [selectDays, setSelectDays] = useState<string[]>([]);
-  const meetingTypeWatch = watch('meetingType', 'SHORT');
+
+  const meetingTypeWatch = watch('meetingType');
+  const meetingDaysWatch = watch('meetingDays');
 
   const editor = useEditorHook(edit?.content);
 
-  const meetingDateHandler = (value: Value) => {
-    setMeetingDate(value);
-    setIsMeetingDate(false);
-  };
+  const calenderHandler = (
+    field: 'meetingDate' | 'meetingDeadline',
+    value: Value,
+  ) => {
+    const formatDate = moment(value as Date).format('YYYY-MM-DD');
 
-  const meetingDeadlineHandler = (value: Value) => {
-    setMeetingDeadline(value);
-    setIsMeetingDeadline(false);
+    if (field === 'meetingDate') {
+      setMeetingDate(value);
+      setIsMeetingDate(false);
+    } else if (field === 'meetingDeadline') {
+      setMeetingDeadline(value);
+      setIsMeetingDeadline(false);
+    }
+
+    setValue(field, formatDate);
   };
 
   const selectDayHandler = (day: string) => {
-    if (selectDays.includes(day)) {
-      setSelectDays(selectDays.filter((el) => el !== day));
-    } else {
-      setSelectDays((prev) => [...prev, day]);
-    }
+    const meetingDays = getValues('meetingDays');
+    const currentSelectDays = meetingDays ? meetingDays.split(';') : [];
+    const updatedSelectDays = currentSelectDays.includes(day)
+      ? currentSelectDays.filter((el) => el !== day)
+      : [...currentSelectDays, day];
+    setValue('meetingDays', updatedSelectDays.join(';'));
   };
 
-  const createMutation = async (body: any) => {
+  const createMutation = async (body: FormData) => {
     const res = await postAction(body);
     if (res.status === 'fail') return alert('등록에 실패 했습니다.');
     alert('등록이 완료 되었습니다.');
     router.push('/');
   };
 
-  const editMutataion = async ({ body, postId }: PatchActionProps) => {
+  const editMutataion = async ({
+    body,
+    postId,
+  }: {
+    body: FormData;
+    postId: number;
+  }) => {
     const res = await patchAction({ body, postId });
     if (res.status === 'fail') return alert('수정에 실패 했습니다.');
     alert('수정이 완료 되었습니다.');
@@ -88,48 +162,21 @@ const Form = ({ edit }: FormProps) => {
   };
 
   const onSubmitHandler = handleSubmit(async (data) => {
-    const {
-      meetingStatus,
-      meetingType,
-      location,
-      gameType,
-      meetingMemberNum,
-      meetingTime,
-      openKakao,
-      title,
-    } = data;
-
-    const content = editor.getHTML();
-
-    const body: Partial<PatchBody> = {
-      meetingType,
-      gameType,
-      meetingMemberNum,
-      meetingDate: moment(meetingDate as Date).format('YYYY-MM-DD'),
-      meetingDays: selectDays.join(';'),
-      meetingTime,
-      meetingDeadline: moment(meetingDeadline as Date).format('YYYY-MM-DD'),
-      openKakao,
-      title,
-      content,
-      location,
-    };
-
-    if (meetingType === 'LONG') {
-      if (!meetingTime) return alert('시간대을 선택해주세요.');
-      if (selectDays.length <= 0) return alert('요일을 선택해주세요.');
-    }
-
-    if (!edit) return createMutation(body);
-    body.meetingStatus = meetingStatus;
-    editMutataion({ body: body as PatchBody, postId: edit.postId });
+    setValue('content', editor.getHTML());
+    console.log(data);
+    // if (!edit) return createMutation(data);
+    // editMutataion({ body: data, postId: edit.postId });
   });
 
   useEffect(() => {
     if (!edit || !edit.meetingDays) return;
     const array: string[] = edit.meetingDays.split(';');
-    setSelectDays([...array]);
-  }, [edit, setSelectDays]);
+    setValue('meetingDays', [...array].join(';'));
+  }, [edit, setValue]);
+
+  useEffect(() => {
+    if (meetingTypeWatch === 'LONG') return setValue('meetingDate', '');
+  }, [meetingTypeWatch, setValue]);
 
   return (
     <form onSubmit={onSubmitHandler}>
@@ -164,69 +211,84 @@ const Form = ({ edit }: FormProps) => {
           </Select>
         </div>
 
-        <div className="flex min-w-0 flex-col gap-[10px]">
-          <Label htmlFor="location">지역 선택</Label>
-          <Select
-            id="location"
-            passive={!watch('location')}
-            register={register('location', {
-              value: edit?.location,
-              required: { value: true, message: '지역 선택을 해야합니다.' },
-            })}
-          >
-            <option value="">지역 선택을 선택해주세요.</option>
-            {Object.entries(LOCATION).map(([key, value]) => (
-              <option key={key} value={key} className="text-black">
-                {value}
-              </option>
-            ))}
-          </Select>
+        <div className="min-w-0">
+          <div className="flex flex-col gap-[10px]">
+            <Label htmlFor="location">지역 선택</Label>
+            <Select
+              id="location"
+              passive={!watch('location')}
+              register={register('location', {
+                value: edit?.location,
+                required: { value: true, message: '지역 선택을 해야합니다.' },
+              })}
+            >
+              <option value="">지역 선택을 선택해주세요.</option>
+              {Object.entries(LOCATION).map(([key, value]) => (
+                <option key={key} value={key} className="text-black">
+                  {value}
+                </option>
+              ))}
+            </Select>
+          </div>
+          {errors?.location && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.location?.message}
+            </p>
+          )}
         </div>
 
-        <div className="flex min-w-0 flex-col gap-[10px]">
-          <Label htmlFor="gameType">구기종목</Label>
-          <Select
-            id="gameType"
-            passive={!watch('gameType')}
-            register={register('gameType', {
-              value: edit?.gameType,
-              required: { value: true, message: '구기종목을 선택해주세요.' },
-            })}
-          >
-            <option value="">구기종목을 선택해주세요.</option>
-            {Object.entries(GAMETYPE).map(([key, value]) => (
-              <option key={key} value={key} className="text-black">
-                {value}
-              </option>
-            ))}
-          </Select>
+        <div className="min-w-0">
+          <div className="flex flex-col gap-[10px]">
+            <Label htmlFor="gameType">구기종목</Label>
+            <Select
+              id="gameType"
+              passive={!watch('gameType')}
+              register={register('gameType', {
+                value: edit?.gameType,
+                required: { value: true, message: '구기종목을 선택해주세요.' },
+              })}
+            >
+              <option value="">구기종목을 선택해주세요.</option>
+              {Object.entries(GAMETYPE).map(([key, value]) => (
+                <option key={key} value={key} className="text-black">
+                  {value}
+                </option>
+              ))}
+            </Select>
+          </div>
+          {errors?.gameType && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.gameType?.message}
+            </p>
+          )}
         </div>
 
-        <div className="flex min-w-0 flex-col gap-[10px]">
-          <Label htmlFor="meetingMemberNum">모집 인원</Label>
-          <Select
-            id="meetingMemberNum"
-            passive={!watch('meetingMemberNum')}
-            register={register('meetingMemberNum', {
-              value: edit?.meetingMemberNum
-                ? edit.meetingMemberNum.toString()
-                : '',
-              required: { value: true, message: '모집인원을 선택해주세요.' },
-            })}
-          >
-            <option value="">모집인원을 선택해주세요.</option>
-            {[
-              { value: '1', label: '1명' },
-              { value: '2', label: '2명' },
-              { value: '3', label: '3명' },
-              { value: '4', label: '4명' },
-              { value: '5', label: '5명이상' },
-            ].map(({ value, label }) => (
-              <option key={value} value={value} className="text-black">
-                {label}
-              </option>
-            ))}
-          </Select>
+        <div className="min-w-0">
+          <div className="flex flex-col gap-[10px]">
+            <Label htmlFor="meetingMemberNum">모집 인원</Label>
+            <Select
+              id="meetingMemberNum"
+              passive={!watch('meetingMemberNum')}
+              register={register('meetingMemberNum', {
+                value: edit?.meetingMemberNum
+                  ? edit.meetingMemberNum.toString()
+                  : '',
+                required: { value: true, message: '모집인원을 선택해주세요.' },
+              })}
+            >
+              <option value="">모집인원을 선택해주세요.</option>
+              {MEETINGMEMBER.map(({ value, label }) => (
+                <option key={value} value={value} className="text-black">
+                  {label}
+                </option>
+              ))}
+            </Select>
+          </div>
+          {errors?.meetingMemberNum && (
+            <p className="mt-2 text-sm text-red-500">
+              {errors.meetingMemberNum?.message}
+            </p>
+          )}
         </div>
 
         {meetingTypeWatch === 'SHORT' && (
@@ -240,7 +302,7 @@ const Form = ({ edit }: FormProps) => {
                 <Calendar
                   value={meetingDate}
                   minDate={new Date()}
-                  onChange={meetingDateHandler}
+                  onChange={(value) => calenderHandler('meetingDate', value)}
                   className="absolute top-full z-10"
                 />
               )}
@@ -249,41 +311,54 @@ const Form = ({ edit }: FormProps) => {
         )}
 
         {meetingTypeWatch === 'LONG' && (
-          <div className="flex min-w-0 flex-col gap-[10px]">
-            <Label htmlFor="meetingTime">시간대</Label>
-            <Select
-              id="meetingTime"
-              passive={!watch('meetingTime')}
-              register={register('meetingTime', {
-                value: edit ? String(edit?.meetingTime).split(':')[0] : '',
-              })}
-            >
-              <option value="">시간대을 선택해주세요.</option>
-              {Array.from({ length: 24 }, (_, i) => (
-                <option key={i} value={i + 1} className="text-black">
-                  {i + 1}시
-                </option>
-              ))}
-            </Select>
-          </div>
-        )}
-
-        {meetingTypeWatch === 'LONG' && (
-          <div className="flex min-w-0 flex-col gap-[10px]">
-            <Label>모임 요일</Label>
-            <div className="flex min-w-0 flex-wrap justify-start gap-[10px]">
-              {['월', '화', '수', '목', '금', '토', '일'].map((el) => (
-                <div
-                  role="none"
-                  onClick={() => selectDayHandler(el)}
-                  key={el}
-                  className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${selectDays.includes(el) ? 'bg-primary text-white' : 'bg-Surface text-OnSurface'}`}
+          <>
+            <div className="min-w-0">
+              <div className="flex flex-col gap-[10px]">
+                <Label htmlFor="meetingTime">시간대</Label>
+                <Select
+                  id="meetingTime"
+                  passive={!watch('meetingTime')}
+                  register={register('meetingTime', {
+                    value: edit ? String(edit.meetingTime).split(':')[0] : '',
+                  })}
                 >
-                  {el}
-                </div>
-              ))}
+                  <option value="">시간대을 선택해주세요.</option>
+                  {Array.from({ length: 24 }, (_, i) => (
+                    <option key={i} value={i + 1} className="text-black">
+                      {i + 1}시
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              {errors?.meetingTime && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.meetingTime?.message}
+                </p>
+              )}
             </div>
-          </div>
+            <div className="min-w-0">
+              <div className="flex flex-col gap-[10px]">
+                <Label>모임 요일</Label>
+                <div className="flex min-w-0 flex-wrap justify-start gap-[10px]">
+                  {Object.entries(DAYS).map(([key, value]) => (
+                    <button
+                      type="button"
+                      onClick={() => selectDayHandler(key)}
+                      key={key}
+                      className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${meetingDaysWatch && meetingDaysWatch.split(';').includes(key) ? 'bg-primary text-white' : 'bg-Surface text-OnSurface'}`}
+                    >
+                      {value}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {errors?.meetingDays && (
+                <p className="mt-2 text-sm text-red-500">
+                  {errors.meetingDays?.message}
+                </p>
+              )}
+            </div>
+          </>
         )}
 
         <div className="flex min-w-0 flex-col gap-[10px]">
@@ -296,7 +371,7 @@ const Form = ({ edit }: FormProps) => {
               <Calendar
                 value={meetingDeadline}
                 minDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
-                onChange={meetingDeadlineHandler}
+                onChange={(value) => calenderHandler('meetingDeadline', value)}
                 className="absolute top-full z-10"
               />
             )}
@@ -311,10 +386,6 @@ const Form = ({ edit }: FormProps) => {
             placeholder="오픈카톡 주소를 입력해주세요."
             register={register('openKakao', {
               value: edit?.openKakao,
-              required: {
-                value: true,
-                message: '오픈카톡 주소를 입력해주세요.',
-              },
             })}
           />
         </div>
@@ -331,10 +402,12 @@ const Form = ({ edit }: FormProps) => {
               placeholder="제목을 입력해주세요."
               register={register('title', {
                 value: edit?.title,
-                required: { value: true, message: '제목을 입력해주세요.' },
               })}
             />
           </div>
+          {errors?.title && (
+            <p className="mt-2 text-sm text-red-500">{errors.title?.message}</p>
+          )}
         </div>
 
         <div className="mt-7">
@@ -347,6 +420,18 @@ const Form = ({ edit }: FormProps) => {
 
       <div className="mt-10 text-center">
         <SubmitBtn>{!edit ? '새글 작성' : '수정 하기'}</SubmitBtn>
+        <div>
+          {Object.keys(errors).length > 0 && (
+            <div>
+              <h4>폼에 에러가 있습니다:</h4>
+              {Object.entries(errors).map(([key, value]) => (
+                <p key={key}>
+                  {key}: {value.message}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </form>
   );
