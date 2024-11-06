@@ -15,14 +15,12 @@ const createNotification = (title: string, body: string) => {
       icon: '/icons/android-icon-48x48.png',
     });
   }
-  console.error('Notification permission not granted.');
 };
 
 const subscribeHandler = async (token: string) => {
   if (!token) return;
   // token
-  const res = await fcmGetTokenAction(token);
-  if (res.status === 'fail') return alert('등록에 실패하였습니다.');
+  await fcmGetTokenAction(token);
 };
 
 const FCMProvider = ({ children }: FCMProviderProps) => {
@@ -33,9 +31,7 @@ const FCMProvider = ({ children }: FCMProviderProps) => {
   const requestPermission = async () => {
     const permission = await Notification.requestPermission();
 
-    if (permission === 'denied') {
-      return console.error('메세지 알림 거부');
-    }
+    if (permission === 'denied') return;
 
     const fcmToken = await getToken(messaging, {
       vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY,

@@ -3,6 +3,7 @@
 import allReadAction from '@/actions/notification/allReadAction';
 import deleteAction from '@/actions/notification/deleteAction';
 import readAction from '@/actions/notification/readAction';
+import { useToast } from '@/provider/ToastProvider';
 import { GetNotification } from '@/types/notification.type';
 import moment from 'moment';
 import Image from 'next/image';
@@ -14,6 +15,7 @@ interface AlarmProps {
 }
 
 const Alarm = ({ notification }: AlarmProps) => {
+  const { showToast } = useToast();
   const [isAlarm, setIsAlarm] = useState(false);
 
   const router = useRouter();
@@ -25,19 +27,22 @@ const Alarm = ({ notification }: AlarmProps) => {
   ) => {
     e.stopPropagation();
     const res = await readAction(notiId);
-    if (res.status === 'fail') return alert('읽는데 실패하였습니다.');
+    if (res.status === 'fail')
+      return showToast('error', '읽는데 실패하였습니다.');
     router.push(`/detail/${postId}`);
   };
 
   const onDeleteHandler = async (e: MouseEvent, notiId: number) => {
     e.stopPropagation();
     const res = await deleteAction(notiId);
-    if (res.status === 'fail') return alert('삭제하는데 실패하였습니다.');
+    if (res.status === 'fail')
+      return showToast('error', '삭제하는데 실패하였습니다.');
   };
 
   const onAllReadHandler = async () => {
     const res = await allReadAction();
-    if (res.status === 'fail') return alert('읽는데 실패하였습니다.');
+    if (res.status === 'fail')
+      return showToast('error', '읽는데 실패하였습니다.');
   };
 
   return (

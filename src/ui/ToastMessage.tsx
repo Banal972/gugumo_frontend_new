@@ -2,7 +2,7 @@
 
 import Portal from '@/ui/Portal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IoAlertOutline } from 'react-icons/io5';
+import { IoAlertOutline, IoCheckmark } from 'react-icons/io5';
 
 interface ToastMessageProps {
   type: 'success' | 'error';
@@ -25,7 +25,8 @@ const ToastMessage = ({ type, message, isVisible }: ToastMessageProps) => {
             <div
               className={`flex size-6 items-center justify-center rounded-full text-base text-white ${type === 'error' ? 'bg-red-500' : 'bg-primary'}`}
             >
-              <IoAlertOutline />
+              {type === 'error' && <IoAlertOutline />}
+              {type === 'success' && <IoCheckmark />}
             </div>
             <div>
               <p
