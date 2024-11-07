@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Sync fork
         run: |
-          git remote add upstream https://github.com/gugumo-service/gugumo_frontend_new
+          git remote add upstream https://github.com/MNC-TEAM/gugumo_frontend_new
           git fetch upstream
           git checkout main
           git merge upstream/main
