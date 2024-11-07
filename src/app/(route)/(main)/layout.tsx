@@ -1,10 +1,9 @@
 import Banner from '@/components/page/main/Banner';
-import ListContainer from '@/components/page/main/ListContainer';
-import { DefaultSearchParams } from '@/types/get.type';
 import Wrap from '@/ui/layout/Wrap';
 import Recommends from '@/ui/layout/recommends/Recommends';
+import React, { ReactNode } from 'react';
 
-const HomePage = async ({ searchParams }: DefaultSearchParams) => {
+const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
     <main className="pb-[121px] pt-6 md:pb-[170px] md:pt-[50px]">
       <Banner />
@@ -12,10 +11,10 @@ const HomePage = async ({ searchParams }: DefaultSearchParams) => {
         <Recommends />
       </Wrap>
       <Wrap className="mt-8 border-t-[6px] border-Surface pt-8 md:mt-[100px] md:border-none md:pt-0">
-        <ListContainer searchParams={searchParams} />
+        {children}
       </Wrap>
     </main>
   );
 };
 
-export default HomePage;
+export default MainLayout;

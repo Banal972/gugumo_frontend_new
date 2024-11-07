@@ -22,7 +22,7 @@ const BtnList = ({ postid, yours }: BtnListProps) => {
   };
 
   return (
-    <div className="mt-7 flex justify-center gap-5 md:mt-8">
+    <div className="mt-7 flex flex-wrap justify-center gap-5 md:mt-8">
       {yours && (
         <button
           type="button"

@@ -48,7 +48,7 @@ const Detail = ({ detail }: { detail: DetailData }) => {
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 gap-x-2 min-[400px]:grid-cols-[1fr_1.5fr] md:mt-8 md:grid-cols-2 md:gap-5">
+      <div className="mt-4 grid grid-cols-2 gap-4 gap-x-2 max-[400px]:grid-cols-1 md:mt-8 md:gap-5">
         <Grid>
           <GridText>모집형식</GridText>
           <p>{MEETINGTYPE[detail.meetingType]}</p>
@@ -95,14 +95,14 @@ const Detail = ({ detail }: { detail: DetailData }) => {
           <p>{detail.meetingDeadline}</p>
         </Grid>
 
-        <div className="grid grid-cols-[104px_1fr] items-center gap-3 text-xs font-medium text-OnSurface md:grid-cols-[136px_1fr] md:text-lg">
+        <div className="col-span-2 grid grid-cols-[104px_1fr] items-center gap-3 text-xs font-medium text-OnSurface max-[400px]:col-span-1 sm:col-auto md:grid-cols-[136px_1fr] md:text-lg">
           <h4 className="box-border flex h-8 w-full items-center justify-center text-nowrap rounded bg-Surface px-6 py-3 text-center md:h-10">
             오픈카톡 주소
           </h4>
           <a
             href={detail.openKakao}
             target="_blank"
-            className="flex h-8 w-full items-center justify-center whitespace-nowrap rounded bg-primary text-white transition-colors hover:bg-[#3f92e0] md:h-10 md:w-[158px]"
+            className="flex h-8 w-full max-w-[143px] items-center justify-center whitespace-nowrap rounded bg-primary text-white transition-colors hover:bg-[#3f92e0] md:h-10 md:w-[158px]"
             rel="noreferrer"
           >
             오픈톡 참여

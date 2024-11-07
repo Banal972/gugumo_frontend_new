@@ -31,7 +31,7 @@ const Banner = () => {
       }}
       speed={600}
     >
-      {Array.from({ length: 4 }, (_, index) => index).map((item, index) => (
+      {Array.from({ length: 5 }, (_, index) => index).map((item, index) => (
         <SwiperSlide key={item}>
           <div className="relative overflow-hidden rounded-lg">
             <Image

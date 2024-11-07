@@ -11,7 +11,7 @@ import Card from '@/ui/layout/card/Card';
 import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
 import { Suspense } from 'react';
 
-const ListContainer = async ({ searchParams }: DefaultSearchParams) => {
+const HomePage = async ({ searchParams }: DefaultSearchParams) => {
   const params = await searchParams;
   const q = params?.q || '';
   const page = params?.page || 1;
@@ -47,36 +47,36 @@ const ListContainer = async ({ searchParams }: DefaultSearchParams) => {
       </div>
 
       <div className="mt-[38px] md:mt-[53px] md:rounded-xl md:bg-[#F4F5F8] md:px-[5%] md:pb-[49px] md:pt-[39px] lg:px-[70px]">
-        <Sort sort={sort} />
+        <Suspense
+          fallback={
+            <div className="flex flex-col items-start justify-start gap-6 md:flex-row md:items-center md:justify-between md:gap-5">
+              <SkeletonCard />
+            </div>
+          }
+        >
+          <Sort sort={sort} />
 
-        <div className="mt-[10px] grid grid-cols-1 gap-[13px] md:mt-7 md:grid-cols-2 md:gap-[30px] lg:grid-cols-3 xl:grid-cols-4">
-          <Suspense
-            fallback={Array.from({ length: 12 }, (_, index) => index).map(
-              (item) => (
-                <SkeletonCard key={item} />
-              ),
-            )}
-          >
-            {res.data.content.map((el) => (
+          <div className="mt-[10px] grid grid-cols-1 gap-[13px] md:mt-7 md:grid-cols-2 md:gap-[30px] lg:grid-cols-3 xl:grid-cols-4">
+            {res.data.content.map((el: any) => (
               <Card key={el.postId} el={el} />
             ))}
-          </Suspense>
-        </div>
+          </div>
 
-        {res.data.content.length <= 0 && (
-          <p className="text-center text-sm text-gray-500">
-            게시물이 존재하지 않습니다.
-          </p>
-        )}
+          {res.data.content.length <= 0 && (
+            <p className="text-center text-sm text-gray-500">
+              게시물이 존재하지 않습니다.
+            </p>
+          )}
 
-        <div className="mt-[13px] text-right md:mt-7">
-          <WriteButton />
-        </div>
+          <div className="mt-[13px] text-right md:mt-7">
+            <WriteButton />
+          </div>
 
-        <Paging pageable={res.data.pageable} />
+          <Paging pageable={res.data.pageable} />
+        </Suspense>
       </div>
     </>
   );
 };
 
-export default ListContainer;
+export default HomePage;

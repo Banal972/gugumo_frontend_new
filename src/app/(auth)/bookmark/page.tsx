@@ -1,5 +1,6 @@
 import getActions from '@/actions/auth/bookmark/getAction';
 import { DefaultSearchParams } from '@/types/get.type';
+import Search from '@/ui/form/Search';
 import Wrap from '@/ui/layout/Wrap';
 import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
 import List from '@/ui/page/auth/List';
@@ -20,15 +21,15 @@ const ListPage = async ({ searchParams }: DefaultSearchParams) => {
   return (
     <main className="mt-14 pb-[121px] md:pb-[170px]">
       <Wrap>
-        <Suspense
-          fallback={Array.from({ length: 12 }, (_, index) => index).map(
-            (item) => (
-              <SkeletonCard key={item} />
-            ),
-          )}
-        >
-          <List label="북마크" data={res.data} />
-        </Suspense>
+        <div className="flex flex-col items-start justify-start gap-6 text-lg font-medium md:flex-row md:items-center md:justify-between md:gap-5 md:text-2xl">
+          <h4>북마크</h4>
+          <Search />
+        </div>
+        <div className="mt-5 rounded-xl md:mt-[46px] md:bg-Surface md:p-[70px] md:px-[5%]">
+          <Suspense fallback={<SkeletonCard />}>
+            <List data={res.data} />
+          </Suspense>
+        </div>
       </Wrap>
     </main>
   );

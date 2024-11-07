@@ -60,7 +60,7 @@ const Alarm = ({ notification }: AlarmProps) => {
         />
       </button>
       {isAlarm && (
-        <div className="absolute right-0 top-full box-border flex max-h-[264px] w-[272px] translate-x-1/4 flex-col overflow-y-hidden rounded-lg bg-white px-[30px] py-[22px] md:max-h-[334px] md:w-[342px] md:translate-x-0">
+        <div className="absolute right-0 top-full box-border flex max-h-[264px] w-[272px] translate-x-1/4 flex-col overflow-y-hidden rounded-lg bg-white px-[30px] py-[22px] shadow-lg md:max-h-[334px] md:w-[342px] md:translate-x-0">
           <div className="flex flex-none justify-between">
             <h4 className="text-base font-semibold text-primary">알림</h4>
             <button
