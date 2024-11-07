@@ -1,24 +1,67 @@
-"use client"
-const LOCATION = [{get : "SEOUL",name : "서울"},{get : "GYEONGGI",name : "경기"},{get : "INCHEON",name : "인천"},{get : "DAEGU",name : "대구"},{get : "BUSAN",name : "부산"},{get : "GYEONGNAM",name : "경남"},{get : "GYEONGBUK",name : "경북"},{get : "GANGWON",name : "강원"},{get : "JEONNAM",name : "전남"},{get : "JEONBUK",name : "전북"},{get : "OTHER",name : "그외"}];
-export default function Location({location,setLocation} : {location : string,setLocation : any}) {
+'use client';
+
+import { LOCATION } from '@/constant/card/constant';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { MouseEventHandler, ReactNode } from 'react';
+
+interface ButtonProps {
+  onClick: MouseEventHandler;
+  children: ReactNode;
+  active: boolean;
+}
+
+interface LocationProps {
+  location: string;
+}
+
+const Location = ({ location }: LocationProps) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const handleLocation = (key: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (key) {
+      params.set('location', key);
+      params.delete('page');
+    } else {
+      params.delete('location');
+      params.delete('page');
+    }
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   return (
     <>
-      <p className="text-base md:text-lg font-semibold text-OnSurface">지역</p>
-      <div className="flex md:flex-wrap overflow-x-auto gap-[4px] md:gap-[14px] mt-[11px] pb-1">
-        <button 
-          onClick={()=>setLocation("")} 
-          className={`cursor-pointer text-sm md:text-base leading-none md:leading-none font-medium py-2 px-5 md:px-7 rounded-full border border-primary whitespace-nowrap box-border ${location === "" ? "bg-primary text-white" : "text-primary"}`}
-        >전체</button>
-        {
-          LOCATION.map((el,index)=>(
-            <button 
-              key={index} 
-              onClick={()=>setLocation(el.get)} 
-              className={`cursor-pointer text-sm md:text-base leading-none md:leading-none font-medium py-2 px-5 md:px-7 rounded-full border border-primary whitespace-nowrap box-border ${location === el.get ? "bg-primary text-white" : "text-primary"}`}
-            >{el.name}</button>
-          ))
-        }
+      <p className="text-base font-semibold text-OnSurface md:text-lg">지역</p>
+      <div className="mt-[11px] flex gap-[4px] overflow-x-auto pb-1 md:flex-wrap md:gap-[14px]">
+        <Button onClick={() => handleLocation('')} active={location === ''}>
+          전체
+        </Button>
+        {Object.entries(LOCATION).map((el) => (
+          <Button
+            key={el[0]}
+            onClick={() => handleLocation(el[0])}
+            active={location === el[0]}
+          >
+            {el[1]}
+          </Button>
+        ))}
       </div>
     </>
-  )
-}
+  );
+};
+
+export default Location;
+
+const Button = ({ onClick, children, active }: ButtonProps) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`box-border cursor-pointer whitespace-nowrap rounded-full border border-primary px-5 py-2 text-sm font-medium leading-none transition-colors hover:bg-primary hover:text-white md:px-7 md:text-base md:leading-none ${active ? 'bg-primary text-white' : 'text-primary'}`}
+    >
+      {children}
+    </button>
+  );
+};

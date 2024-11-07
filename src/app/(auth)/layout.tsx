@@ -1,21 +1,27 @@
-import Footers from "@/components/Layout/Footers/Footers";
-import Headers from "@/components/Layout/Headers/Headers";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import authOptions from '@/lib/authOptions';
+import Footer from '@/ui/layout/Footer';
+import Header from '@/ui/layout/header/Header';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
-export default async function layout({children} : {children :React.ReactNode}) {
-  const session = await getServerSession(authOptions) as any;
+const AuthLayout = async ({ children }: AuthLayoutProps) => {
+  const session = (await getServerSession(authOptions)) as any;
 
-  if(!session || !session.accessToken){
+  if (!session || !session.accessToken) {
     return redirect('/');
   }
 
   return (
     <>
-      <Headers/>
+      <Header />
       {children}
-      <Footers/>
+      <Footer />
     </>
-  )
+  );
+};
+
+export default AuthLayout;
+
+interface AuthLayoutProps {
+  children: React.ReactNode;
 }

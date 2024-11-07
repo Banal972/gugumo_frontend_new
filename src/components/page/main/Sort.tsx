@@ -1,35 +1,72 @@
-import { useState } from "react";
-import { IoChevronDown } from "react-icons/io5";
+'use client';
 
-const SORT : {[key : string] : string } = {
-    "NEW" : "최신순",
-    "LIKE" : "인기순",
-    "OLD" : "오래된순",
+import { SORT } from '@/constant/card/constant';
+import useOutsideClick from '@/hooks/useOutsideClick';
+import { motion } from 'framer-motion';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRef, useState } from 'react';
+import { IoChevronDown } from 'react-icons/io5';
+
+interface SortProps {
+  sort: string;
 }
 
-export default function Sort({sort,setSort} : {sort : string,setSort : any}) {
+const variants = {
+  open: { opacity: 1 },
+  closed: { opacity: 0 },
+};
 
-  const [isSort,setIsSort] = useState(false);
+const Sort = ({ sort }: SortProps) => {
+  const dropMenuRef = useRef<HTMLUListElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
-  const liClickHanlder = (type : string)=>{
-    setSort(type);
-    setIsSort(false);
-  }
+  const handleSort = (key: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (key) {
+      params.set('sort', key);
+      params.delete('page');
+    } else {
+      params.delete('sort');
+      params.delete('page');
+    }
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  useOutsideClick({ ref: dropMenuRef, isOpen, setIsOpen });
 
   return (
-    <div className="flex justify-end relative text-[13px] z-10">
-        <div className="inline-block relative">
-            <p onClick={()=>setIsSort(!isSort)} className="flex items-center gap-[5.5px] cursor-pointer">{SORT[sort]} <IoChevronDown/></p>
-            {
-              isSort &&
-              <ul className="absolute top-full bg-white left-1/2 -translate-x-1/2 whitespace-nowrap text-center py-5 px-[15px] box-border rounded-lg border border-Surface">
-                <li onClick={()=>liClickHanlder("NEW")} className="cursor-pointer">최신순</li>
-                <li onClick={()=>liClickHanlder("LIKE")} className="cursor-pointer mt-2">인기순</li>
-                <li onClick={()=>liClickHanlder("OLD")} className="cursor-pointer mt-2">오래된순</li>
-              </ul>
-            }
-        </div>
+    <div className="relative z-10 flex justify-end text-[13px]">
+      <div className="relative inline-block">
+        <p
+          role="none"
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex cursor-pointer items-center gap-[5.5px]"
+        >
+          {SORT[sort]} <IoChevronDown />
+        </p>
+        <motion.ul
+          ref={dropMenuRef}
+          animate={isOpen ? 'open' : 'closed'}
+          variants={variants}
+          className={`absolute left-1/2 top-full box-border flex -translate-x-1/2 flex-col gap-2 whitespace-nowrap rounded-lg border border-Surface bg-white px-[15px] py-5 text-center ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        >
+          {Object.entries(SORT).map((sorts) => (
+            <li
+              role="none"
+              key={sorts[0]}
+              onClick={() => handleSort(sorts[0])}
+              className="cursor-pointer"
+            >
+              {sorts[1]}
+            </li>
+          ))}
+        </motion.ul>
+      </div>
     </div>
-  )
+  );
+};
 
-}
+export default Sort;

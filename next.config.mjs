@@ -1,11 +1,13 @@
-import withPWA from "next-pwa";
+import withPWA from 'next-pwa';
+
+const prod = process.env.NODE_ENV === 'production';
 
 const pwa = withPWA({
-  dest: "public", // 서비스 워커
-});
-/* register: true, // 서비스 워커 자동 등록
+  dest: 'public', // 서비스 워커
+  register: true, // 서비스 워커 자동 등록
+  disable: prod,
   skipWaiting: true, // 새로운 서비스 워커가 즉시 활성화
-  disable: process.env.NODE_ENV === "production" ? false : true, */
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -13,17 +15,9 @@ const nextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ["@svgr/webpack"],
+      use: ['@svgr/webpack'],
     });
     return config;
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/back/:path*",
-        destination: `${process.env.API_URL}/:path*`,
-      },
-    ];
   },
 };
 

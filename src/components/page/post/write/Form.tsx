@@ -1,684 +1,376 @@
-"use client";
-import { Editor } from "@toast-ui/react-editor";
-import moment from "moment";
-import { useEffect, useRef, useState } from "react";
-import Calendar from "react-calendar";
-import { useForm } from "react-hook-form";
-import DownIcon from "@/asset/image/down.svg";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/lib/store/hook";
-import { open } from "@/lib/store/features/modals/modal";
-import Alert from "@/components/Modal/Alert";
-import Success from "@/components/Modal/Success";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+'use client';
+
+import patchAction from '@/actions/auth/post/patchAction';
+import postAction from '@/actions/auth/post/postAction';
+import CalendarSelect from '@/components/page/post/write/atom/CalendarSelect';
+import EditorLayout from '@/components/page/post/write/atom/EditorLayout';
+import Headings from '@/components/page/post/write/atom/Headings';
+import Input from '@/components/page/post/write/atom/Input';
+import Label from '@/components/page/post/write/atom/Label';
+import Select from '@/components/page/post/write/atom/Select';
+import SubmitBtn from '@/components/page/post/write/atom/SubmitBtn';
+import { DAYS, GAMETYPE, LOCATION } from '@/constant/card/constant';
+import useEditorHook from '@/hooks/useEditorHook';
+import { FieldType, schema } from '@/lib/schema/post.schema';
+import { useToast } from '@/provider/ToastProvider';
+import { DetailData } from '@/types/detail.type';
+import ErrorMessage from '@/ui/form/ErrorMessage';
+import { zodResolver } from '@hookform/resolvers/zod';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Calendar from 'react-calendar';
+import { useForm } from 'react-hook-form';
+
+const MEETINGMEMBER = [
+  { value: '1', label: '1명' },
+  { value: '2', label: '2명' },
+  { value: '3', label: '3명' },
+  { value: '4', label: '4명' },
+  { value: '5', label: '5명이상' },
+];
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-export default function Form({ session, edit }: { session: any; edit?: any }) {
-  const dispatch = useAppDispatch();
+interface FormProps {
+  edit?: DetailData;
+}
+
+const Form = ({ edit }: FormProps) => {
+  const { showToast } = useToast();
   const router = useRouter();
-  const editorRef = useRef<Editor>(null);
-  const { register, handleSubmit, watch, setValue } = useForm();
-  const [isMeetingDate, setIsMeetingDate] = useState(false);
-  const [isMeetingDeadline, setIsMeetingDeadline] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm<FieldType>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      meetingType: 'SHORT',
+      meetingDate: moment(new Date() as Date).format('YYYY-MM-DD'),
+      meetingDeadline: edit
+        ? moment(new Date(edit.meetingDeadline) as Date).format('YYYY-MM-DD')
+        : moment(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000) as Date).format(
+            'YYYY-MM-DD',
+          ),
+    },
+  });
+  const [isMeetingDate, setIsMeetingDate] = useState<boolean>(false);
+  const [isMeetingDeadline, setIsMeetingDeadline] = useState<boolean>(false);
   const [meetingDate, setMeetingDate] = useState<Value>(new Date());
   const [meetingDeadline, setMeetingDeadline] = useState<Value>(
-    new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+    new Date(edit?.meetingDeadline || Date.now() + 1 * 24 * 60 * 60 * 1000),
   );
-  const [selectDays, setSelectDays] = useState<string[]>([]);
-  const meetingTypeWatch = watch("meetingType", "SHORT");
-  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (edit) {
-      editorRef.current?.getInstance().setMarkdown(edit.content);
-      Object.keys(edit).forEach((key) => {
-        // 가져온 데이터의 각 키와 값을 반복하여 setValue로 설정합니다.
-        if (key === "meetingTime") {
-          setValue(key, edit[key].split(":")[0]);
-        } else if (key === "meetingDays") {
-          const array: string[] = edit[key].split(";");
-          setSelectDays([...array]);
-        } else {
-          setValue(key, edit[key]);
-        }
-      });
-    } else {
-      editorRef.current?.getInstance().setMarkdown("");
+  const meetingTypeWatch = watch('meetingType');
+  const meetingDaysWatch = watch('meetingDays');
+
+  const editor = useEditorHook(edit?.content);
+
+  const calenderHandler = (
+    field: 'meetingDate' | 'meetingDeadline',
+    value: Value,
+  ) => {
+    const formatDate = moment(value as Date).format('YYYY-MM-DD');
+
+    if (field === 'meetingDate') {
+      setMeetingDate(value);
+      setIsMeetingDate(false);
+    } else if (field === 'meetingDeadline') {
+      setMeetingDeadline(value);
+      setIsMeetingDeadline(false);
     }
-  }, [edit]);
 
-  const meetingDateHandler = (value: Value) => {
-    setMeetingDate(value);
-    setIsMeetingDate(false);
-  };
-
-  const meetingDeadlineHandler = (value: Value) => {
-    setMeetingDeadline(value);
-    setIsMeetingDeadline(false);
+    setValue(field, formatDate);
   };
 
   const selectDayHandler = (day: string) => {
-    if (selectDays.includes(day)) {
-      setSelectDays(selectDays.filter((el) => el !== day));
-    } else {
-      setSelectDays((prev) => [...prev, day]);
-    }
+    const meetingDays = getValues('meetingDays');
+    const currentSelectDays = meetingDays ? meetingDays.split(';') : [];
+    const updatedSelectDays = currentSelectDays.includes(day)
+      ? currentSelectDays.filter((el) => el !== day)
+      : [...currentSelectDays, day];
+    setValue('meetingDays', updatedSelectDays.join(';'));
   };
 
-  const createMutation = useMutation({
-    mutationFn: async (body: any) => {
-      try {
-        const response = await fetch("/back/api/v1/meeting/new", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.accessToken,
-          },
-          body: JSON.stringify(body),
-        });
-        if (response.ok) {
-          const data = await response.json();
-
-          if (data.status === "success") {
-            dispatch(
-              open({
-                Component: Success,
-                props: {
-                  message: "등록이 완료 되었습니다.",
-                  onClick: () => {
-                    router.push("/");
-                  },
-                },
-              }),
-            );
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: "등록에 실패 했습니다." },
-              }),
-            );
-          }
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생 했습니다." },
-          }),
-        );
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["meeting"],
-      });
-    },
-  });
-
-  const editMutataion = useMutation({
-    mutationFn: async (body: any) => {
-      try {
-        const response = await fetch(`/back/api/v1/meeting/${edit.postId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: session.accessToken,
-          },
-          body: JSON.stringify(body),
-        });
-        if (response.ok) {
-          const data = await response.json();
-
-          if (data.status === "success") {
-            dispatch(
-              open({
-                Component: Success,
-                props: { message: "수정이 완료 되었습니다." },
-              }),
-            );
-          } else {
-            return dispatch(
-              open({
-                Component: Alert,
-                props: { message: "수정에 실패 했습니다." },
-              }),
-            );
-          }
-        } else {
-          console.log(response);
-          return dispatch(
-            open({
-              Component: Alert,
-              props: { message: "수정에 실패 했습니다." },
-            }),
-          );
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch(
-          open({
-            Component: Alert,
-            props: { message: "오류가 발생 했습니다." },
-          }),
-        );
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["meeting"],
-      });
-      router.push("/");
-    },
-  });
-
-  const onSubmitHandler = async (event: any) => {
-    const {
-      meetingStatus,
-      meetingType,
-      location,
-      gameType,
-      meetingMemberNum,
-      meetingTime,
-      openKakao,
-      title,
-    } = event;
-    const content = editorRef.current?.getInstance().getHTML();
-
-    if (gameType === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "구기종목을 선택해주세요." },
-        }),
-      );
-    }
-
-    if (location === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "지역 선택을 해야합니다." },
-        }),
-      );
-    }
-
-    if (meetingType === "LONG") {
-      if (meetingTime === "") {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "시간대을 선택해주세요." },
-          }),
-        );
-      }
-      if (selectDays.length <= 0) {
-        return dispatch(
-          open({
-            Component: Alert,
-            props: { message: "요일을 선택해주세요." },
-          }),
-        );
-      }
-    }
-
-    if (meetingMemberNum === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "모집인원을 선택해주세요." },
-        }),
-      );
-    }
-
-    if (openKakao === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "오픈카톡을 입력해주세요.." },
-        }),
-      );
-    }
-
-    if (title === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "제목을 입력해주세요." },
-        }),
-      );
-    }
-
-    if (content === "") {
-      return dispatch(
-        open({
-          Component: Alert,
-          props: { message: "내용을 입력해주세요." },
-        }),
-      );
-    }
-
-    if (!edit) {
-      const body = {
-        meetingType,
-        gameType,
-        meetingMemberNum,
-        meetingDate: moment(meetingDate as Date).format("YYYY-MM-DD"),
-        meetingDays: selectDays.join(";"),
-        meetingTime,
-        meetingDeadline: moment(meetingDeadline as Date).format("YYYY-MM-DD"),
-        openKakao,
-        title,
-        content,
-        location,
-      };
-      createMutation.mutate(body);
-    } else {
-      const body = {
-        meetingType,
-        gameType,
-        meetingMemberNum,
-        meetingDate: moment(meetingDate as Date).format("YYYY-MM-DD"),
-        meetingDays: selectDays.join(";"),
-        meetingTime,
-        meetingDeadline: moment(meetingDeadline as Date).format("YYYY-MM-DD"),
-        openKakao,
-        title,
-        content,
-        location,
-        meetingStatus,
-      };
-
-      editMutataion.mutate(body);
-    }
+  const createMutation = async (body: FieldType) => {
+    const res = await postAction(body);
+    if (res.status === 'fail')
+      return showToast('error', '등록에 실패 했습니다.');
+    showToast('success', '등록이 완료 되었습니다.');
+    router.push('/');
   };
+
+  const editMutataion = async ({
+    body,
+    postId,
+  }: {
+    body: FieldType;
+    postId: number;
+  }) => {
+    const res = await patchAction({ body, postId });
+    if (res.status === 'fail')
+      return showToast('error', '수정에 실패 했습니다.');
+    showToast('success', '수정이 완료 되었습니다.');
+    router.push(`/detail/${postId}`);
+  };
+
+  const onSubmitHandler = handleSubmit(async (data) => {
+    if (!edit) return createMutation({ ...data, content: editor.getHTML() });
+    editMutataion({
+      body: { ...data, content: editor.getHTML() },
+      postId: edit.postId,
+    });
+  });
+
+  useEffect(() => {
+    if (!edit || !edit.meetingDays) return;
+    const array: string[] = edit.meetingDays.split(';');
+    setValue('meetingDays', [...array].join(';'));
+  }, [edit, setValue]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmitHandler)}>
-      <div className="flex items-center gap-2 md:gap-3">
-        <p className="flex size-[23px] flex-none items-center justify-center rounded-full bg-primary text-lg font-semibold text-white md:size-[34px] md:text-2xl">
-          1
-        </p>
-        <h3 className="text-lg font-medium md:text-2xl">
-          모임 정보를 입력해주세요
-        </h3>
-      </div>
+    <form onSubmit={onSubmitHandler}>
+      <Headings order="1" label="모임 정보를 입력해주세요" />
 
       <div className="mt-5 grid grid-cols-1 gap-3 md:mt-8 md:grid-cols-2 md:gap-7">
         {edit && (
           <div className="flex min-w-0 flex-col gap-[10px]">
-            <label
-              htmlFor="meetingStatus"
-              className="px-2 text-sm font-medium md:text-base"
+            <Label htmlFor="meetingStatus">모집상태</Label>
+            <Select
+              id="meetingStatus"
+              register={register('meetingStatus', {
+                value: edit.meetingStatus,
+              })}
             >
-              모집상태
-            </label>
-            <div className="relative">
-              <select
-                id="meetingStatus"
-                className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-                {...register("meetingStatus")}
-              >
-                <option value="RECRUIT">모집중</option>
-                <option value="END">모집완료</option>
-              </select>
-              <DownIcon
-                className={
-                  "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                }
-                stroke={"#878787"}
-              />
-            </div>
+              <option value="RECRUIT">모집중</option>
+              <option value="END">모집완료</option>
+            </Select>
           </div>
         )}
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label
-            htmlFor="meetingType"
-            className="px-2 text-sm font-medium md:text-base"
+          <Label htmlFor="meetingType">모집형식</Label>
+          <Select
+            id="meetingType"
+            register={register('meetingType', {
+              value: edit?.meetingType,
+            })}
           >
-            모집형식
-          </label>
-          <div className="relative">
-            <select
-              id="meetingType"
-              className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-              {...register("meetingType")}
-            >
-              <option value="SHORT">단기모집</option>
-              <option value="LONG">장기모집</option>
-            </select>
-            <DownIcon
-              className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              }
-              stroke={"#878787"}
-            />
-          </div>
+            <option value="SHORT">단기모집</option>
+            <option value="LONG">장기모집</option>
+          </Select>
         </div>
 
-        <div className="flex min-w-0 flex-col gap-[10px]">
-          <label
-            htmlFor="location"
-            className="px-2 text-sm font-medium md:text-base"
-          >
-            지역 선택
-          </label>
-          <div className="relative">
-            <select
+        <div className="min-w-0">
+          <div className="flex flex-col gap-[10px]">
+            <Label htmlFor="location">지역 선택</Label>
+            <Select
               id="location"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch("location") ? "text-gray-400" : ""}`}
-              {...register("location")}
+              passive={!watch('location')}
+              register={register('location', {
+                value: edit?.location,
+                required: { value: true, message: '지역 선택을 해야합니다.' },
+              })}
             >
               <option value="">지역 선택을 선택해주세요.</option>
-              <option value="SEOUL" className="text-black">
-                서울
-              </option>
-              <option value="INCHEON" className="text-black">
-                인천
-              </option>
-              <option value="GYEONGGI" className="text-black">
-                경기
-              </option>
-              <option value="DAEGU" className="text-black">
-                대구
-              </option>
-              <option value="BUSAN" className="text-black">
-                부산
-              </option>
-              <option value="GYEONGNAM" className="text-black">
-                경남
-              </option>
-              <option value="GYEONGBUK" className="text-black">
-                경북
-              </option>
-              <option value="GANGWON" className="text-black">
-                경원
-              </option>
-              <option value="JEONNAM" className="text-black">
-                전남
-              </option>
-              <option value="JEONBUK" className="text-black">
-                전북
-              </option>
-              <option value="OTHER" className="text-black">
-                그외
-              </option>
-            </select>
-            <DownIcon
-              className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              }
-              stroke={"#878787"}
-            />
+              {Object.entries(LOCATION).map(([key, value]) => (
+                <option key={key} value={key} className="text-black">
+                  {value}
+                </option>
+              ))}
+            </Select>
           </div>
+          {errors?.location && (
+            <ErrorMessage>{errors.location?.message}</ErrorMessage>
+          )}
         </div>
 
-        <div className="flex min-w-0 flex-col gap-[10px]">
-          <label
-            htmlFor="gameType"
-            className="px-2 text-sm font-medium md:text-base"
-          >
-            구기종목
-          </label>
-          <div className="relative">
-            <select
+        <div className="min-w-0">
+          <div className="flex flex-col gap-[10px]">
+            <Label htmlFor="gameType">구기종목</Label>
+            <Select
               id="gameType"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch("gameType") ? "text-gray-400" : ""}`}
-              {...register("gameType")}
+              passive={!watch('gameType')}
+              register={register('gameType', {
+                value: edit?.gameType,
+                required: { value: true, message: '구기종목을 선택해주세요.' },
+              })}
             >
               <option value="">구기종목을 선택해주세요.</option>
-              <option value="BADMINTON" className="text-black">
-                배드민턴
-              </option>
-              <option value="BASKETBALL" className="text-black">
-                농구
-              </option>
-              <option value="FUTSAL" className="text-black">
-                풋살
-              </option>
-              <option value="TENNIS" className="text-black">
-                테니스
-              </option>
-              <option value="TABLETENNIS" className="text-black">
-                탁구
-              </option>
-              <option value="BASEBALL" className="text-black">
-                야구
-              </option>
-            </select>
-            <DownIcon
-              className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              }
-              stroke={"#878787"}
-            />
+              {Object.entries(GAMETYPE).map(([key, value]) => (
+                <option key={key} value={key} className="text-black">
+                  {value}
+                </option>
+              ))}
+            </Select>
           </div>
+          {errors?.gameType && (
+            <ErrorMessage>{errors.gameType?.message}</ErrorMessage>
+          )}
         </div>
 
-        <div className="flex min-w-0 flex-col gap-[10px]">
-          <label
-            htmlFor="meetingMemberNum"
-            className="px-2 text-sm font-medium md:text-base"
-          >
-            모집 인원
-          </label>
-          <div className="relative">
-            <select
+        <div className="min-w-0">
+          <div className="flex flex-col gap-[10px]">
+            <Label htmlFor="meetingMemberNum">모집 인원</Label>
+            <Select
               id="meetingMemberNum"
-              className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch("meetingMemberNum") ? "text-gray-400" : ""}`}
-              {...register("meetingMemberNum")}
+              passive={!watch('meetingMemberNum')}
+              register={register('meetingMemberNum', {
+                value: edit?.meetingMemberNum
+                  ? edit.meetingMemberNum.toString()
+                  : '',
+                required: { value: true, message: '모집인원을 선택해주세요.' },
+              })}
             >
               <option value="">모집인원을 선택해주세요.</option>
-              <option value="1" className="text-black">
-                1명
-              </option>
-              <option value="2" className="text-black">
-                2명
-              </option>
-              <option value="3" className="text-black">
-                3명
-              </option>
-              <option value="4" className="text-black">
-                4명
-              </option>
-              <option value="5" className="text-black">
-                5명 이상
-              </option>
-            </select>
-            <DownIcon
-              className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              }
-              stroke={"#878787"}
-            />
+              {MEETINGMEMBER.map(({ value, label }) => (
+                <option key={value} value={value} className="text-black">
+                  {label}
+                </option>
+              ))}
+            </Select>
           </div>
+          {errors?.meetingMemberNum && (
+            <ErrorMessage>{errors.meetingMemberNum?.message}</ErrorMessage>
+          )}
         </div>
 
-        {meetingTypeWatch === "SHORT" && (
+        {meetingTypeWatch === 'SHORT' && (
           <div className="flex min-w-0 flex-col gap-[10px]">
-            <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
-              모임 날짜
-            </label>
-            <div className="relative">
-              <div
-                onClick={() => setIsMeetingDate(!isMeetingDate)}
-                className="box-border flex h-11 w-full cursor-pointer items-center rounded-lg bg-Surface px-4 text-sm font-medium md:h-16 md:text-base"
-              >
-                {moment(meetingDate as Date).format("YYYY-MM-DD")}
-              </div>
+            <Label>모임 날짜</Label>
+            <CalendarSelect
+              onClick={() => setIsMeetingDate(!isMeetingDate)}
+              date={meetingDate}
+            >
               {isMeetingDate && (
                 <Calendar
                   value={meetingDate}
                   minDate={new Date()}
-                  onChange={meetingDateHandler}
+                  onChange={(value) => calenderHandler('meetingDate', value)}
                   className="absolute top-full z-10"
                 />
               )}
-              <DownIcon
-                className={
-                  "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                }
-                stroke={"#878787"}
-              />
-            </div>
+            </CalendarSelect>
           </div>
         )}
 
-        {meetingTypeWatch === "LONG" && (
-          <div className="flex min-w-0 flex-col gap-[10px]">
-            <label
-              htmlFor="meetingTime"
-              className="px-2 text-sm font-medium md:text-base"
-            >
-              시간대
-            </label>
-            <div className="relative">
-              <select
-                id="meetingTime"
-                className={`box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base ${!watch("meetingTime") ? "text-gray-400" : ""}`}
-                {...register("meetingTime")}
-              >
-                <option value="">시간대을 선택해주세요.</option>
-                {Array.from({ length: 24 }, (_, i) => (
-                  <option key={i} value={i + 1} className="text-black">
-                    {i + 1}시
-                  </option>
-                ))}
-              </select>
-              <DownIcon
-                className={
-                  "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                }
-                stroke={"#878787"}
-              />
-            </div>
-          </div>
-        )}
-
-        {meetingTypeWatch === "LONG" && (
-          <div className="flex min-w-0 flex-col gap-[10px]">
-            <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
-              모임 요일
-            </label>
-            <div className="flex min-w-0 flex-wrap justify-start gap-[10px]">
-              {["월", "화", "수", "목", "금", "토", "일"].map((el, index) => (
-                <div
-                  onClick={() => selectDayHandler(el)}
-                  key={index}
-                  className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${selectDays.includes(el) ? "bg-primary text-white" : "bg-Surface text-OnSurface"}`}
+        {meetingTypeWatch === 'LONG' && (
+          <>
+            <div className="min-w-0">
+              <div className="flex flex-col gap-[10px]">
+                <Label htmlFor="meetingTime">시간대</Label>
+                <Select
+                  id="meetingTime"
+                  passive={!watch('meetingTime')}
+                  register={register('meetingTime', {
+                    value: edit ? String(edit.meetingTime).split(':')[0] : '',
+                  })}
                 >
-                  {el}
-                </div>
-              ))}
+                  <option value="">시간대을 선택해주세요.</option>
+                  {Array.from({ length: 24 }, (_, i) => (
+                    <option key={i} value={i + 1} className="text-black">
+                      {i + 1}시
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              {errors?.meetingTime && (
+                <ErrorMessage>{errors.meetingTime?.message}</ErrorMessage>
+              )}
             </div>
-          </div>
+            <div className="min-w-0">
+              <div className="flex flex-col gap-[10px]">
+                <Label>모임 요일</Label>
+                <div className="flex min-w-0 flex-wrap justify-start gap-[10px]">
+                  {Object.entries(DAYS).map(([key, value]) => (
+                    <button
+                      type="button"
+                      onClick={() => selectDayHandler(value)}
+                      key={key}
+                      className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${meetingDaysWatch && meetingDaysWatch.split(';').includes(value) ? 'bg-primary text-white' : 'bg-Surface text-OnSurface'}`}
+                    >
+                      {value}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {errors?.meetingDays && (
+                <ErrorMessage>{errors.meetingDays?.message}</ErrorMessage>
+              )}
+            </div>
+          </>
         )}
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
-            모집 마감
-          </label>
-          <div className="relative">
-            <div
-              onClick={() => setIsMeetingDeadline(!isMeetingDeadline)}
-              className="box-border flex h-11 w-full cursor-pointer items-center rounded-lg bg-Surface px-4 text-sm font-medium md:h-16 md:text-base"
-            >
-              {moment(meetingDeadline as Date).format("YYYY-MM-DD")}
-            </div>
+          <Label htmlFor="">모집 마감</Label>
+          <CalendarSelect
+            onClick={() => setIsMeetingDeadline(!isMeetingDeadline)}
+            date={meetingDeadline}
+          >
             {isMeetingDeadline && (
               <Calendar
                 value={meetingDeadline}
                 minDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
-                onChange={meetingDeadlineHandler}
+                onChange={(value) => calenderHandler('meetingDeadline', value)}
                 className="absolute top-full z-10"
               />
             )}
-            <DownIcon
-              className={
-                "pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              }
-              stroke={"#878787"}
-            />
-          </div>
+          </CalendarSelect>
         </div>
 
         <div className="flex min-w-0 flex-col gap-[10px]">
-          <label htmlFor="" className="px-2 text-sm font-medium md:text-base">
-            오픈카톡 주소
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="오픈카톡 주소를 입력해주세요."
-              className="box-border h-11 w-full appearance-none rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-16 md:text-base"
-              {...register("openKakao")}
-            />
-          </div>
+          <Label htmlFor="openKakao">오픈카톡 주소</Label>
+          <Input
+            id="openKakao"
+            type="text"
+            placeholder="오픈카톡 주소를 입력해주세요."
+            register={register('openKakao', {
+              value: edit?.openKakao,
+            })}
+          />
+          {errors?.openKakao && (
+            <ErrorMessage>{errors.openKakao?.message}</ErrorMessage>
+          )}
         </div>
       </div>
 
       <div className="mt-14 md:mt-[87px]">
-        <div className="flex items-center gap-2 md:gap-3">
-          <p className="flex size-[23px] flex-none items-center justify-center rounded-full bg-primary text-lg font-semibold text-white md:size-[34px] md:text-2xl">
-            2
-          </p>
-          <h3 className="text-lg font-medium md:text-2xl">
-            모임에 대해 소개해주세요
-          </h3>
-        </div>
+        <Headings order="2" label="모임에 대해 소개해주세요" />
 
-        <div className="mt-8">
-          <label
-            className="px-[6px] text-sm font-medium md:text-lg"
-            htmlFor="title"
-          >
-            제목
-          </label>
-          <input
-            type="text"
-            placeholder="제목을 입력해주세요"
-            className="mt-3 h-11 w-full rounded-lg border border-transparent bg-Surface px-4 text-sm font-medium outline-none focus:border-primary md:h-14 md:text-base"
-            {...register("title")}
-          />
+        <div className="mt-5 md:mt-8">
+          <Label htmlFor="title">제목</Label>
+          <div className="mt-3">
+            <Input
+              type="text"
+              placeholder="제목을 입력해주세요."
+              register={register('title', {
+                value: edit?.title,
+              })}
+            />
+          </div>
+          {errors?.title && (
+            <ErrorMessage>{errors.title?.message}</ErrorMessage>
+          )}
         </div>
 
         <div className="mt-7">
-          <label
-            className="px-[6px] text-sm font-medium md:text-lg"
-            htmlFor="title"
-          >
-            내용
-          </label>
-          <div className="mt-3 h-[300px] rounded-xl md:h-[485px]">
-            <Editor
-              height="100%"
-              toolbarItems={[
-                ["heading", "bold", "italic", "strike"],
-                ["hr", "quote"],
-                ["ul", "ol", "task", "indent", "outdent"],
-                ["table", "link"],
-              ]}
-              initialEditType="wysiwyg"
-              hideModeSwitch={true}
-              placeholder="내용을 입력해 주세요."
-              initialValue={""}
-              ref={editorRef}
-            />
+          <Label htmlFor="">내용</Label>
+          <div className="mt-3 border">
+            <EditorLayout editor={editor} />
           </div>
         </div>
       </div>
 
       <div className="mt-10 text-center">
-        <button
-          className={`inline-flex cursor-pointer items-center justify-center rounded border border-[#4FAAFF] bg-OnPrimary px-4 py-[9.5px] text-sm font-medium text-primary transition-all hover:bg-primary hover:text-OnPrimary md:text-base`}
-        >
-          {!edit ? "새글 작성" : "수정 하기"}
-        </button>
+        <SubmitBtn>{!edit ? '새글 작성' : '수정 하기'}</SubmitBtn>
       </div>
     </form>
   );
-}
+};
+
+export default Form;
