@@ -1,9 +1,10 @@
 'use client';
 
 import { SORT } from '@/constant/card/constant';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import { motion } from 'framer-motion';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { IoChevronDown } from 'react-icons/io5';
 
 interface SortProps {
@@ -34,16 +35,7 @@ const Sort = ({ sort }: SortProps) => {
     replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  useEffect(() => {
-    const handleOutsideClose = (e: { target: any }) => {
-      if (!dropMenuRef.current) return;
-      // useRef current에 담긴 엘리먼트 바깥을 클릭 시 드롭메뉴 닫힘
-      if (isOpen && !dropMenuRef.current.contains(e.target)) setIsOpen(false);
-    };
-    document.addEventListener('click', handleOutsideClose);
-
-    return () => document.removeEventListener('click', handleOutsideClose);
-  }, [isOpen]);
+  useOutsideClick({ ref: dropMenuRef, isOpen, setIsOpen });
 
   return (
     <div className="relative z-10 flex justify-end text-[13px]">

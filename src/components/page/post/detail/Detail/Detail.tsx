@@ -116,7 +116,7 @@ const Detail = ({ detail }: { detail: DetailData }) => {
         </div>
       </div>
 
-      <div className="mt-8 box-border min-h-72 w-full border px-4 py-3 text-sm font-medium leading-8 md:mt-24 md:min-h-[848px] md:px-12 md:py-9 md:text-lg">
+      <div className="mt-8 box-border w-full border text-sm font-medium leading-8 md:mt-24 md:text-lg">
         <View content={detail.content} />
       </div>
 

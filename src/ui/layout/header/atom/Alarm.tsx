@@ -3,12 +3,13 @@
 import allReadAction from '@/actions/notification/allReadAction';
 import deleteAction from '@/actions/notification/deleteAction';
 import readAction from '@/actions/notification/readAction';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import { useToast } from '@/provider/ToastProvider';
 import { GetNotification } from '@/types/notification.type';
 import moment from 'moment';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useRef, useState } from 'react';
 
 interface AlarmProps {
   notification: { createDate: string; data: GetNotification[] }[];
@@ -16,6 +17,7 @@ interface AlarmProps {
 
 const Alarm = ({ notification }: AlarmProps) => {
   const { showToast } = useToast();
+  const ref = useRef<HTMLDivElement>(null);
   const [isAlarm, setIsAlarm] = useState(false);
 
   const router = useRouter();
@@ -45,6 +47,8 @@ const Alarm = ({ notification }: AlarmProps) => {
       return showToast('error', '읽는데 실패하였습니다.');
   };
 
+  useOutsideClick({ ref, isOpen: isAlarm, setIsOpen: setIsAlarm });
+
   return (
     <div className="relative">
       <button
@@ -60,7 +64,10 @@ const Alarm = ({ notification }: AlarmProps) => {
         />
       </button>
       {isAlarm && (
-        <div className="absolute right-0 top-full box-border flex max-h-[264px] w-[272px] translate-x-1/4 flex-col overflow-y-hidden rounded-lg bg-white px-[30px] py-[22px] shadow-lg md:max-h-[334px] md:w-[342px] md:translate-x-0">
+        <div
+          ref={ref}
+          className="absolute right-0 top-full box-border flex max-h-[264px] w-[272px] translate-x-1/4 flex-col overflow-y-hidden rounded-lg bg-white px-[30px] py-[22px] shadow-lg md:max-h-[334px] md:w-[342px] md:translate-x-0"
+        >
           <div className="flex flex-none justify-between">
             <h4 className="text-base font-semibold text-primary">알림</h4>
             <button

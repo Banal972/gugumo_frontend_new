@@ -290,9 +290,9 @@ const Form = ({ edit }: FormProps) => {
                   {Object.entries(DAYS).map(([key, value]) => (
                     <button
                       type="button"
-                      onClick={() => selectDayHandler(key)}
+                      onClick={() => selectDayHandler(value)}
                       key={key}
-                      className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${meetingDaysWatch && meetingDaysWatch.split(';').includes(key) ? 'bg-primary text-white' : 'bg-Surface text-OnSurface'}`}
+                      className={`relative flex h-14 w-16 flex-none cursor-pointer items-center justify-center rounded-lg text-sm font-medium md:text-base ${meetingDaysWatch && meetingDaysWatch.split(';').includes(value) ? 'bg-primary text-white' : 'bg-Surface text-OnSurface'}`}
                     >
                       {value}
                     </button>

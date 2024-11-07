@@ -1,19 +1,22 @@
 'use client';
 
+import useOutsideClick from '@/hooks/useOutsideClick';
 import LogoutBtn from '@/ui/layout/header/atom/LogoutBtn';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const User = () => {
   const params = useParams();
-
+  const ref = useRef<HTMLUListElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsOpen(false);
   }, [params]);
+
+  useOutsideClick({ ref, isOpen, setIsOpen });
 
   return (
     <div className="relative">
@@ -27,7 +30,10 @@ const User = () => {
         />
       </div>
       {isOpen && (
-        <ul className="absolute right-0 top-full mt-[10px] whitespace-nowrap rounded border border-primary bg-background px-[30px] py-5 text-center text-[13px] font-medium">
+        <ul
+          ref={ref}
+          className="absolute right-0 top-full mt-[10px] whitespace-nowrap rounded border border-primary bg-background px-[30px] py-5 text-center text-[13px] font-medium"
+        >
           <li>
             <Link href="/post/list" className="text-OnSurface">
               작성글
