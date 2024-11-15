@@ -1,6 +1,7 @@
 import getRecommend from '@/actions/meeting/recommendAction';
-import NavButton from '@/ui/layout/recommends/atom/NavButton';
+import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
 import Slide from '@/ui/layout/recommends/atom/Slide';
+import { Suspense } from 'react';
 
 const Recommends = async () => {
   const posts = await getRecommend();
@@ -11,9 +12,15 @@ const Recommends = async () => {
         추천 게시물 🎯
       </h3>
       <div className="mt-[22px] flex items-center gap-6 md:mt-11 xl:gap-11">
-        <NavButton type="left" />
-        <Slide posts={posts.data} />
-        <NavButton type="right" />
+        <Suspense
+          fallback={Array.from({ length: 8 }, (_, index) => index).map(
+            (item) => (
+              <SkeletonCard key={item} />
+            ),
+          )}
+        >
+          <Slide posts={posts.data} />
+        </Suspense>
       </div>
     </div>
   );
