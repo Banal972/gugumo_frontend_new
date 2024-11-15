@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getMessaging, Messaging } from 'firebase/messaging';
+import { getMessaging, getToken, Messaging } from 'firebase/messaging';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,4 +24,25 @@ let messaging: Messaging;
 if (typeof window !== 'undefined') {
   messaging = getMessaging(app);
 }
+
 export { messaging };
+
+export const getFCMToken = async () => {
+  if (typeof window === 'undefined') {
+    // 서버 사이드에서는 실행하지 않음
+    return null;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'denied') return null;
+    const fcmToken = await getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPIDKEY,
+    });
+    // console.log(fcmToken);
+    return fcmToken;
+  } catch (err) {
+    // console.error('FCM Token 오류:', err);
+    return null;
+  }
+};
