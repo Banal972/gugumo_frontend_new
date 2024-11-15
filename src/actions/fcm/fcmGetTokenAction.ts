@@ -8,7 +8,8 @@ const fcmGetTokenAction = async (fcmToken: string): Promise<Return<string>> => {
     method: 'POST',
     body: JSON.stringify({ fcmToken }),
   });
-  return res.json();
+  const json = await res.json();
+  return json;
 };
 
 export default fcmGetTokenAction;

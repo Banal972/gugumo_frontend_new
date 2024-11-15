@@ -34,10 +34,8 @@ const authOptions: NextAuthOptions = {
             }
             return null;
           }
-          // console.log(response);
           return null;
         } catch (err) {
-          // console.log(err);
           return null;
         }
       },
@@ -106,6 +104,9 @@ const authOptions: NextAuthOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    error: '/',
+  },
 };
 
 export default authOptions;
