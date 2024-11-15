@@ -41,7 +41,12 @@ const Bookmark = ({ bookmarked, postId }: BookmarkProps) => {
   };
 
   return (
-    <button type="button" onClick={bookmarkHandler} className="cursor-pointer">
+    <button
+      aria-label="북마크 버튼"
+      type="button"
+      onClick={bookmarkHandler}
+      className="cursor-pointer"
+    >
       <BookmarkSVG
         className={`stroke-[#4FAAFF] group-hover:stroke-white ${bookmarked ? 'text-[#4FAAFF]' : 'text-white'}`}
         width={24}

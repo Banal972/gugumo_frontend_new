@@ -3,10 +3,10 @@
 import { GAMETYPE, LOCATION, STATUS } from '@/constant/card/constant';
 import { Content } from '@/types/get.type';
 import Bookmark from '@/ui/Button/Bookmark/Bookmark';
-import SkeletonCard from '@/ui/layout/card/skeleton/SkeletonCard';
+import NavButton from '@/ui/layout/recommends/atom/NavButton';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { Suspense, useRef } from 'react';
+import { useRef } from 'react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
@@ -18,40 +18,35 @@ const Slide = ({ posts }: { posts: Content[] }) => {
   };
 
   return (
-    <Swiper
-      className="flex-1"
-      ref={swiperRef}
-      modules={[Autoplay, Navigation]}
-      navigation={{
-        prevEl: '.slide-prev',
-        nextEl: '.slide-next',
-      }}
-      slidesPerView={1.2}
-      breakpoints={{
-        '481': {
-          slidesPerView: 1.5,
-        },
-        '820': {
-          slidesPerView: 2.5,
-        },
-        '1025': {
-          slidesPerView: 3,
-        },
-      }}
-      centeredSlides={false}
-      spaceBetween={26}
-      loop={posts.length > 3}
-      speed={600}
-      autoplay={{
-        delay: 6000,
-      }}
-    >
-      <Suspense
-        fallback={Array.from({ length: 8 }, (_, index) => index).map((item) => (
-          <SwiperSlide key={item} className="rounded border">
-            <SkeletonCard />
-          </SwiperSlide>
-        ))}
+    <>
+      <NavButton type="left" />
+      <Swiper
+        className="flex-1"
+        ref={swiperRef}
+        modules={[Autoplay, Navigation]}
+        navigation={{
+          prevEl: '.slide-prev',
+          nextEl: '.slide-next',
+        }}
+        slidesPerView={1.2}
+        breakpoints={{
+          '481': {
+            slidesPerView: 1.5,
+          },
+          '820': {
+            slidesPerView: 2.5,
+          },
+          '1025': {
+            slidesPerView: 3,
+          },
+        }}
+        centeredSlides={false}
+        spaceBetween={26}
+        loop={posts.length > 3}
+        speed={600}
+        autoplay={{
+          delay: 6000,
+        }}
       >
         {posts.map((e: Content) => (
           <SwiperSlide
@@ -107,8 +102,9 @@ const Slide = ({ posts }: { posts: Content[] }) => {
             </div>
           </SwiperSlide>
         ))}
-      </Suspense>
-    </Swiper>
+      </Swiper>
+      <NavButton type="right" />
+    </>
   );
 };
 
