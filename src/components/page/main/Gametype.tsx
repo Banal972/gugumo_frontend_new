@@ -139,7 +139,7 @@ const Button = ({ onClick, option, gametype, get, label }: ButtonProps) => {
             width={0}
             height={0}
             sizes="100vw"
-            alt={label}
+            alt={`${label} 이미지`}
             style={{ width: option?.width, height: option?.height }}
           />
         )}
